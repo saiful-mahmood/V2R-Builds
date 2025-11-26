@@ -453,9 +453,9 @@ img {
 }
 
 /* ========================================
-   STATS SECTION - Background Image Style
+   STATS SECTION - Editorial Style (Borderless)
    ======================================== */
-.stats-section-bg {
+.stats-editorial {
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -465,106 +465,106 @@ img {
     text-align: center;
 }
 
-.stats-content-centered {
+.editorial-content {
     max-width: 1000px;
     margin: 0 auto;
 }
 
-.stats-section-bg h2 {
-    font-size: clamp(2rem, 6vw, 3.5rem);
+.stats-editorial h2 {
+    font-size: clamp(2.5rem, 7vw, 4rem);
     margin-bottom: var(--spacing-md);
     color: white;
     font-weight: 800;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    line-height: 1.1;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.stats-intro-light {
-    font-size: clamp(1.1rem, 3vw, 1.25rem);
-    color: rgba(255, 255, 255, 0.9);
-    line-height: 1.8;
-    margin-bottom: var(--spacing-xl);
+.editorial-intro {
+    font-size: clamp(1.1rem, 3vw, 1.35rem);
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.6;
+    margin-bottom: var(--spacing-2xl);
     max-width: 700px;
     margin-left: auto;
     margin-right: auto;
+    font-weight: 500;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
-.stats-grid-transparent {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xl);
-}
-
-.stat-item {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: var(--spacing-lg);
-    border-radius: 16px;
+.editorial-stats {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: var(--spacing-sm);
-    transition: transform 0.3s ease, background 0.3s ease;
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-2xl);
 }
 
-.stat-item:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-5px);
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--primary);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-xs);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.stat-icon i {
-    font-size: 1.5rem;
-    color: white;
-}
-
-.stat-text {
+.estat-item {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 4px;
 }
 
-.stat-text strong {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: white;
+.estat-number {
+    font-size: clamp(3rem, 8vw, 4.5rem);
+    font-weight: 800;
+    line-height: 1;
+    background: linear-gradient(to bottom, #ffffff, #e0e7ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
 }
 
-.stat-text span {
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
+.estat-label {
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.estat-divider {
+    display: none;
+    /* Hidden on mobile */
+    width: 1px;
+    height: 80px;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.5), transparent);
+}
+
+.btn-white-outline {
+    display: inline-block;
+    padding: 16px 32px;
+    border: 2px solid white;
+    color: white;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 1px;
-    font-weight: 500;
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.btn-white-outline:hover {
+    background: white;
+    color: var(--text-main);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Tablet & Desktop Adjustments */
-@media (min-width: 600px) {
-    .stats-grid-transparent {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (min-width: 992px) {
-    .stats-grid-transparent {
-        grid-template-columns: repeat(4, 1fr);
+@media (min-width: 768px) {
+    .editorial-stats {
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        gap: var(--spacing-xl);
     }
 
-    .stat-item {
-        padding: var(--spacing-xl) var(--spacing-md);
+    .estat-divider {
+        display: block;
     }
 }
 
@@ -638,48 +638,66 @@ img {
 }
 
 /* ========================================
-   SERVICES SECTION - Mobile Grid
+   SERVICES SECTION - Clean List (No Cards)
    ======================================== */
-.services-grid {
+.services-list-clean {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--spacing-sm);
+    gap: var(--spacing-lg);
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
-.service-card {
-    height: 200px;
-    border-radius: 16px;
-    background-size: cover;
-    background-position: center;
-    position: relative;
-    overflow: hidden;
+.service-item-clean {
     display: flex;
-    align-items: flex-end;
+    align-items: flex-start;
+    gap: var(--spacing-md);
     padding: var(--spacing-md);
-    transition: transform 0.3s ease;
-    border: 1px solid var(--border-light);
+    border-radius: 12px;
+    transition: background 0.3s ease, transform 0.3s ease;
 }
 
-.service-card:active {
-    transform: scale(0.98);
+.service-item-clean:hover {
+    background: var(--bg-light);
+    transform: translateX(8px);
 }
 
-.service-content {
-    z-index: 2;
+.s-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--gradient-light);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
-.service-card h3 {
-    font-size: clamp(1.125rem, 4vw, 1.3rem);
-    margin-bottom: 4px;
-    color: white;
+.s-icon i {
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.s-info h3 {
+    font-size: 1.25rem;
+    margin-bottom: 8px;
+    color: var(--text-main);
     font-weight: 700;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
 }
 
-.service-card p {
-    font-size: 0.875rem;
-    color: rgba(255, 255, 255, 0.95);
-    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+.s-info p {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Tablet & Desktop Adjustments */
+@media (min-width: 768px) {
+    .services-list-clean {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xl) var(--spacing-2xl);
+    }
 }
 
 /* ========================================
