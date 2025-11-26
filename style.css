@@ -423,14 +423,185 @@ img {
 }
 
 /* ========================================
-   CARDS & GRIDS - Mobile First
+   VALUE GRID - Clean, No Cards
    ======================================== */
-.grid-3 {
+.value-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    gap: var(--spacing-xl);
+    max-width: 900px;
+    margin: 0 auto;
 }
 
+.value-item {
+    text-align: center;
+    padding: var(--spacing-md);
+    transition: transform 0.3s ease;
+}
+
+.value-item:active {
+    transform: scale(0.98);
+}
+
+.value-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--gradient-main);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--spacing-md);
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.2);
+}
+
+.value-icon i {
+    font-size: 2rem;
+    color: white;
+}
+
+.value-item h3 {
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-main);
+    font-weight: 700;
+}
+
+.value-item p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* ========================================
+   STATS SECTION - Interactive & Engaging
+   ======================================== */
+.stats-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+.stats-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.stats-content {
+    width: 100%;
+}
+
+.stats-content h2 {
+    font-size: clamp(2rem, 7vw, 3rem);
+    margin-bottom: var(--spacing-md);
+    color: var(--text-main);
+    font-weight: 800;
+}
+
+.stats-intro {
+    font-size: clamp(1rem, 3vw, 1.125rem);
+    color: var(--text-secondary);
+    line-height: 1.8;
+    margin-bottom: var(--spacing-xl);
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-xl);
+}
+
+.stat-box {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.stat-box:active {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-number {
+    font-size: clamp(2.5rem, 8vw, 4rem);
+    font-weight: 800;
+    background: var(--gradient-main);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1;
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.stats-cta {
+    margin-top: var(--spacing-md);
+}
+
+.stats-visual {
+    width: 100%;
+}
+
+.visual-card {
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.stats-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.visual-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
+    display: flex;
+    align-items: flex-end;
+    padding: var(--spacing-lg);
+}
+
+.overlay-badge {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 20px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: var(--text-main);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.overlay-badge i {
+    color: var(--secondary);
+    font-size: 1.25rem;
+}
+
+/* ========================================
+   LEGACY CARD STYLES (Keep for other sections)
+   ======================================== */
 .glass-card {
     background: var(--card-bg);
     border: 1px solid var(--border-light);
@@ -442,112 +613,6 @@ img {
 
 .glass-card:active {
     transform: scale(0.98);
-}
-
-.icon-box {
-    width: 56px;
-    height: 56px;
-    background: var(--gradient-light);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: var(--spacing-sm);
-}
-
-.icon-box i {
-    font-size: 1.5rem;
-    color: var(--primary);
-}
-
-.card h3 {
-    font-size: clamp(1.25rem, 4vw, 1.5rem);
-    margin-bottom: var(--spacing-sm);
-    color: var(--text-main);
-    font-weight: 600;
-}
-
-.card p {
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-size: 0.95rem;
-}
-
-/* ========================================
-   FEATURE SPLIT - Mobile Stack
-   ======================================== */
-.split-container {
-    display: flex;
-    flex-direction: column;
-    gap: var(--spacing-xl);
-}
-
-.split-content {
-    width: 100%;
-}
-
-.split-content h2 {
-    font-size: clamp(1.75rem, 6vw, 2.5rem);
-    margin-bottom: var(--spacing-md);
-    color: var(--text-main);
-}
-
-.split-content p {
-    color: var(--text-secondary);
-    margin-bottom: var(--spacing-sm);
-    font-size: clamp(1rem, 3vw, 1.1rem);
-    line-height: 1.7;
-}
-
-.feature-list {
-    margin-top: var(--spacing-md);
-}
-
-.feature-list li {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: var(--spacing-sm);
-    font-weight: 500;
-    color: var(--text-main);
-    font-size: 0.95rem;
-}
-
-.feature-list li i {
-    color: var(--secondary);
-    flex-shrink: 0;
-}
-
-.split-image {
-    width: 100%;
-    position: relative;
-}
-
-.rounded-img {
-    border-radius: 16px;
-    box-shadow: var(--shadow-lg);
-    width: 100%;
-}
-
-.floating-badge {
-    position: absolute;
-    bottom: var(--spacing-sm);
-    left: var(--spacing-sm);
-    background: var(--card-bg);
-    color: var(--text-main);
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.875rem;
-    box-shadow: var(--shadow-lg);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    border: 1px solid var(--border-light);
-}
-
-.floating-badge i {
-    color: var(--primary);
 }
 
 /* ========================================
@@ -901,6 +966,15 @@ footer {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
 
+    .value-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-md);
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+
     .services-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: var(--spacing-md);
@@ -980,6 +1054,20 @@ footer {
         flex-direction: row;
         align-items: center;
         gap: 60px;
+    }
+
+    .stats-wrapper {
+        flex-direction: row;
+        align-items: center;
+        gap: var(--spacing-2xl);
+    }
+
+    .stats-content {
+        flex: 1;
+    }
+
+    .stats-visual {
+        flex: 1;
     }
 
     .split-content,
