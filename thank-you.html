@@ -15,45 +15,50 @@
     <style>
         .thank-you-container {
             min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 40px 20px;
+            padding: var(--spacing-xl) var(--spacing-md);
         }
 
         .thank-you-content {
             max-width: 600px;
+            width: 100%;
+            padding: 0 var(--spacing-sm);
         }
 
         .thank-you-content h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
+            font-size: clamp(2rem, 8vw, 3rem);
+            margin-bottom: var(--spacing-md);
             color: var(--text-main);
+            font-weight: 700;
         }
 
         .thank-you-content p {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 4vw, 1.2rem);
             color: var(--text-secondary);
-            margin-bottom: 30px;
+            margin-bottom: var(--spacing-md);
             line-height: 1.8;
         }
 
         .checkmark {
-            width: 80px;
-            height: 80px;
+            width: clamp(70px, 15vw, 80px);
+            height: clamp(70px, 15vw, 80px);
             border-radius: 50%;
             background: var(--gradient-main);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 30px;
+            margin: 0 auto var(--spacing-lg);
             animation: scaleIn 0.5s ease-out;
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
         }
 
         .checkmark svg {
-            width: 50px;
-            height: 50px;
+            width: clamp(40px, 10vw, 50px);
+            height: clamp(40px, 10vw, 50px);
             stroke: white;
             stroke-width: 3;
             fill: none;
@@ -75,6 +80,13 @@
         @keyframes drawCheck {
             to {
                 stroke-dashoffset: 0;
+            }
+        }
+
+        /* Mobile optimization */
+        @media (max-width: 600px) {
+            .thank-you-container {
+                padding: var(--spacing-lg) var(--spacing-sm);
             }
         }
     </style>
