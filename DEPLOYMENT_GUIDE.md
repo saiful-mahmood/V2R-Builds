@@ -58,7 +58,7 @@
 
 ---
 
-## Option 2: GitHub Pages (Free, More Technical)
+## Option 2: GitHub Pages (Currently Active ✅)
 
 ### Why GitHub Pages?
 - ✅ Free hosting from GitHub
@@ -67,33 +67,38 @@
 - ✅ Version control included
 - ✅ Good for developers
 
-### Deployment Steps:
+### Current Setup:
+Your site is **already deployed** and serving from the **main branch** (root directory).
 
-1. **Create GitHub Repository**
-   ```bash
-   cd "/Users/saifulmahmood/Documents/GitHub/V2R Builds"
-   git init
-   git add .
-   git commit -m "Initial commit - V2R Builds website"
-   ```
+- **Repository**: https://github.com/saiful-mahmood/V2R-Builds
+- **Branch**: main
+- **Source**: / (root directory)
+- **Live URL**: https://v2rbuilds.com
 
-2. **Push to GitHub**
-   - Go to https://github.com/new
-   - Create a new repository named "v2r-builds"
-   - Don't initialize with README
-   - Copy the commands and run:
-   ```bash
-   git remote add origin https://github.com/YOUR-USERNAME/v2r-builds.git
-   git branch -M main
-   git push -u origin main
-   ```
+### How It Works:
+1. All your website files (index.html, style.css, script.js, etc.) are in the **main branch root**
+2. GitHub Pages automatically serves these files
+3. Your custom domain (v2rbuilds.com) points to GitHub Pages
+4. Any push to the main branch automatically updates your live site
 
-3. **Enable GitHub Pages**
-   - Go to repository Settings → Pages
+### To Update Your Site:
+```bash
+# Make your changes to files
+git add .
+git commit -m "Description of changes"
+git push origin main
+# Site updates automatically within 1-2 minutes
+```
+
+### GitHub Pages Settings:
+If you need to verify or change settings:
+1. Go to: https://github.com/saiful-mahmood/V2R-Builds/settings/pages
+2. Verify:
    - Source: Deploy from branch
-   - Branch: main, folder: / (root)
-   - Save
-   - Your site will be live at: `https://YOUR-USERNAME.github.io/v2r-builds/`
+   - Branch: **main**
+   - Folder: **/ (root)**
+   - Custom domain: **v2rbuilds.com**
+   - Enforce HTTPS: ✅ Enabled
 
 4. **Connect GoDaddy Domain**
    
