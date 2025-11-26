@@ -377,29 +377,6 @@ img {
     margin-bottom: var(--spacing-xl);
 }
 
-.hero-stats {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
-}
-
-.stat-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-weight: 600;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    padding: var(--spacing-xs);
-}
-
-.stat-item i {
-    color: var(--primary);
-    font-size: 1.25rem;
-}
-
 /* ========================================
    SECTION HEADERS - Mobile Typography
    ======================================== */
@@ -947,12 +924,7 @@ footer {
         margin-top: 0;
     }
 
-    .hero-stats {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: var(--spacing-lg);
-    }
+    /* Hero stats removed */
 
     .grid-3 {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
