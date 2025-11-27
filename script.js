@@ -299,15 +299,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let isValid = true;
 
             inputs.forEach(input => {
+                // Required Check
                 if (input.hasAttribute('required') && !input.value) {
                     isValid = false;
                     input.style.borderColor = 'red';
-                    // Reset border after change
                     input.addEventListener('input', () => {
                         input.style.borderColor = '';
                     });
                 }
-                // Check radio buttons group
+
+                // Email Validation
+                if (input.type === 'email' && input.value) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailRegex.test(input.value)) {
+                        isValid = false;
+                        input.style.borderColor = 'red';
+                        // You could add a tooltip or error message here
+                    }
+                }
+
+                // Radio Group Check
                 if (input.type === 'radio' && input.hasAttribute('required')) {
                     const group = document.getElementsByName(input.name);
                     let groupChecked = false;
@@ -316,7 +327,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     if (!groupChecked) {
                         isValid = false;
-                        // Maybe highlight the container?
                     }
                 }
             });
@@ -327,8 +337,54 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentStep++;
                 updateWizard();
             } else {
-                // Submit Form
-                if (wizardForm) wizardForm.submit();
+                // Submit Form via Fetch (AJAX)
+                const formData = new FormData(wizardForm);
+                // Convert to JSON for Formspree (if needed, or just use FormData)
+                // Formspree accepts FormData directly usually, but JSON is safer for some setups
+
+                btnNext.textContent = 'Sending...';
+                btnNext.disabled = true;
+
+                fetch(wizardForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Show Success Message inside Modal
+                            const modalBody = document.querySelector('.modal-body');
+                            const modalFooter = document.querySelector('.modal-footer');
+                            const stepIndicator = document.querySelector('.step-indicator');
+
+                            if (stepIndicator) stepIndicator.style.display = 'none';
+                            if (modalFooter) modalFooter.style.display = 'none';
+
+                            modalBody.innerHTML = `
+                            <div class="success-message" style="text-align: center; padding: 40px 20px;">
+                                <div style="width: 80px; height: 80px; background: #dcfce7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px;">
+                                    <i class="fa-solid fa-check" style="font-size: 40px; color: #16a34a;"></i>
+                                </div>
+                                <h3 style="font-size: 1.75rem; color: var(--text-main); margin-bottom: 12px;">Request Received!</h3>
+                                <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
+                                    Thanks for starting your journey with V2R Builds. We'll review your project details and get back to you shortly.
+                                </p>
+                                <button class="btn-primary" style="margin-top: 32px;" onclick="document.getElementById('modal-overlay').classList.remove('active'); document.body.style.overflow = '';">Close</button>
+                            </div>
+                        `;
+                        } else {
+                            alert('Oops! There was a problem submitting your form. Please try again.');
+                            btnNext.textContent = 'Submit Request';
+                            btnNext.disabled = false;
+                        }
+                    })
+                    .catch(error => {
+                        alert('Oops! There was a problem submitting your form. Please try again.');
+                        btnNext.textContent = 'Submit Request';
+                        btnNext.disabled = false;
+                    });
             }
         });
     }
