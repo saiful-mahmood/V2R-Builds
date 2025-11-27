@@ -201,4 +201,144 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(`Page load time: ${pageLoadTime}ms`);
         });
     }
+    // ========================================
+    // MULTI-STEP FORM MODAL
+    // ========================================
+    const modalOverlay = document.getElementById('modal-overlay');
+    const modalCloseBtn = document.getElementById('modal-close');
+    const triggerButtons = document.querySelectorAll('.trigger-modal');
+    const wizardForm = document.getElementById('wizard-form');
+    const btnNext = document.getElementById('btn-next');
+    const btnBack = document.getElementById('btn-back');
+    const steps = document.querySelectorAll('.form-step');
+    const dots = document.querySelectorAll('.step-dot');
+    const optionCards = document.querySelectorAll('.option-card');
+
+    let currentStep = 1;
+    const totalSteps = steps.length;
+
+    // Open Modal
+    triggerButtons.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            modalOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Close Modal
+    const closeModal = () => {
+        modalOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    };
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeModal);
+    }
+
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+    }
+
+    // Option Selection (Visual Feedback)
+    optionCards.forEach(card => {
+        card.addEventListener('click', () => {
+            optionCards.forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
+            // Auto-select radio button if not already handled by label
+            const radio = card.querySelector('input[type="radio"]');
+            if (radio) radio.checked = true;
+        });
+    });
+
+    // Navigation Logic
+    const updateWizard = () => {
+        // Show/Hide Steps
+        steps.forEach(step => {
+            if (parseInt(step.dataset.step) === currentStep) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('active');
+            }
+        });
+
+        // Update Dots
+        dots.forEach((dot, index) => {
+            if (index < currentStep) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Update Buttons
+        if (btnBack) {
+            if (currentStep === 1) {
+                btnBack.style.visibility = 'hidden';
+            } else {
+                btnBack.style.visibility = 'visible';
+            }
+        }
+
+        if (btnNext) {
+            if (currentStep === totalSteps) {
+                btnNext.textContent = 'Submit Request';
+            } else {
+                btnNext.textContent = 'Next';
+            }
+        }
+    };
+
+    if (btnNext) {
+        btnNext.addEventListener('click', () => {
+            // Validation
+            const currentStepEl = document.querySelector(`.form-step[data-step="${currentStep}"]`);
+            const inputs = currentStepEl.querySelectorAll('input, textarea, select');
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (input.hasAttribute('required') && !input.value) {
+                    isValid = false;
+                    input.style.borderColor = 'red';
+                    // Reset border after change
+                    input.addEventListener('input', () => {
+                        input.style.borderColor = '';
+                    });
+                }
+                // Check radio buttons group
+                if (input.type === 'radio' && input.hasAttribute('required')) {
+                    const group = document.getElementsByName(input.name);
+                    let groupChecked = false;
+                    for (let i = 0; i < group.length; i++) {
+                        if (group[i].checked) groupChecked = true;
+                    }
+                    if (!groupChecked) {
+                        isValid = false;
+                        // Maybe highlight the container?
+                    }
+                }
+            });
+
+            if (!isValid) return;
+
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateWizard();
+            } else {
+                // Submit Form
+                if (wizardForm) wizardForm.submit();
+            }
+        });
+    }
+
+    if (btnBack) {
+        btnBack.addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizard();
+            }
+        });
+    }
 });
