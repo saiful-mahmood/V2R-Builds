@@ -548,8 +548,10 @@ img {
     min-height: 100dvh;
     display: flex;
     align-items: center;
-    justify-content: center;
-    text-align: center;
+    justify-content: flex-start;
+    /* Left align */
+    text-align: left;
+    /* Left align */
     overflow: hidden;
     padding: var(--spacing-xl) 0;
 }
@@ -570,43 +572,44 @@ img {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.6));
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
     z-index: -1;
 }
 
 .hero-content {
-    max-width: 100%;
+    max-width: 650px;
+    /* Limit width for Codi look */
     z-index: 1;
     padding: var(--spacing-2xl) var(--spacing-sm) var(--spacing-md);
+    margin-left: 0;
+    /* Ensure left alignment */
 }
 
 .hero h1 {
-    font-size: clamp(2rem, 8vw, 4rem);
+    font-size: clamp(2.5rem, 8vw, 4.5rem);
+    /* Larger font */
     margin-bottom: var(--spacing-md);
-    letter-spacing: -0.5px;
+    letter-spacing: -1px;
     color: var(--text-main);
     font-weight: 800;
-    text-shadow: 0 2px 12px rgba(255, 255, 255, 0.95), 0 1px 3px rgba(255, 255, 255, 0.9);
     line-height: 1.1;
 }
 
 .hero p {
-    font-size: clamp(1rem, 4vw, 1.25rem);
+    font-size: clamp(1.1rem, 4vw, 1.35rem);
     color: var(--text-secondary);
     margin-bottom: var(--spacing-lg);
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-    font-weight: 600;
-    text-shadow: 0 2px 8px rgba(255, 255, 255, 0.95), 0 1px 3px rgba(255, 255, 255, 0.9);
-    padding: 0 var(--spacing-sm);
+    max-width: 550px;
+    font-weight: 500;
+    line-height: 1.6;
 }
 
 .hero-btns {
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
-    align-items: center;
+    align-items: flex-start;
+    /* Left align buttons */
     margin-bottom: var(--spacing-xl);
 }
 
@@ -1167,7 +1170,8 @@ footer {
 
     .hero-btns {
         flex-direction: row;
-        justify-content: center;
+        justify-content: flex-start;
+        /* Left align */
     }
 
     .btn-secondary {
