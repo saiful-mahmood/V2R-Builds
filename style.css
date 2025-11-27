@@ -700,6 +700,14 @@ img {
     line-height: 1.6;
 }
 
+.hero-lead {
+    font-size: 1.15em;
+    font-weight: 700;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 8px;
+}
+
 .hero-btns {
     display: flex;
     flex-direction: column;
