@@ -1396,6 +1396,13 @@ footer {
         max-width: 500px;
     }
 
+    /* Align hero text with first menu item (Logo width + Gap) */
+    .hero-content {
+        margin-left: 220px;
+        max-width: 800px;
+        /* Increase max-width to accommodate margin */
+    }
+
     .floating-badge {
         bottom: 30px;
         left: -20px;
