@@ -71,7 +71,8 @@
             display: flex;
             justify-content: space-between;
             position: relative;
-            max-width: 600px;
+            max-width: 700px;
+            /* Increased for 4 steps */
             margin: 0 auto;
         }
 
@@ -91,7 +92,8 @@
             position: relative;
             z-index: 2;
             text-align: center;
-            width: 120px;
+            width: 100px;
+            /* Slightly smaller for 4 steps */
         }
 
         .step-circle {
@@ -110,7 +112,7 @@
         }
 
         .step-label {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-muted);
             transition: all 0.3s ease;
@@ -352,19 +354,14 @@
 
         /* Lead Form */
         .lead-form-container {
-            display: none;
-            /* Hidden by default */
-            margin-top: 24px;
+            /* display: none; Removed for Step 3 */
+            /* margin-top: 24px; */
             text-align: left;
             background: #f8fafc;
             padding: 24px;
             border-radius: 16px;
             border: 1px solid var(--border-light);
-            animation: fadeIn 0.4s ease;
-        }
-
-        .lead-form-container.active {
-            display: block;
+            /* animation: fadeIn 0.4s ease; */
         }
 
         .button-group {
@@ -376,7 +373,8 @@
         }
 
         .success-message {
-            display: none;
+            display: block;
+            /* Always visible in Step 4 if successful */
             background: #dcfce7;
             border: 1px solid #bbf7d0;
             color: #166534;
@@ -447,7 +445,7 @@
         <div class="container">
             <header class="page-header">
                 <h1>Painting Cost Estimator</h1>
-                <p>Get a detailed estimate for your project in 3 simple steps.</p>
+                <p>Get a detailed estimate for your project in 4 simple steps.</p>
             </header>
 
             <div class="wizard-wrapper">
@@ -462,9 +460,13 @@
                             <div class="step-circle">2</div>
                             <span class="step-label">Project Details</span>
                         </div>
-                        <div class="progress-step-item" data-step="3" id="step-3-indicator">
+                        <div class="progress-step-item" data-step="3">
                             <div class="step-circle">3</div>
-                            <span class="step-label">Cost Estimate</span>
+                            <span class="step-label">Contact Info</span>
+                        </div>
+                        <div class="progress-step-item" data-step="4" id="step-4-indicator">
+                            <div class="step-circle">4</div>
+                            <span class="step-label">Your Estimate</span>
                         </div>
                     </div>
                 </div>
@@ -582,8 +584,42 @@
                         </div>
                     </form>
 
-                    <!-- STEP 3: Estimate & Lead Capture -->
+                    <!-- STEP 3: Contact Info (Gatekeeper) -->
                     <div class="step-content" data-step="3">
+                        <h2 class="step-heading">Where should we send your estimate?</h2>
+                        <div class="lead-form-container" id="lead-form-container">
+                            <form id="lead-capture-form" action="https://formspree.io/f/xyzaplql" method="POST">
+                                <!-- Hidden fields for estimate details -->
+                                <input type="hidden" name="subject" value="New Painting Estimate Request">
+                                <input type="hidden" name="estimate_range" id="hidden-estimate">
+                                <input type="hidden" name="project_details" id="hidden-details">
+
+                                <div class="form-group" style="margin-bottom: 16px;">
+                                    <label class="form-label" for="lead-name">Full Name</label>
+                                    <input type="text" name="name" id="lead-name" class="form-input" required
+                                        placeholder="John Doe">
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 24px;">
+                                    <label class="form-label" for="lead-email">Email Address</label>
+                                    <input type="email" name="email" id="lead-email" class="form-input" required
+                                        placeholder="john@example.com">
+                                    <div id="email-error"
+                                        style="color: red; font-size: 0.85rem; margin-top: 4px; display: none;">Please
+                                        enter a valid email address.</div>
+                                </div>
+
+                                <div class="button-group">
+                                    <!-- This button submits the form and triggers the transition to Step 4 -->
+                                    <button type="submit" class="btn-primary full-width" id="btn-submit-lead">See My
+                                        Estimate</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- STEP 4: Estimate Result -->
+                    <div class="step-content" data-step="4">
                         <div class="result-container">
                             <h2 class="step-heading">Your Estimated Cost</h2>
 
@@ -616,44 +652,8 @@
                             </div>
 
                             <div class="button-group" id="initial-actions">
-                                <button type="button" class="btn-primary full-width" id="btn-get-quote">Get Official
-                                    Quote</button>
                                 <button type="button" class="btn-secondary full-width" id="btn-restart">Start
                                     Over</button>
-                            </div>
-
-                            <!-- Lead Capture Form (Hidden Initially) -->
-                            <div class="lead-form-container" id="lead-form-container">
-                                <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--text-main);">Where
-                                    should we send your official quote?</h3>
-                                <form id="lead-capture-form" action="https://formspree.io/f/xyzaplql" method="POST">
-                                    <!-- Hidden fields for estimate details -->
-                                    <input type="hidden" name="subject" value="New Painting Estimate Request">
-                                    <input type="hidden" name="estimate_range" id="hidden-estimate">
-                                    <input type="hidden" name="project_details" id="hidden-details">
-
-                                    <div class="form-group" style="margin-bottom: 16px;">
-                                        <label class="form-label" for="lead-name">Full Name</label>
-                                        <input type="text" name="name" id="lead-name" class="form-input" required
-                                            placeholder="John Doe">
-                                    </div>
-
-                                    <div class="form-group" style="margin-bottom: 24px;">
-                                        <label class="form-label" for="lead-email">Email Address</label>
-                                        <input type="email" name="email" id="lead-email" class="form-input" required
-                                            placeholder="john@example.com">
-                                        <div id="email-error"
-                                            style="color: red; font-size: 0.85rem; margin-top: 4px; display: none;">
-                                            Please enter a valid email address.</div>
-                                    </div>
-
-                                    <div class="button-group">
-                                        <button type="submit" class="btn-primary full-width" id="btn-submit-lead">Send
-                                            Me The Quote</button>
-                                        <button type="button" class="btn-secondary full-width"
-                                            id="btn-cancel-lead">Cancel</button>
-                                    </div>
-                                </form>
                             </div>
                         </div>
                     </div>
@@ -684,16 +684,15 @@
             const btnNext = document.getElementById('btn-next');
             const btnPrev = document.getElementById('btn-prev');
             const btnRestart = document.getElementById('btn-restart');
-            const btnGetQuote = document.getElementById('btn-get-quote');
-            const btnCancelLead = document.getElementById('btn-cancel-lead');
-            const leadFormContainer = document.getElementById('lead-form-container');
-            const initialActions = document.getElementById('initial-actions');
+            const btnSubmitLead = document.getElementById('btn-submit-lead');
+            const wizardFooter = document.querySelector('.wizard-footer');
+
             const sqftInput = document.getElementById('sqft-input');
             const sqftDisplay = document.getElementById('sqft-display');
-            const step3Indicator = document.getElementById('step-3-indicator');
+            const step4Indicator = document.getElementById('step-4-indicator');
 
             let currentStep = 1;
-            const totalSteps = 3;
+            const totalSteps = 4;
 
             // Update Sqft Display
             sqftInput.addEventListener('input', (e) => {
@@ -735,18 +734,19 @@
                     }
                 });
 
-                // Update Buttons
+                // Update Footer Buttons
                 if (currentStep === 1) {
                     btnPrev.style.visibility = 'hidden';
                 } else {
                     btnPrev.style.visibility = 'visible';
                 }
 
-                if (currentStep === totalSteps) {
-                    document.querySelector('.wizard-footer').style.display = 'none';
+                // Hide standard next button on Step 3 (Contact Form) and Step 4 (Result)
+                if (currentStep === 3 || currentStep === 4) {
+                    wizardFooter.style.display = 'none';
                 } else {
-                    document.querySelector('.wizard-footer').style.display = 'flex';
-                    btnNext.textContent = currentStep === totalSteps - 1 ? 'Calculate Estimate' : 'Next Step';
+                    wizardFooter.style.display = 'flex';
+                    btnNext.textContent = 'Next Step';
                 }
             }
 
@@ -801,9 +801,6 @@
             // Navigation Events
             btnNext.addEventListener('click', () => {
                 if (currentStep < totalSteps) {
-                    if (currentStep === totalSteps - 1) {
-                        calculateCost();
-                    }
                     currentStep++;
                     updateWizard();
                     window.scrollTo(0, 0);
@@ -820,30 +817,16 @@
             btnRestart.addEventListener('click', () => {
                 currentStep = 1;
                 updateWizard();
-                document.querySelector('.wizard-footer').style.display = 'flex';
-                initialActions.style.display = 'flex';
-                leadFormContainer.classList.remove('active');
-                document.getElementById('email-success').style.display = 'none';
+                document.getElementById('email-success').style.display = 'block'; // Reset to default
 
-                // Reset Step 3 Indicator
-                step3Indicator.classList.remove('completed');
-                step3Indicator.classList.remove('active');
+                // Reset Step 4 Indicator
+                step4Indicator.classList.remove('completed');
+                step4Indicator.classList.remove('active');
 
                 window.scrollTo(0, 0);
             });
 
-            // Lead Form Logic
-            btnGetQuote.addEventListener('click', () => {
-                initialActions.style.display = 'none';
-                leadFormContainer.classList.add('active');
-            });
-
-            btnCancelLead.addEventListener('click', () => {
-                leadFormContainer.classList.remove('active');
-                initialActions.style.display = 'flex';
-            });
-
-            // Form Submission
+            // Form Submission (Step 3 -> Step 4)
             leadForm.addEventListener('submit', (e) => {
                 e.preventDefault();
 
@@ -860,10 +843,12 @@
                     emailInput.style.borderColor = 'var(--border-light)';
                 }
 
-                const btnSubmit = document.getElementById('btn-submit-lead');
-                const originalText = btnSubmit.textContent;
-                btnSubmit.textContent = 'Sending...';
-                btnSubmit.disabled = true;
+                // Calculate Cost BEFORE submitting so hidden fields are populated
+                calculateCost();
+
+                const originalText = btnSubmitLead.textContent;
+                btnSubmitLead.textContent = 'Calculating...';
+                btnSubmitLead.disabled = true;
 
                 const formData = new FormData(leadForm);
 
@@ -876,15 +861,13 @@
                 })
                     .then(response => {
                         if (response.ok) {
-                            // Success State
-                            leadFormContainer.classList.remove('active');
-                            document.getElementById('email-success').style.display = 'block';
-                            initialActions.style.display = 'flex';
-                            btnGetQuote.style.display = 'none'; // Hide "Get Quote" button since they just did it
+                            // Success State -> Move to Step 4
+                            currentStep = 4;
+                            updateWizard();
 
-                            // Mark Step 3 as Completed (Green)
-                            step3Indicator.classList.remove('active');
-                            step3Indicator.classList.add('completed');
+                            // Mark Step 4 as Completed (Green)
+                            step4Indicator.classList.remove('active');
+                            step4Indicator.classList.add('completed');
 
                             window.scrollTo(0, 0);
                         } else {
@@ -895,8 +878,8 @@
                         alert('Oops! There was a problem submitting your form. Please try again.');
                     })
                     .finally(() => {
-                        btnSubmit.textContent = originalText;
-                        btnSubmit.disabled = false;
+                        btnSubmitLead.textContent = originalText;
+                        btnSubmitLead.disabled = false;
                     });
             });
 
