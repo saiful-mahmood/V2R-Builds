@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painting Cost Estimator - V2R Builds</title>
-    <meta name="description" content="Get a quick ballpark figure for your interior painting project with V2R Builds.">
+    <meta name="description" content="Get a comprehensive estimate for your painting project with V2R Builds.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -15,25 +15,28 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
     <style>
-        /* Specific overrides for the painting page */
+        /* Page Specific Styles */
         body {
             background-color: var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        .navbar {
-            background: white;
-            border-bottom: 1px solid var(--border-light);
-            position: relative;
-            /* Not fixed for this page, or keep fixed but ensure padding */
+        main {
+            flex: 1;
+            padding-top: 80px;
+            /* Space for fixed navbar */
         }
 
         .page-header {
-            padding: 80px 0 40px;
             text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 20px;
         }
 
         .page-header h1 {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 5vw, 2.5rem);
             margin-bottom: 16px;
             color: var(--text-main);
         }
@@ -45,8 +48,381 @@
             margin: 0 auto;
         }
 
-        .estimator-section {
-            padding-bottom: 80px;
+        /* Wizard Container */
+        .wizard-wrapper {
+            max-width: 900px;
+            margin: 0 auto 80px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        /* Progress Bar */
+        .wizard-progress {
+            background: #f8fafc;
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Connecting Line */
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .progress-step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 120px;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        /* Active State */
+        .progress-step-item.active .step-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .progress-step-item.active .step-label {
+            color: var(--primary);
+        }
+
+        /* Completed State */
+        .progress-step-item.completed .step-circle {
+            border-color: var(--cta);
+            background: var(--cta);
+            color: white;
+        }
+
+        .progress-step-item.completed .step-label {
+            color: var(--cta);
+        }
+
+        /* Wizard Body */
+        .wizard-body {
+            padding: 40px;
+            min-height: 400px;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* Form Elements */
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .selection-card {
+            border: 2px solid var(--border-light);
+            border-radius: 16px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+            background: white;
+            /* Mobile optimization: touch target */
+            min-height: 140px;
+            justify-content: center;
+        }
+
+        .selection-card:hover {
+            border-color: var(--primary-light);
+            background: #f0f9ff;
+            transform: translateY(-2px);
+        }
+
+        .selection-card.selected {
+            border-color: var(--primary);
+            background: #eff6ff;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .card-desc {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        /* Slider */
+        .slider-container {
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .sqft-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            background: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-light);
+            min-width: 120px;
+            text-align: center;
+        }
+
+        input[type=range] {
+            width: 100%;
+            height: 8px;
+            background: var(--border-light);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+            cursor: pointer;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 28px;
+            height: 28px;
+            background: var(--primary);
+            border: 4px solid white;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.1s;
+        }
+
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        /* Footer Buttons */
+        .wizard-footer {
+            padding: 24px 40px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        /* Result Section */
+        .result-container {
+            text-align: center;
+        }
+
+        .estimate-box {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .estimate-label {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .estimate-amount {
+            font-size: clamp(2.5rem, 5vw, 3.5rem);
+            font-weight: 800;
+            color: var(--primary-dark);
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .estimate-sub {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-top: 32px;
+            text-align: left;
+        }
+
+        .breakdown-card {
+            background: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .bd-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .bd-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Lead Form */
+        .lead-form-container {
+            display: none;
+            /* Hidden by default */
+            margin-top: 24px;
+            text-align: left;
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 16px;
+            border: 1px solid var(--border-light);
+            animation: fadeIn 0.4s ease;
+        }
+
+        .lead-form-container.active {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .success-message {
+            display: none;
+            background: #dcfce7;
+            border: 1px solid #bbf7d0;
+            color: #166534;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        @media (max-width: 600px) {
+            .wizard-body {
+                padding: 24px 20px;
+            }
+
+            .wizard-footer {
+                padding: 20px 24px;
+            }
+
+            .progress-track {
+                margin: 0 -10px;
+            }
+
+            .step-label {
+                font-size: 0.7rem;
+            }
+
+            .progress-step-item {
+                width: auto;
+                flex: 1;
+            }
+
+            .estimate-box {
+                padding: 24px;
+            }
+
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+
+            /* Ensure buttons are easy to tap */
+            .btn-primary,
+            .btn-secondary,
+            .btn-next,
+            .btn-back {
+                min-height: 48px;
+            }
         }
     </style>
 </head>
@@ -67,71 +443,467 @@
         </div>
     </nav>
 
-    <!-- Page Header -->
-    <header class="page-header">
+    <main>
         <div class="container">
-            <h1>Painting Cost Estimator</h1>
-            <p>Get an instant estimate for your interior painting project. Enter your details below to see the cost
-                range.</p>
-        </div>
-    </header>
+            <header class="page-header">
+                <h1>Painting Cost Estimator</h1>
+                <p>Get a detailed estimate for your project in 3 simple steps.</p>
+            </header>
 
-    <!-- Estimator Section -->
-    <section class="estimator-section">
-        <div class="container">
-            <div class="estimator-wrapper">
-                <div class="estimator-card glass-card">
-                    <div class="estimator-icon">
-                        <i class="fa-solid fa-paint-roller"></i>
-                    </div>
-                    <h3>Interior Painting</h3>
-                    <p class="estimator-desc">Calculate based on floor area and paint quality.</p>
-
-                    <div class="estimator-form">
-                        <div class="form-group">
-                            <label for="paint-sqft">Total Floor Area (Sq. Ft.)</label>
-                            <input type="number" id="paint-sqft" class="form-input" placeholder="e.g. 500" min="0">
+            <div class="wizard-wrapper">
+                <!-- Progress Bar -->
+                <div class="wizard-progress">
+                    <div class="progress-track">
+                        <div class="progress-step-item active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <span class="step-label">Project Area</span>
                         </div>
-
-                        <div class="form-group">
-                            <label>Paint Quality</label>
-                            <div class="radio-group">
-                                <label class="radio-option">
-                                    <input type="radio" name="paint-quality" value="basic" checked>
-                                    <span class="radio-label">Basic</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="paint-quality" value="premium">
-                                    <span class="radio-label">Premium (+18%)</span>
-                                </label>
-                            </div>
+                        <div class="progress-step-item" data-step="2">
+                            <div class="step-circle">2</div>
+                            <span class="step-label">Project Details</span>
                         </div>
-
-                        <button id="btn-calculate-paint" class="btn-primary full-width">Calculate Estimate</button>
-                    </div>
-
-                    <div id="paint-result" class="estimator-result" style="display: none;">
-                        <div class="result-divider"></div>
-                        <div class="result-content">
-                            <span class="result-label">Estimated Cost Range</span>
-                            <span class="result-value" id="paint-cost-range">$0 - $0</span>
-                            <p class="result-disclaimer">*Estimates include labor and materials. Final price may vary
-                                based on specific conditions.</p>
+                        <div class="progress-step-item" data-step="3" id="step-3-indicator">
+                            <div class="step-circle">3</div>
+                            <span class="step-label">Cost Estimate</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- Main Form Wrapper -->
+                <div class="wizard-body">
+                    <form id="estimator-form">
+                        <!-- STEP 1: Project Area -->
+                        <div class="step-content active" data-step="1">
+                            <h2 class="step-heading">Let's start with the basics</h2>
+
+                            <div class="form-section">
+                                <label class="form-label">What are we painting?</label>
+                                <div class="cards-grid">
+                                    <label class="selection-card selected">
+                                        <input type="radio" name="project_type" value="interior" hidden checked>
+                                        <div class="card-icon"><i class="fa-solid fa-house-chimney-window"></i></div>
+                                        <span class="card-title">Interior</span>
+                                        <span class="card-desc">Walls, ceilings, trim, etc.</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="project_type" value="exterior" hidden>
+                                        <div class="card-icon"><i class="fa-solid fa-house"></i></div>
+                                        <span class="card-title">Exterior</span>
+                                        <span class="card-desc">Siding, decks, fences, etc.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <label class="form-label">Approximate Floor Area</label>
+                                <div class="slider-container">
+                                    <div class="slider-header">
+                                        <span style="color: var(--text-secondary);">Total Area</span>
+                                        <div class="sqft-value" id="sqft-display">1,500 sq ft</div>
+                                    </div>
+                                    <input type="range" id="sqft-input" name="sqft" min="100" max="5000" step="50"
+                                        value="1500">
+                                    <div
+                                        style="display: flex; justify-content: space-between; margin-top: 12px; color: var(--text-muted); font-size: 0.85rem;">
+                                        <span>100 sq ft</span>
+                                        <span>5000+ sq ft</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Project Details -->
+                        <div class="step-content" data-step="2">
+                            <h2 class="step-heading">Refine your estimate</h2>
+
+                            <div class="form-section">
+                                <label class="form-label">Ceiling Height</label>
+                                <div class="cards-grid"
+                                    style="grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));">
+                                    <label class="selection-card selected">
+                                        <input type="radio" name="ceiling_height" value="8" hidden checked>
+                                        <span class="card-title">Standard</span>
+                                        <span class="card-desc">8 ft</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="ceiling_height" value="9" hidden>
+                                        <span class="card-title">9 ft</span>
+                                        <span class="card-desc">High</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="ceiling_height" value="10" hidden>
+                                        <span class="card-title">10-12 ft</span>
+                                        <span class="card-desc">Vaulted</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="ceiling_height" value="14" hidden>
+                                        <span class="card-title">12+ ft</span>
+                                        <span class="card-desc">Cathedral</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <label class="form-label">Wall Condition</label>
+                                <div class="cards-grid">
+                                    <label class="selection-card selected">
+                                        <input type="radio" name="condition" value="good" hidden checked>
+                                        <span class="card-title">Good</span>
+                                        <span class="card-desc">Minor prep needed</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="condition" value="fair" hidden>
+                                        <span class="card-title">Fair</span>
+                                        <span class="card-desc">Some holes/cracks</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="condition" value="poor" hidden>
+                                        <span class="card-title">Poor</span>
+                                        <span class="card-desc">Peeling/Damage</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-section">
+                                <label class="form-label">Paint Quality</label>
+                                <div class="cards-grid" style="grid-template-columns: 1fr 1fr;">
+                                    <label class="selection-card selected">
+                                        <input type="radio" name="quality" value="standard" hidden checked>
+                                        <span class="card-title">Standard</span>
+                                        <span class="card-desc">Quality durable finish</span>
+                                    </label>
+                                    <label class="selection-card">
+                                        <input type="radio" name="quality" value="premium" hidden>
+                                        <span class="card-title">Premium</span>
+                                        <span class="card-desc">Top-tier washable</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- STEP 3: Estimate & Lead Capture -->
+                    <div class="step-content" data-step="3">
+                        <div class="result-container">
+                            <h2 class="step-heading">Your Estimated Cost</h2>
+
+                            <div class="success-message" id="email-success">
+                                <i class="fa-solid fa-check-circle"
+                                    style="font-size: 1.5rem; margin-bottom: 8px;"></i><br>
+                                <strong>Quote Sent!</strong><br>
+                                We've emailed this estimate to you. A team member will be in touch shortly.
+                            </div>
+
+                            <div class="estimate-box">
+                                <div class="estimate-label">Estimated Total Range</div>
+                                <div class="estimate-amount" id="final-estimate">$0 - $0</div>
+                                <div class="estimate-sub">Based on market rates in your area</div>
+
+                                <div class="breakdown-grid">
+                                    <div class="breakdown-card">
+                                        <span class="bd-label">Labor & Prep</span>
+                                        <span class="bd-value" id="labor-cost">$0</span>
+                                    </div>
+                                    <div class="breakdown-card">
+                                        <span class="bd-label">Materials</span>
+                                        <span class="bd-value" id="material-cost">$0</span>
+                                    </div>
+                                    <div class="breakdown-card">
+                                        <span class="bd-label">Est. Duration</span>
+                                        <span class="bd-value" id="duration-est">0 Days</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="button-group" id="initial-actions">
+                                <button type="button" class="btn-primary full-width" id="btn-get-quote">Get Official
+                                    Quote</button>
+                                <button type="button" class="btn-secondary full-width" id="btn-restart">Start
+                                    Over</button>
+                            </div>
+
+                            <!-- Lead Capture Form (Hidden Initially) -->
+                            <div class="lead-form-container" id="lead-form-container">
+                                <h3 style="font-size: 1.2rem; margin-bottom: 16px; color: var(--text-main);">Where
+                                    should we send your official quote?</h3>
+                                <form id="lead-capture-form" action="https://formspree.io/f/xyzaplql" method="POST">
+                                    <!-- Hidden fields for estimate details -->
+                                    <input type="hidden" name="subject" value="New Painting Estimate Request">
+                                    <input type="hidden" name="estimate_range" id="hidden-estimate">
+                                    <input type="hidden" name="project_details" id="hidden-details">
+
+                                    <div class="form-group" style="margin-bottom: 16px;">
+                                        <label class="form-label" for="lead-name">Full Name</label>
+                                        <input type="text" name="name" id="lead-name" class="form-input" required
+                                            placeholder="John Doe">
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 24px;">
+                                        <label class="form-label" for="lead-email">Email Address</label>
+                                        <input type="email" name="email" id="lead-email" class="form-input" required
+                                            placeholder="john@example.com">
+                                        <div id="email-error"
+                                            style="color: red; font-size: 0.85rem; margin-top: 4px; display: none;">
+                                            Please enter a valid email address.</div>
+                                    </div>
+
+                                    <div class="button-group">
+                                        <button type="submit" class="btn-primary full-width" id="btn-submit-lead">Send
+                                            Me The Quote</button>
+                                        <button type="button" class="btn-secondary full-width"
+                                            id="btn-cancel-lead">Cancel</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-footer">
+                    <button type="button" class="btn-back" id="btn-prev" style="visibility: hidden;">Back</button>
+                    <button type="button" class="btn-next" id="btn-next">Next Step</button>
+                </div>
             </div>
         </div>
-    </section>
+    </main>
 
     <footer>
-        <div class="container footer-content">
-            <div class="footer-logo">V2R Builds</div>
+        <div class="container footer-content"
+            style="text-align: center; padding: 40px 0; color: var(--text-secondary);">
             <p>&copy; 2025 V2R Builds. All rights reserved.</p>
         </div>
     </footer>
 
     <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const estimatorForm = document.getElementById('estimator-form');
+            const leadForm = document.getElementById('lead-capture-form');
+            const steps = document.querySelectorAll('.step-content');
+            const progressItems = document.querySelectorAll('.progress-step-item');
+            const btnNext = document.getElementById('btn-next');
+            const btnPrev = document.getElementById('btn-prev');
+            const btnRestart = document.getElementById('btn-restart');
+            const btnGetQuote = document.getElementById('btn-get-quote');
+            const btnCancelLead = document.getElementById('btn-cancel-lead');
+            const leadFormContainer = document.getElementById('lead-form-container');
+            const initialActions = document.getElementById('initial-actions');
+            const sqftInput = document.getElementById('sqft-input');
+            const sqftDisplay = document.getElementById('sqft-display');
+            const step3Indicator = document.getElementById('step-3-indicator');
+
+            let currentStep = 1;
+            const totalSteps = 3;
+
+            // Update Sqft Display
+            sqftInput.addEventListener('input', (e) => {
+                sqftDisplay.textContent = `${parseInt(e.target.value).toLocaleString()} sq ft`;
+            });
+
+            // Card Selection Logic
+            document.querySelectorAll('.selection-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const parent = card.parentElement;
+                    parent.querySelectorAll('.selection-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    const radio = card.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true;
+                });
+            });
+
+            function updateWizard() {
+                // Show/Hide Steps
+                steps.forEach(step => {
+                    if (parseInt(step.dataset.step) === currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+
+                // Update Progress Bar
+                progressItems.forEach((item, idx) => {
+                    const stepNum = idx + 1;
+                    if (stepNum < currentStep) {
+                        item.classList.add('completed');
+                        item.classList.remove('active');
+                    } else if (stepNum === currentStep) {
+                        item.classList.add('active');
+                        item.classList.remove('completed');
+                    } else {
+                        item.classList.remove('active', 'completed');
+                    }
+                });
+
+                // Update Buttons
+                if (currentStep === 1) {
+                    btnPrev.style.visibility = 'hidden';
+                } else {
+                    btnPrev.style.visibility = 'visible';
+                }
+
+                if (currentStep === totalSteps) {
+                    document.querySelector('.wizard-footer').style.display = 'none';
+                } else {
+                    document.querySelector('.wizard-footer').style.display = 'flex';
+                    btnNext.textContent = currentStep === totalSteps - 1 ? 'Calculate Estimate' : 'Next Step';
+                }
+            }
+
+            function calculateCost() {
+                const formData = new FormData(estimatorForm);
+                const type = formData.get('project_type');
+                const sqft = parseInt(formData.get('sqft'));
+                const height = parseInt(formData.get('ceiling_height'));
+                const condition = formData.get('condition');
+                const quality = formData.get('quality');
+
+                // Base Rates (Labor per sqft)
+                let baseRate = type === 'exterior' ? 3.50 : 2.00;
+
+                // Multipliers
+                let heightMult = 1.0;
+                if (height === 9) heightMult = 1.1;
+                if (height === 10) heightMult = 1.25;
+                if (height > 12) heightMult = 1.5;
+
+                let condMult = 1.0;
+                if (condition === 'fair') condMult = 1.2;
+                if (condition === 'poor') condMult = 1.5;
+
+                // Material Cost
+                let materialRate = quality === 'premium' ? 0.85 : 0.45;
+
+                // Calculations
+                let laborTotal = sqft * baseRate * heightMult * condMult;
+                let materialTotal = sqft * materialRate;
+
+                // Add some variance for the range
+                let totalLow = (laborTotal + materialTotal) * 0.9;
+                let totalHigh = (laborTotal + materialTotal) * 1.1;
+
+                // Duration Estimate
+                let days = Math.ceil(sqft / 500 * condMult);
+                if (days < 1) days = 1;
+
+                // Update DOM
+                const rangeText = `$${Math.round(totalLow).toLocaleString()} - $${Math.round(totalHigh).toLocaleString()}`;
+                document.getElementById('final-estimate').textContent = rangeText;
+                document.getElementById('labor-cost').textContent = `$${Math.round(laborTotal).toLocaleString()}`;
+                document.getElementById('material-cost').textContent = `$${Math.round(materialTotal).toLocaleString()}`;
+                document.getElementById('duration-est').textContent = `${days} - ${days + 1} Days`;
+
+                // Populate Hidden Fields for Email
+                document.getElementById('hidden-estimate').value = rangeText;
+                document.getElementById('hidden-details').value = `Type: ${type}, Area: ${sqft}sqft, Height: ${height}ft, Condition: ${condition}, Quality: ${quality}`;
+            }
+
+            // Navigation Events
+            btnNext.addEventListener('click', () => {
+                if (currentStep < totalSteps) {
+                    if (currentStep === totalSteps - 1) {
+                        calculateCost();
+                    }
+                    currentStep++;
+                    updateWizard();
+                    window.scrollTo(0, 0);
+                }
+            });
+
+            btnPrev.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateWizard();
+                }
+            });
+
+            btnRestart.addEventListener('click', () => {
+                currentStep = 1;
+                updateWizard();
+                document.querySelector('.wizard-footer').style.display = 'flex';
+                initialActions.style.display = 'flex';
+                leadFormContainer.classList.remove('active');
+                document.getElementById('email-success').style.display = 'none';
+
+                // Reset Step 3 Indicator
+                step3Indicator.classList.remove('completed');
+                step3Indicator.classList.remove('active');
+
+                window.scrollTo(0, 0);
+            });
+
+            // Lead Form Logic
+            btnGetQuote.addEventListener('click', () => {
+                initialActions.style.display = 'none';
+                leadFormContainer.classList.add('active');
+            });
+
+            btnCancelLead.addEventListener('click', () => {
+                leadFormContainer.classList.remove('active');
+                initialActions.style.display = 'flex';
+            });
+
+            // Form Submission
+            leadForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const emailInput = document.getElementById('lead-email');
+                const emailError = document.getElementById('email-error');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                if (!emailRegex.test(emailInput.value)) {
+                    emailError.style.display = 'block';
+                    emailInput.style.borderColor = 'red';
+                    return;
+                } else {
+                    emailError.style.display = 'none';
+                    emailInput.style.borderColor = 'var(--border-light)';
+                }
+
+                const btnSubmit = document.getElementById('btn-submit-lead');
+                const originalText = btnSubmit.textContent;
+                btnSubmit.textContent = 'Sending...';
+                btnSubmit.disabled = true;
+
+                const formData = new FormData(leadForm);
+
+                fetch(leadForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Success State
+                            leadFormContainer.classList.remove('active');
+                            document.getElementById('email-success').style.display = 'block';
+                            initialActions.style.display = 'flex';
+                            btnGetQuote.style.display = 'none'; // Hide "Get Quote" button since they just did it
+
+                            // Mark Step 3 as Completed (Green)
+                            step3Indicator.classList.remove('active');
+                            step3Indicator.classList.add('completed');
+
+                            window.scrollTo(0, 0);
+                        } else {
+                            alert('Oops! There was a problem submitting your form. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        alert('Oops! There was a problem submitting your form. Please try again.');
+                    })
+                    .finally(() => {
+                        btnSubmit.textContent = originalText;
+                        btnSubmit.disabled = false;
+                    });
+            });
+
+            // Initialize
+            updateWizard();
+        });
+    </script>
 </body>
 
 </html>
