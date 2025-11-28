@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painting Cost Estimator - V2R Builds</title>
+    <meta name="description" content="Get a quick ballpark figure for your interior painting project with V2R Builds.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <style>
+        /* Specific overrides for the painting page */
+        body {
+            background-color: var(--bg-light);
+        }
+
+        .navbar {
+            background: white;
+            border-bottom: 1px solid var(--border-light);
+            position: relative;
+            /* Not fixed for this page, or keep fixed but ensure padding */
+        }
+
+        .page-header {
+            padding: 80px 0 40px;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .estimator-section {
+            padding-bottom: 80px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <img src="logo-icon.svg" alt="V2R Logo" class="logo-icon">
+                    V2R <span class="highlight">Builds</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="index.html" class="btn-secondary nav-btn">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="page-header">
+        <div class="container">
+            <h1>Painting Cost Estimator</h1>
+            <p>Get an instant estimate for your interior painting project. Enter your details below to see the cost
+                range.</p>
+        </div>
+    </header>
+
+    <!-- Estimator Section -->
+    <section class="estimator-section">
+        <div class="container">
+            <div class="estimator-wrapper">
+                <div class="estimator-card glass-card">
+                    <div class="estimator-icon">
+                        <i class="fa-solid fa-paint-roller"></i>
+                    </div>
+                    <h3>Interior Painting</h3>
+                    <p class="estimator-desc">Calculate based on floor area and paint quality.</p>
+
+                    <div class="estimator-form">
+                        <div class="form-group">
+                            <label for="paint-sqft">Total Floor Area (Sq. Ft.)</label>
+                            <input type="number" id="paint-sqft" class="form-input" placeholder="e.g. 500" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Paint Quality</label>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="paint-quality" value="basic" checked>
+                                    <span class="radio-label">Basic</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="paint-quality" value="premium">
+                                    <span class="radio-label">Premium (+18%)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button id="btn-calculate-paint" class="btn-primary full-width">Calculate Estimate</button>
+                    </div>
+
+                    <div id="paint-result" class="estimator-result" style="display: none;">
+                        <div class="result-divider"></div>
+                        <div class="result-content">
+                            <span class="result-label">Estimated Cost Range</span>
+                            <span class="result-value" id="paint-cost-range">$0 - $0</span>
+                            <p class="result-disclaimer">*Estimates include labor and materials. Final price may vary
+                                based on specific conditions.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">V2R Builds</div>
+            <p>&copy; 2025 V2R Builds. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

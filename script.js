@@ -8,17 +8,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const body = document.body;
 
     // Toggle mobile menu
-    hamburger.addEventListener('click', () => {
-        const isActive = mobileMenu.classList.toggle('active');
-        hamburger.classList.toggle('active');
+    if (hamburger && mobileMenu) {
+        hamburger.addEventListener('click', () => {
+            const isActive = mobileMenu.classList.toggle('active');
+            hamburger.classList.toggle('active');
 
-        // Prevent body scroll when menu is open (mobile optimization)
-        if (isActive) {
-            body.style.overflow = 'hidden';
-        } else {
-            body.style.overflow = '';
-        }
-    });
+            // Prevent body scroll when menu is open (mobile optimization)
+            if (isActive) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = '';
+            }
+        });
+    }
 
     // Close menu when clicking a link
     mobileLinks.forEach(link => {
@@ -47,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Optimized scroll handler using requestAnimationFrame
     const updateNavbar = () => {
+        if (!navbar) return;
         const scrollY = window.scrollY;
 
         if (scrollY > 50) {
@@ -218,13 +221,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const totalSteps = steps.length;
 
     // Open Modal
-    triggerButtons.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            e.preventDefault();
-            modalOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
+    if (triggerButtons.length > 0 && modalOverlay) {
+        triggerButtons.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                modalOverlay.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            });
         });
-    });
+    }
 
     // Close Modal
     const closeModal = () => {
@@ -395,6 +400,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentStep--;
                 updateWizard();
             }
+        });
+    }
+
+    // ========================================
+    // PAINTING ESTIMATOR
+    // ========================================
+    const btnCalculatePaint = document.getElementById('btn-calculate-paint');
+    const paintResult = document.getElementById('paint-result');
+    const paintCostRange = document.getElementById('paint-cost-range');
+
+    if (btnCalculatePaint) {
+        btnCalculatePaint.addEventListener('click', () => {
+            const sqftInput = document.getElementById('paint-sqft');
+            const qualityInput = document.querySelector('input[name="paint-quality"]:checked');
+
+            if (!sqftInput.value || sqftInput.value <= 0) {
+                alert('Please enter a valid square footage.');
+                return;
+            }
+
+            const sqft = parseFloat(sqftInput.value);
+            const quality = qualityInput.value;
+
+            // Rates derived from market analysis
+            let rateLow = 0.89;
+            let rateHigh = 1.01;
+
+            if (quality === 'premium') {
+                rateLow = 1.05;
+                rateHigh = 1.19;
+            }
+
+            const minCost = Math.round(sqft * rateLow);
+            const maxCost = Math.round(sqft * rateHigh);
+
+            paintCostRange.textContent = `$${minCost.toLocaleString()} - $${maxCost.toLocaleString()}`;
+            paintResult.style.display = 'block';
         });
     }
 });
