@@ -701,22 +701,24 @@
                         });
                     });
 
-                    const images = await Promise.all(imagePromises);
-                    console.log('Images converted to base64');
 
-                    // Prepare template parameters
+                    // TEMPORARILY DISABLED FOR TESTING
+                    // const images = await Promise.all(imagePromises);
+                    console.log('Skipping images for testing...');
+
+                    // Prepare template parameters (WITHOUT IMAGES FOR NOW)
                     const templateParams = {
                         from_name: form.querySelector('#name').value,
                         from_email: form.querySelector('#email').value,
                         from_phone: form.querySelector('#phone').value,
                         vision_prompt: form.querySelector('textarea[name="prompt"]').value,
-                        attachment_count: images.length,
-                        // Add images as separate parameters
-                        image_1: images[0]?.data || '',
-                        image_2: images[1]?.data || '',
-                        image_3: images[2]?.data || '',
-                        image_4: images[3]?.data || '',
-                        image_5: images[4]?.data || ''
+                        attachment_count: selectedFiles.length,
+                        // Temporarily sending empty strings instead of images
+                        image_1: '',
+                        image_2: '',
+                        image_3: '',
+                        image_4: '',
+                        image_5: ''
                     };
 
                     console.log('Template params prepared');
