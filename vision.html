@@ -686,6 +686,9 @@
                 submitBtn.disabled = true;
 
                 try {
+                    console.log('Starting form submission...');
+                    console.log('Selected files:', selectedFiles.length);
+
                     // Convert images to base64
                     const imagePromises = selectedFiles.map(file => {
                         return new Promise((resolve) => {
@@ -699,6 +702,7 @@
                     });
 
                     const images = await Promise.all(imagePromises);
+                    console.log('Images converted to base64');
 
                     // Prepare template parameters
                     const templateParams = {
@@ -715,20 +719,39 @@
                         image_5: images[4]?.data || ''
                     };
 
+                    console.log('Template params prepared');
+                    console.log('Service ID:', EMAILJS_SERVICE_ID);
+                    console.log('Template ID:', EMAILJS_TEMPLATE_ID);
+
                     // Send email via EmailJS
-                    await emailjs.send(
+                    const response = await emailjs.send(
                         EMAILJS_SERVICE_ID,
                         EMAILJS_TEMPLATE_ID,
                         templateParams
                     );
+
+                    console.log('EmailJS Response:', response);
 
                     // Success - move to step 4
                     currentStep = 4;
                     updateWizard();
 
                 } catch (error) {
-                    console.error('EmailJS Error:', error);
-                    alert('Oops! There was a problem sending your request. Please try again or contact us directly.');
+                    console.error('EmailJS Error Details:', error);
+                    console.error('Error text:', error.text);
+                    console.error('Error status:', error.status);
+
+                    let errorMessage = 'Oops! There was a problem sending your request.';
+
+                    if (error.text) {
+                        if (error.text.includes('size')) {
+                            errorMessage = 'Your images are too large. Please try with smaller images or fewer photos.';
+                        } else if (error.text.includes('Invalid')) {
+                            errorMessage = 'There was a configuration error. Please contact us directly at your email.';
+                        }
+                    }
+
+                    alert(errorMessage + '\n\nError: ' + (error.text || error.message));
                     submitBtn.textContent = originalText;
                     submitBtn.disabled = false;
                 }
