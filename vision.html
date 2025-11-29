@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Vision Renderer - V2R Builds</title>
+    <meta name="description"
+        content="Visualize your dream space with our AI Vision Renderer. Upload a photo and describe your vision.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <style>
+        /* Page Specific Styles */
+        body {
+            background-color: var(--bg-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        main {
+            flex: 1;
+            padding-top: 80px;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 40px 20px;
+            margin-bottom: 20px;
+        }
+
+        .page-header h1 {
+            font-size: clamp(2rem, 5vw, 2.5rem);
+            margin-bottom: 16px;
+            color: var(--text-main);
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Wizard Container */
+        .wizard-wrapper {
+            max-width: 900px;
+            margin: 0 auto 80px;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        /* Progress Bar */
+        .wizard-progress {
+            background: #f8fafc;
+            padding: 30px 40px;
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .progress-track {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .progress-track::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border-light);
+            z-index: 1;
+        }
+
+        .progress-step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            width: 100px;
+        }
+
+        .step-circle {
+            width: 32px;
+            height: 32px;
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        .step-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.3s ease;
+        }
+
+        /* Active State */
+        .progress-step-item.active .step-circle {
+            border-color: var(--primary);
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .progress-step-item.active .step-label {
+            color: var(--primary);
+        }
+
+        /* Completed State */
+        .progress-step-item.completed .step-circle {
+            border-color: var(--cta);
+            background: var(--cta);
+            color: white;
+        }
+
+        .progress-step-item.completed .step-label {
+            color: var(--cta);
+        }
+
+        /* Wizard Body */
+        .wizard-body {
+            padding: 40px;
+            min-height: 400px;
+        }
+
+        .step-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .step-content.active {
+            display: block;
+        }
+
+        .step-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border-light);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #f8fafc;
+            position: relative;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragover {
+            border-color: var(--primary);
+            background: #eff6ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .upload-sub {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .file-preview {
+            display: none;
+            margin-top: 20px;
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-preview img {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+        }
+
+        /* Text Area */
+        .vision-textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .vision-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-light);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Footer Buttons */
+        .wizard-footer {
+            padding: 24px 40px;
+            border-top: 1px solid var(--border-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        /* Success Message */
+        .success-container {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            color: #10b981;
+            margin-bottom: 24px;
+        }
+
+        .success-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 16px;
+        }
+
+        .success-desc {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 500px;
+            margin: 0 auto 32px;
+        }
+
+        @media (max-width: 600px) {
+            .wizard-body {
+                padding: 24px 20px;
+            }
+
+            .wizard-footer {
+                padding: 20px 24px;
+            }
+
+            .progress-track {
+                margin: 0 -10px;
+            }
+
+            .step-label {
+                font-size: 0.7rem;
+            }
+
+            .progress-step-item {
+                width: auto;
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <img src="logo-icon.svg" alt="V2R Logo" class="logo-icon">
+                    V2R <span class="highlight">Builds</span>
+                </a>
+            </div>
+            <div class="nav-right">
+                <a href="index.html" class="btn-secondary nav-btn">Back to Home</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <div class="container">
+            <header class="page-header">
+                <h1>AI Vision Renderer</h1>
+                <p>Upload a photo, describe your dream, and let our AI reimagine your space.</p>
+            </header>
+
+            <div class="wizard-wrapper">
+                <!-- Progress Bar -->
+                <div class="wizard-progress">
+                    <div class="progress-track">
+                        <div class="progress-step-item active" data-step="1">
+                            <div class="step-circle">1</div>
+                            <span class="step-label">Upload</span>
+                        </div>
+                        <div class="progress-step-item" data-step="2">
+                            <div class="step-circle">2</div>
+                            <span class="step-label">Describe</span>
+                        </div>
+                        <div class="progress-step-item" data-step="3">
+                            <div class="step-circle">3</div>
+                            <span class="step-label">Contact</span>
+                        </div>
+                        <div class="progress-step-item" data-step="4">
+                            <div class="step-circle">4</div>
+                            <span class="step-label">Result</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Form Wrapper -->
+                <div class="wizard-body">
+                    <form id="vision-form" action="https://formspree.io/f/xyzaplql" method="POST"
+                        enctype="multipart/form-data">
+                        <input type="hidden" name="subject" value="New AI Vision Request">
+
+                        <!-- STEP 1: Upload Photo -->
+                        <div class="step-content active" data-step="1">
+                            <h2 class="step-heading">Upload a photo of your space</h2>
+
+                            <div class="upload-zone" id="drop-zone">
+                                <input type="file" name="attachment" id="file-input" accept="image/*"
+                                    style="display: none;">
+                                <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
+                                <div class="upload-text">Click or Drag & Drop to Upload</div>
+                                <div class="upload-sub">Supports JPG, PNG (Max 5MB)</div>
+
+                                <div class="file-preview" id="file-preview">
+                                    <img id="preview-img" src="" alt="Preview">
+                                    <div style="margin-top: 12px; font-weight: 500; color: var(--text-main);"
+                                        id="file-name"></div>
+                                    <button type="button" class="btn-secondary" id="btn-remove-file"
+                                        style="margin-top: 12px; padding: 8px 16px; font-size: 0.9rem;">Change
+                                        Photo</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- STEP 2: Describe Vision -->
+                        <div class="step-content" data-step="2">
+                            <h2 class="step-heading">Describe your vision</h2>
+                            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 24px;">Be
+                                specific! Tell us about the style, colors, materials, and vibe you want.</p>
+
+                            <div class="form-group">
+                                <label class="form-label">Your Prompt</label>
+                                <textarea name="prompt" class="vision-textarea"
+                                    placeholder="Example: I want a modern farmhouse kitchen with white shaker cabinets, a large quartz island, brass hardware, and warm oak flooring. Add some greenery and pendant lights."
+                                    required></textarea>
+                            </div>
+                        </div>
+
+                        <!-- STEP 3: Contact Info -->
+                        <div class="step-content" data-step="3">
+                            <h2 class="step-heading">Where should we send your render?</h2>
+
+                            <div class="lead-form-container">
+                                <div class="form-group">
+                                    <label class="form-label" for="name">Full Name</label>
+                                    <input type="text" name="name" id="name" class="form-input" required
+                                        placeholder="John Doe">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="email">Email Address</label>
+                                    <input type="email" name="email" id="email" class="form-input" required
+                                        placeholder="john@example.com">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="phone">Phone Number</label>
+                                    <input type="tel" name="phone" id="phone" class="form-input" required
+                                        placeholder="(555) 123-4567">
+                                </div>
+
+                                <div class="button-group" style="margin-top: 32px;">
+                                    <button type="submit" class="btn-primary full-width" id="btn-submit">Generate My
+                                        Vision</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <!-- STEP 4: Success -->
+                    <div class="step-content" data-step="4">
+                        <div class="success-container">
+                            <div class="success-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                            <h2 class="success-title">Magic in Progress!</h2>
+                            <p class="success-desc">We've received your request. Our AI is now analyzing your space and
+                                generating your custom vision render. Check your email shortly!</p>
+                            <a href="index.html" class="btn-secondary">Back to Home</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="wizard-footer" id="wizard-footer">
+                    <button type="button" class="btn-back" id="btn-prev" style="visibility: hidden;">Back</button>
+                    <button type="button" class="btn-next" id="btn-next">Next Step</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content"
+            style="text-align: center; padding: 40px 0; color: var(--text-secondary);">
+            <p>&copy; 2025 V2R Builds. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('vision-form');
+            const steps = document.querySelectorAll('.step-content');
+            const progressItems = document.querySelectorAll('.progress-step-item');
+            const btnNext = document.getElementById('btn-next');
+            const btnPrev = document.getElementById('btn-prev');
+            const wizardFooter = document.getElementById('wizard-footer');
+
+            // File Upload Elements
+            const dropZone = document.getElementById('drop-zone');
+            const fileInput = document.getElementById('file-input');
+            const filePreview = document.getElementById('file-preview');
+            const previewImg = document.getElementById('preview-img');
+            const fileName = document.getElementById('file-name');
+            const btnRemoveFile = document.getElementById('btn-remove-file');
+            const uploadTextElements = dropZone.querySelectorAll('.upload-icon, .upload-text, .upload-sub');
+
+            let currentStep = 1;
+            const totalSteps = 4;
+            let fileSelected = false;
+
+            // --- File Upload Logic ---
+            dropZone.addEventListener('click', (e) => {
+                if (e.target !== btnRemoveFile) {
+                    fileInput.click();
+                }
+            });
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length) {
+                    handleFile(e.dataTransfer.files[0]);
+                }
+            });
+
+            fileInput.addEventListener('change', () => {
+                if (fileInput.files.length) {
+                    handleFile(fileInput.files[0]);
+                }
+            });
+
+            btnRemoveFile.addEventListener('click', (e) => {
+                e.stopPropagation();
+                resetFile();
+            });
+
+            function handleFile(file) {
+                if (!file.type.startsWith('image/')) {
+                    alert('Please upload an image file.');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewImg.src = e.target.result;
+                    fileName.textContent = file.name;
+
+                    // Hide upload text, show preview
+                    uploadTextElements.forEach(el => el.style.display = 'none');
+                    filePreview.style.display = 'block';
+                    fileSelected = true;
+                };
+                reader.readAsDataURL(file);
+            }
+
+            function resetFile() {
+                fileInput.value = '';
+                fileSelected = false;
+                filePreview.style.display = 'none';
+                uploadTextElements.forEach(el => el.style.display = 'block');
+            }
+
+            // --- Wizard Logic ---
+            function updateWizard() {
+                // Show/Hide Steps
+                steps.forEach(step => {
+                    if (parseInt(step.dataset.step) === currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+
+                // Update Progress Bar
+                progressItems.forEach((item, idx) => {
+                    const stepNum = idx + 1;
+                    if (stepNum < currentStep) {
+                        item.classList.add('completed');
+                        item.classList.remove('active');
+                    } else if (stepNum === currentStep) {
+                        item.classList.add('active');
+                        item.classList.remove('completed');
+                    } else {
+                        item.classList.remove('active', 'completed');
+                    }
+                });
+
+                // Button Visibility
+                btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
+
+                // Hide footer on Step 3 (Form has its own submit) and Step 4 (Success)
+                if (currentStep >= 3) {
+                    wizardFooter.style.display = 'none';
+                } else {
+                    wizardFooter.style.display = 'flex';
+                }
+            }
+
+            btnNext.addEventListener('click', () => {
+                if (currentStep === 1 && !fileSelected) {
+                    alert('Please upload a photo to continue.');
+                    return;
+                }
+                if (currentStep === 2) {
+                    const prompt = form.querySelector('textarea[name="prompt"]').value;
+                    if (!prompt.trim()) {
+                        alert('Please describe your vision.');
+                        return;
+                    }
+                }
+
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateWizard();
+                }
+            });
+
+            btnPrev.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateWizard();
+                }
+            });
+
+            // --- Form Submission ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('btn-submit');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Sending...';
+                submitBtn.disabled = true;
+
+                try {
+                    const formData = new FormData(form);
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        body: formData,
+                        headers: {
+                            'Accept': 'application/json'
+                        }
+                    });
+
+                    if (response.ok) {
+                        currentStep = 4;
+                        updateWizard();
+                    } else {
+                        alert('Oops! There was a problem submitting your form. Please try again.');
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                    }
+                } catch (error) {
+                    alert('Oops! There was a problem submitting your form. Please try again.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
