@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         /* Page Specific Styles */
         body {
@@ -200,15 +202,55 @@
         .file-preview {
             display: none;
             margin-top: 20px;
-            max-width: 100%;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            gap: 16px;
         }
 
-        .file-preview img {
-            max-width: 100%;
-            max-height: 300px;
+        .file-preview.active {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        }
+
+        .preview-item {
+            position: relative;
             border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .preview-remove:hover {
+            background: rgb(220, 38, 38);
+        }
+
+        .upload-count {
+            margin-top: 12px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            text-align: center;
         }
 
         /* Text Area */
@@ -366,31 +408,21 @@
 
                 <!-- Main Form Wrapper -->
                 <div class="wizard-body">
-                    <form id="vision-form" action="https://formspree.io/f/xyzaplql" method="POST"
-                        enctype="multipart/form-data">
-                        <input type="hidden" name="subject" value="New AI Vision Request">
-                        <input type="hidden" name="_next" value="https://v2rbuilds.com/vision.html?success=true">
+                    <form id="vision-form">
 
-                        <!-- STEP 1: Upload Photo -->
+                        <!-- STEP 1: Upload Photos -->
                         <div class="step-content active" data-step="1">
-                            <h2 class="step-heading">Upload a photo of your space</h2>
+                            <h2 class="step-heading">Upload photos of your space</h2>
 
                             <div class="upload-zone" id="drop-zone">
-                                <input type="file" name="attachment" id="file-input" accept="image/*"
-                                    style="display: none;">
+                                <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
                                 <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                                 <div class="upload-text">Click or Drag & Drop to Upload</div>
-                                <div class="upload-sub">Supports JPG, PNG (Max 5MB)</div>
-
-                                <div class="file-preview" id="file-preview">
-                                    <img id="preview-img" src="" alt="Preview">
-                                    <div style="margin-top: 12px; font-weight: 500; color: var(--text-main);"
-                                        id="file-name"></div>
-                                    <button type="button" class="btn-secondary" id="btn-remove-file"
-                                        style="margin-top: 12px; padding: 8px 16px; font-size: 0.9rem;">Change
-                                        Photo</button>
-                                </div>
+                                <div class="upload-sub">Upload up to 5 photos (JPG, PNG - Max 2MB each)</div>
+                                <div class="upload-count" id="upload-count">0 / 5 photos selected</div>
                             </div>
+
+                            <div class="file-preview" id="file-preview"></div>
                         </div>
 
                         <!-- STEP 2: Describe Vision -->
@@ -467,7 +499,16 @@
     </footer>
 
     <script>
+        // ===== EmailJS Configuration =====
+        // TODO: Replace these with your actual EmailJS credentials
+        const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';      // Get from EmailJS dashboard
+        const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';    // Get from EmailJS dashboard  
+        const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY';      // Get from EmailJS dashboard
+
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize EmailJS
+            emailjs.init(EMAILJS_PUBLIC_KEY);
+
             const form = document.getElementById('vision-form');
             const steps = document.querySelectorAll('.step-content');
             const progressItems = document.querySelectorAll('.progress-step-item');
@@ -479,28 +520,17 @@
             const dropZone = document.getElementById('drop-zone');
             const fileInput = document.getElementById('file-input');
             const filePreview = document.getElementById('file-preview');
-            const previewImg = document.getElementById('preview-img');
-            const fileName = document.getElementById('file-name');
-            const btnRemoveFile = document.getElementById('btn-remove-file');
-            const uploadTextElements = dropZone.querySelectorAll('.upload-icon, .upload-text, .upload-sub');
+            const uploadCount = document.getElementById('upload-count');
 
             let currentStep = 1;
             const totalSteps = 4;
-            let fileSelected = false;
-
-            // Check if we're returning from a successful form submission
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('success') === 'true') {
-                currentStep = 4;
-                // Clean up URL
-                window.history.replaceState({}, document.title, window.location.pathname);
-            }
+            const MAX_FILES = 5;
+            const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB per file
+            let selectedFiles = [];
 
             // --- File Upload Logic ---
-            dropZone.addEventListener('click', (e) => {
-                if (e.target !== btnRemoveFile) {
-                    fileInput.click();
-                }
+            dropZone.addEventListener('click', () => {
+                fileInput.click();
             });
 
             dropZone.addEventListener('dragover', (e) => {
@@ -516,50 +546,81 @@
                 e.preventDefault();
                 dropZone.classList.remove('dragover');
                 if (e.dataTransfer.files.length) {
-                    handleFile(e.dataTransfer.files[0]);
+                    handleFiles(e.dataTransfer.files);
                 }
             });
 
             fileInput.addEventListener('change', () => {
                 if (fileInput.files.length) {
-                    handleFile(fileInput.files[0]);
+                    handleFiles(fileInput.files);
                 }
             });
 
-            btnRemoveFile.addEventListener('click', (e) => {
-                e.stopPropagation();
-                resetFile();
-            });
+            function handleFiles(files) {
+                const newFiles = Array.from(files).filter(file => {
+                    if (!file.type.startsWith('image/')) {
+                        alert(`${file.name} is not an image file.`);
+                        return false;
+                    }
+                    if (file.size > MAX_FILE_SIZE) {
+                        alert(`${file.name} is too large. Max size is 2MB.`);
+                        return false;
+                    }
+                    return true;
+                });
 
-            function handleFile(file) {
-                if (!file.type.startsWith('image/')) {
-                    alert('Please upload an image file.');
+                // Add new files, respecting the max limit
+                const remainingSlots = MAX_FILES - selectedFiles.length;
+                const filesToAdd = newFiles.slice(0, remainingSlots);
+
+                if (newFiles.length > remainingSlots) {
+                    alert(`You can only upload ${MAX_FILES} photos total. ${newFiles.length - remainingSlots} file(s) were not added.`);
+                }
+
+                selectedFiles.push(...filesToAdd);
+                updatePreview();
+                fileInput.value = ''; // Reset input
+            }
+
+            function updatePreview() {
+                uploadCount.textContent = `${selectedFiles.length} / ${MAX_FILES} photos selected`;
+
+                if (selectedFiles.length === 0) {
+                    filePreview.classList.remove('active');
+                    filePreview.innerHTML = '';
                     return;
                 }
 
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    previewImg.src = e.target.result;
-                    fileName.textContent = file.name;
+                filePreview.classList.add('active');
+                filePreview.innerHTML = '';
 
-                    // Hide upload text, show preview
-                    uploadTextElements.forEach(el => el.style.display = 'none');
-                    filePreview.style.display = 'block';
-                    fileSelected = true;
-                };
-                reader.readAsDataURL(file);
+                selectedFiles.forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview ${index + 1}">
+                            <button type="button" class="preview-remove" data-index="${index}">×</button>
+                        `;
+                        filePreview.appendChild(previewItem);
+
+                        // Add remove button listener
+                        previewItem.querySelector('.preview-remove').addEventListener('click', () => {
+                            removeFile(index);
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
             }
 
-            function resetFile() {
-                fileInput.value = '';
-                fileSelected = false;
-                filePreview.style.display = 'none';
-                uploadTextElements.forEach(el => el.style.display = 'block');
+            function removeFile(index) {
+                selectedFiles.splice(index, 1);
+                updatePreview();
             }
 
             // --- Wizard Logic ---
             function updateWizard() {
-                // Show/Hide Steps
                 steps.forEach(step => {
                     if (parseInt(step.dataset.step) === currentStep) {
                         step.classList.add('active');
@@ -568,7 +629,6 @@
                     }
                 });
 
-                // Update Progress Bar
                 progressItems.forEach((item, idx) => {
                     const stepNum = idx + 1;
                     if (stepNum < currentStep) {
@@ -582,10 +642,8 @@
                     }
                 });
 
-                // Button Visibility
                 btnPrev.style.visibility = currentStep === 1 ? 'hidden' : 'visible';
 
-                // Hide footer on Step 3 (Form has its own submit) and Step 4 (Success)
                 if (currentStep >= 3) {
                     wizardFooter.style.display = 'none';
                 } else {
@@ -594,8 +652,8 @@
             }
 
             btnNext.addEventListener('click', () => {
-                if (currentStep === 1 && !fileSelected) {
-                    alert('Please upload a photo to continue.');
+                if (currentStep === 1 && selectedFiles.length === 0) {
+                    alert('Please upload at least one photo to continue.');
                     return;
                 }
                 if (currentStep === 2) {
@@ -619,17 +677,62 @@
                 }
             });
 
-            // --- Form Submission ---
-            form.addEventListener('submit', (e) => {
+            // --- Form Submission with EmailJS ---
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
                 const submitBtn = document.getElementById('btn-submit');
+                const originalText = submitBtn.textContent;
                 submitBtn.textContent = 'Sending...';
                 submitBtn.disabled = true;
 
-                // Store that we submitted the form
-                sessionStorage.setItem('visionFormSubmitted', 'true');
+                try {
+                    // Convert images to base64
+                    const imagePromises = selectedFiles.map(file => {
+                        return new Promise((resolve) => {
+                            const reader = new FileReader();
+                            reader.onload = (e) => resolve({
+                                name: file.name,
+                                data: e.target.result
+                            });
+                            reader.readAsDataURL(file);
+                        });
+                    });
 
-                // Let the form submit naturally to Formspree
-                // Form will redirect to thank-you page, then we'll redirect back
+                    const images = await Promise.all(imagePromises);
+
+                    // Prepare template parameters
+                    const templateParams = {
+                        from_name: form.querySelector('#name').value,
+                        from_email: form.querySelector('#email').value,
+                        from_phone: form.querySelector('#phone').value,
+                        vision_prompt: form.querySelector('textarea[name="prompt"]').value,
+                        attachment_count: images.length,
+                        // Add images as separate parameters
+                        image_1: images[0]?.data || '',
+                        image_2: images[1]?.data || '',
+                        image_3: images[2]?.data || '',
+                        image_4: images[3]?.data || '',
+                        image_5: images[4]?.data || ''
+                    };
+
+                    // Send email via EmailJS
+                    await emailjs.send(
+                        EMAILJS_SERVICE_ID,
+                        EMAILJS_TEMPLATE_ID,
+                        templateParams
+                    );
+
+                    // Success - move to step 4
+                    currentStep = 4;
+                    updateWizard();
+
+                } catch (error) {
+                    console.error('EmailJS Error:', error);
+                    alert('Oops! There was a problem sending your request. Please try again or contact us directly.');
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
             });
 
             // Initialize wizard on page load
