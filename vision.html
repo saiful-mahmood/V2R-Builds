@@ -416,8 +416,7 @@
                                 <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
                                 <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                                 <div class="upload-text">Click or Drag & Drop to Upload</div>
-                                <div class="upload-sub">Upload up to 5 photos - Images will be automatically optimized
-                                </div>
+                                <div class="upload-sub">Upload up to 5 photos (Max 10MB each)</div>
                                 <div class="upload-count" id="upload-count">0 / 5 photos selected</div>
                             </div>
 
@@ -517,7 +516,7 @@
             let currentStep = 1;
             const totalSteps = 4;
             const MAX_FILES = 5;
-            const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB per file
+            const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file (Google Forms limit)
             let selectedFiles = [];
 
             // --- File Upload Logic ---
@@ -555,7 +554,7 @@
                         return false;
                     }
                     if (file.size > MAX_FILE_SIZE) {
-                        alert(`${file.name} is too large. Max size is 2MB.`);
+                        alert(`${file.name} is too large. Maximum file size is 10MB.`);
                         return false;
                     }
                     return true;
@@ -611,50 +610,6 @@
                 updatePreview();
             }
 
-            // --- Image Compression Function ---
-            function compressImage(file, maxSizeKB = 40) {
-                return new Promise((resolve) => {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            const canvas = document.createElement('canvas');
-                            let width = img.width;
-                            let height = img.height;
-
-                            // Calculate new dimensions to fit within reasonable size
-                            const maxDimension = 800;
-                            if (width > height && width > maxDimension) {
-                                height = (height / width) * maxDimension;
-                                width = maxDimension;
-                            } else if (height > maxDimension) {
-                                width = (width / height) * maxDimension;
-                                height = maxDimension;
-                            }
-
-                            canvas.width = width;
-                            canvas.height = height;
-
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(img, 0, 0, width, height);
-
-                            // Try different quality levels to get under size limit
-                            let quality = 0.7;
-                            let compressedData = canvas.toDataURL('image/jpeg', quality);
-
-                            // Estimate base64 size (rough calculation)
-                            while (compressedData.length > maxSizeKB * 1024 * 1.37 && quality > 0.1) {
-                                quality -= 0.1;
-                                compressedData = canvas.toDataURL('image/jpeg', quality);
-                            }
-
-                            resolve(compressedData);
-                        };
-                        img.src = e.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
 
             // --- Wizard Logic ---
             function updateWizard() {
