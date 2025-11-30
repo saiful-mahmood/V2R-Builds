@@ -418,7 +418,8 @@
                                 <input type="file" id="file-input" accept="image/*" multiple style="display: none;">
                                 <div class="upload-icon"><i class="fa-solid fa-cloud-arrow-up"></i></div>
                                 <div class="upload-text">Click or Drag & Drop to Upload</div>
-                                <div class="upload-sub">Upload up to 5 photos (JPG, PNG - Max 2MB each)</div>
+                                <div class="upload-sub">Upload up to 5 photos - Images will be automatically optimized
+                                </div>
                                 <div class="upload-count" id="upload-count">0 / 5 photos selected</div>
                             </div>
 
@@ -618,6 +619,51 @@
                 updatePreview();
             }
 
+            // --- Image Compression Function ---
+            function compressImage(file, maxSizeKB = 40) {
+                return new Promise((resolve) => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            const canvas = document.createElement('canvas');
+                            let width = img.width;
+                            let height = img.height;
+
+                            // Calculate new dimensions to fit within reasonable size
+                            const maxDimension = 800;
+                            if (width > height && width > maxDimension) {
+                                height = (height / width) * maxDimension;
+                                width = maxDimension;
+                            } else if (height > maxDimension) {
+                                width = (width / height) * maxDimension;
+                                height = maxDimension;
+                            }
+
+                            canvas.width = width;
+                            canvas.height = height;
+
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0, width, height);
+
+                            // Try different quality levels to get under size limit
+                            let quality = 0.7;
+                            let compressedData = canvas.toDataURL('image/jpeg', quality);
+
+                            // Estimate base64 size (rough calculation)
+                            while (compressedData.length > maxSizeKB * 1024 * 1.37 && quality > 0.1) {
+                                quality -= 0.1;
+                                compressedData = canvas.toDataURL('image/jpeg', quality);
+                            }
+
+                            resolve(compressedData);
+                        };
+                        img.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
             // --- Wizard Logic ---
             function updateWizard() {
                 steps.forEach(step => {
@@ -689,36 +735,24 @@
                     console.log('Starting form submission...');
                     console.log('Selected files:', selectedFiles.length);
 
-                    // Convert images to base64
-                    const imagePromises = selectedFiles.map(file => {
-                        return new Promise((resolve) => {
-                            const reader = new FileReader();
-                            reader.onload = (e) => resolve({
-                                name: file.name,
-                                data: e.target.result
-                            });
-                            reader.readAsDataURL(file);
-                        });
-                    });
+                    // Compress and convert images to base64
+                    console.log('Compressing images...');
+                    const imagePromises = selectedFiles.map(file => compressImage(file, 40));
+                    const images = await Promise.all(imagePromises);
 
-
-                    // TEMPORARILY DISABLED FOR TESTING
-                    // const images = await Promise.all(imagePromises);
-                    console.log('Skipping images for testing...');
-
-                    // Prepare template parameters (WITHOUT IMAGES FOR NOW)
+                    // Prepare template parameters with compressed images
                     const templateParams = {
                         from_name: form.querySelector('#name').value,
                         from_email: form.querySelector('#email').value,
                         from_phone: form.querySelector('#phone').value,
                         vision_prompt: form.querySelector('textarea[name="prompt"]').value,
                         attachment_count: selectedFiles.length,
-                        // Temporarily sending empty strings instead of images
-                        image_1: '',
-                        image_2: '',
-                        image_3: '',
-                        image_4: '',
-                        image_5: ''
+                        // Add compressed images
+                        image_1: images[0] || '',
+                        image_2: images[1] || '',
+                        image_3: images[2] || '',
+                        image_4: images[3] || '',
+                        image_5: images[4] || ''
                     };
 
                     console.log('Template params prepared');
