@@ -630,7 +630,8 @@
                     });
 
                     if (!renderResponse.ok) {
-                        throw new Error('Rendering failed');
+                        const errorData = await renderResponse.json();
+                        throw new Error(errorData.message || 'Rendering failed');
                     }
 
                     const renderData = await renderResponse.json();
@@ -640,13 +641,38 @@
                     afterImg.src = renderData.renderUrl;
                     afterImg.style.display = 'block';
 
+                    // If we got a description but no new image (Gemini Flash limitation), show it
+                    if (renderData.description && renderData.renderUrl === uploadedImageUrl) {
+                        const descriptionDiv = document.createElement('div');
+                        descriptionDiv.className = 'render-ai-description';
+                        descriptionDiv.innerHTML = `
+                            <div style="background: rgba(255,255,255,0.95); padding: 20px; border-radius: 12px; margin-top: 20px; border-left: 4px solid var(--primary); box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <h4 style="margin: 0 0 10px 0; color: var(--primary); display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Design Concept
+                                </h4>
+                                <p style="margin: 0; line-height: 1.6; color: var(--text-main); font-size: 0.95rem;">
+                                    ${renderData.description.replace(/\n/g, '<br>')}
+                                </p>
+                                <p style="margin-top: 12px; font-size: 0.8rem; color: var(--text-secondary); font-style: italic;">
+                                    * Note: Image generation requires an upgraded plan. This is a conceptual description based on your vision.
+                                </p>
+                            </div>
+                        `;
+
+                        // Remove existing description if any
+                        const existingDesc = renderOutput.querySelector('.render-ai-description');
+                        if (existingDesc) existingDesc.remove();
+
+                        renderOutput.querySelector('.render-comparison').after(descriptionDiv);
+                    }
+
                     // Reset button
                     generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Visualization';
                     generateBtn.disabled = false;
 
                 } catch (error) {
                     console.error('Render error:', error);
-                    alert('Sorry, there was an error creating your visualization. Please try again or contact us for assistance.');
+                    alert(`Error: ${error.message || 'There was an error creating your visualization.'}`);
                     generateBtn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Generate Visualization';
                     generateBtn.disabled = false;
                     renderOutput.style.display = 'none';
