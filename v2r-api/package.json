@@ -1,0 +1,12 @@
+{
+  "name": "v2r-api",
+  "version": "1.0.0",
+  "description": "Secure API backend for V2R Builds",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "node-fetch": "^2.6.7"
+  }
+}
