@@ -41,7 +41,6 @@ module.exports = async (req, res) => {
         }
 
         // Engineer the prompt for best remodeling results
-        // Keep the space structure, only change what user requested
         const engineeredPrompt = `Professional interior design rendering: ${userPrompt}. 
     
 IMPORTANT INSTRUCTIONS:
@@ -55,8 +54,22 @@ IMPORTANT INSTRUCTIONS:
 - Result should look like a professional architectural rendering`;
 
         console.log('Engineered prompt:', engineeredPrompt);
+        console.log('Image URL:', imageUrl);
 
-        // Call Nano Banana Pro API (via Gemini)
+        // TODO: Need correct Nano Banana API endpoint
+        // The gemininanoai.com endpoint is returning 405
+        // This might need to use Google's Gemini API directly
+
+        // For now, return a placeholder response
+        // Once we have the correct API endpoint, we'll update this
+        return res.status(200).json({
+            success: true,
+            renderUrl: imageUrl, // Return original image as placeholder
+            engineeredPrompt: engineeredPrompt,
+            note: 'Rendering API endpoint needs configuration. Please check Nano Banana API documentation for correct endpoint.'
+        });
+
+        /* Original code - keeping for reference:
         const response = await fetch(`https://gemininanoai.com/api/v1/generate`, {
             method: 'POST',
             headers: {
@@ -82,8 +95,9 @@ IMPORTANT INSTRUCTIONS:
         return res.status(200).json({
             success: true,
             renderUrl: data.images?.[0] || data.output_url || data.image_url,
-            engineeredPrompt: engineeredPrompt // Return for debugging
+            engineeredPrompt: engineeredPrompt
         });
+        */
 
     } catch (error) {
         console.error('Render error:', error);
