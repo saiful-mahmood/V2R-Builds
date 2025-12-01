@@ -1,5 +1,5 @@
-// Nano Banana Pro AI Rendering API
-// Securely generates AI renders without exposing API credentials
+// Nano Banana Pro Rendering API
+// Securely generates professional renders without exposing API credentials
 
 const fetch = require('node-fetch');
 
@@ -21,10 +21,10 @@ module.exports = async (req, res) => {
     }
 
     try {
-        const { imageUrl, prompt } = req.body;
+        const { imageUrl, userPrompt } = req.body;
 
-        if (!imageUrl || !prompt) {
-            return res.status(400).json({ error: 'Image URL and prompt are required' });
+        if (!imageUrl || !userPrompt) {
+            return res.status(400).json({ error: 'Image URL and description are required' });
         }
 
         // Nano Banana Pro API key from environment variables
@@ -34,32 +34,49 @@ module.exports = async (req, res) => {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
-        // Call Nano Banana Pro API
-        // Note: Update this endpoint based on Nano Banana Pro's actual API documentation
-        const response = await fetch('https://api.nanobanana.ai/v1/render', {
+        // Engineer the prompt for best remodeling results
+        // Keep the space structure, only change what user requested
+        const engineeredPrompt = `Professional interior design rendering: ${userPrompt}. 
+    
+IMPORTANT INSTRUCTIONS:
+- Maintain the exact same room layout, dimensions, and architectural features
+- Keep the same camera angle and perspective
+- Preserve the overall spatial structure
+- Only modify the specific elements mentioned in the description
+- Ensure photorealistic quality with proper lighting and shadows
+- Match the existing lighting conditions
+- Keep any unchanged elements exactly as they appear
+- Result should look like a professional architectural rendering`;
+
+        console.log('Engineered prompt:', engineeredPrompt);
+
+        // Call Nano Banana Pro API (via Gemini)
+        const response = await fetch(`https://gemininanoai.com/api/v1/generate`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${NANO_BANANA_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
+                prompt: engineeredPrompt,
                 image_url: imageUrl,
-                prompt: prompt,
-                // Add any other parameters required by Nano Banana Pro
+                num_images: 1,
+                aspect_ratio: '1:1'
             })
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            throw new Error(`Nano Banana API error: ${errorText}`);
+            console.error('Nano Banana API error:', errorText);
+            throw new Error(`Rendering service error: ${response.status}`);
         }
 
         const data = await response.json();
 
         return res.status(200).json({
             success: true,
-            renderUrl: data.output_url || data.image_url, // Adjust based on actual API response
-            data: data
+            renderUrl: data.images?.[0] || data.output_url || data.image_url,
+            engineeredPrompt: engineeredPrompt // Return for debugging
         });
 
     } catch (error) {
