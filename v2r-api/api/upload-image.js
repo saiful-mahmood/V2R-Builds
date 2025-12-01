@@ -2,6 +2,7 @@
 // Securely uploads images to Cloudinary without exposing API credentials
 
 const fetch = require('node-fetch');
+const FormData = require('form-data');
 
 module.exports = async (req, res) => {
     // Enable CORS for your domain and localhost
@@ -43,24 +44,26 @@ module.exports = async (req, res) => {
 
         const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-        // Cloudinary accepts base64 data directly in JSON
+        // Create form data for Cloudinary
+        const formData = new FormData();
+        formData.append('file', file); // base64 data string
+        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        formData.append('folder', folder);
+        formData.append('tags', tags);
+
         const response = await fetch(cloudinaryUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                file: file, // base64 data
-                upload_preset: CLOUDINARY_UPLOAD_PRESET,
-                folder: folder,
-                tags: tags
-            })
+            body: formData
         });
 
         if (!response.ok) {
             const errorText = await response.text();
             console.error('Cloudinary error:', errorText);
-            throw new Error(`Cloudinary upload failed: ${response.status}`);
+            return res.status(500).json({
+                error: 'Upload failed',
+                message: `Cloudinary upload failed: ${response.status}`,
+                details: errorText
+            });
         }
 
         const data = await response.json();
