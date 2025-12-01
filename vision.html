@@ -15,8 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/png" href="images/favicon.png">
-    <!-- EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         /* Page Specific Styles */
         body {
@@ -500,19 +498,11 @@
 
 
     <script>
-        // ===== Cloudinary Configuration =====
-        const CLOUDINARY_CLOUD_NAME = 'dlaafdnoh';
-        const CLOUDINARY_UPLOAD_PRESET = 'vision_uploads';
-        const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
-
-        // ===== EmailJS Configuration =====
-        const EMAILJS_SERVICE_ID = 'service_vtpa11r';
-        const EMAILJS_TEMPLATE_ID = 'template_rg8fibk';
-        const EMAILJS_PUBLIC_KEY = 'M2oh8gbmvTH4IhRpq';
+        // ===== Secure API Configuration =====
+        // All API keys are now securely stored in Vercel backend
+        const API_BASE_URL = 'https://v2-r-builds.vercel.app/api';
 
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize EmailJS
-            emailjs.init(EMAILJS_PUBLIC_KEY);
 
             const form = document.getElementById('vision-form');
             const steps = document.querySelectorAll('.step-content');
@@ -696,17 +686,27 @@
                     console.log('Starting submission...');
                     console.log('Selected files:', selectedFiles.length);
 
-                    // Step 1: Upload images to Cloudinary
+                    // Step 1: Upload images to Cloudinary via secure API
                     const uploadPromises = selectedFiles.map(async (file) => {
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
-                        formData.append('tags', 'vision,auto-delete'); // For easy cleanup
-                        formData.append('folder', 'vision-renders'); // Organize in folder
+                        // Convert file to base64
+                        const reader = new FileReader();
+                        const base64Promise = new Promise((resolve) => {
+                            reader.onload = (e) => resolve(e.target.result);
+                            reader.readAsDataURL(file);
+                        });
+                        const base64Data = await base64Promise;
 
-                        const response = await fetch(CLOUDINARY_UPLOAD_URL, {
+                        // Upload via secure Vercel API
+                        const response = await fetch(`${API_BASE_URL}/upload-image`, {
                             method: 'POST',
-                            body: formData
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                file: base64Data,
+                                folder: 'vision-renders',
+                                tags: 'vision,auto-delete'
+                            })
                         });
 
                         if (!response.ok) {
@@ -714,14 +714,14 @@
                         }
 
                         const data = await response.json();
-                        return data.secure_url; // Return the image URL
+                        return data.url; // Return the image URL
                     });
 
-                    console.log('Uploading images to Cloudinary...');
+                    console.log('Uploading images via secure API...');
                     const imageUrls = await Promise.all(uploadPromises);
                     console.log('Images uploaded successfully!', imageUrls);
 
-                    // Step 2: Send email via EmailJS with image URLs
+                    // Step 2: Send email via secure API
                     submitBtn.textContent = 'Sending email...';
 
                     const templateParams = {
@@ -738,14 +738,22 @@
                         image_url_5: imageUrls[4] || 'No image'
                     };
 
-                    console.log('Sending email via EmailJS...');
-                    const response = await emailjs.send(
-                        EMAILJS_SERVICE_ID,
-                        EMAILJS_TEMPLATE_ID,
-                        templateParams
-                    );
+                    console.log('Sending email via secure API...');
+                    const emailResponse = await fetch(`${API_BASE_URL}/send-email`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            templateParams: templateParams
+                        })
+                    });
 
-                    console.log('Email sent successfully!', response);
+                    if (!emailResponse.ok) {
+                        throw new Error('Email sending failed');
+                    }
+
+                    console.log('Email sent successfully!');
 
                     // Success - move to step 4
                     currentStep = 4;
