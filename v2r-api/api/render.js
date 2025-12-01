@@ -1,4 +1,4 @@
-// Nano Banana Pro Rendering API
+// Google Gemini (Nano Banana) Rendering API
 // Securely generates professional renders without exposing API credentials
 
 const fetch = require('node-fetch');
@@ -33,71 +33,94 @@ module.exports = async (req, res) => {
             return res.status(400).json({ error: 'Image URL and description are required' });
         }
 
-        // Nano Banana Pro API key from environment variables
-        const NANO_BANANA_API_KEY = process.env.NANO_BANANA_API_KEY;
+        // Google Gemini API key from environment variables
+        const GEMINI_API_KEY = process.env.NANO_BANANA_API_KEY; // Same key, it's actually Gemini
 
-        if (!NANO_BANANA_API_KEY) {
+        if (!GEMINI_API_KEY) {
             return res.status(500).json({ error: 'Server configuration error' });
         }
 
         // Engineer the prompt for best remodeling results
-        const engineeredPrompt = `Professional interior design rendering: ${userPrompt}. 
-    
-IMPORTANT INSTRUCTIONS:
-- Maintain the exact same room layout, dimensions, and architectural features
-- Keep the same camera angle and perspective
-- Preserve the overall spatial structure
-- Only modify the specific elements mentioned in the description
+        const engineeredPrompt = `You are a professional interior designer. Edit this room image based on the following description: ${userPrompt}
+
+CRITICAL INSTRUCTIONS:
+- Maintain the EXACT same room layout, dimensions, and architectural features
+- Keep the SAME camera angle and perspective
+- Preserve the overall spatial structure and proportions
+- ONLY modify the specific elements mentioned in the description
 - Ensure photorealistic quality with proper lighting and shadows
-- Match the existing lighting conditions
-- Keep any unchanged elements exactly as they appear
-- Result should look like a professional architectural rendering`;
+- Match the existing lighting conditions and time of day
+- Keep all unchanged elements exactly as they appear in the original
+- The result must look like a professional architectural rendering
+- Do NOT add new rooms, walls, or change the fundamental structure
+- Focus on materials, colors, fixtures, and furnishings only
+
+Generate a single edited image that shows the room with these changes applied.`;
 
         console.log('Engineered prompt:', engineeredPrompt);
         console.log('Image URL:', imageUrl);
 
-        // TODO: Need correct Nano Banana API endpoint
-        // The gemininanoai.com endpoint is returning 405
-        // This might need to use Google's Gemini API directly
+        // Fetch the image and convert to base64
+        const imageResponse = await fetch(imageUrl);
+        const imageBuffer = await imageResponse.buffer();
+        const base64Image = imageBuffer.toString('base64');
 
-        // For now, return a placeholder response
-        // Once we have the correct API endpoint, we'll update this
-        return res.status(200).json({
-            success: true,
-            renderUrl: imageUrl, // Return original image as placeholder
-            engineeredPrompt: engineeredPrompt,
-            note: 'Rendering API endpoint needs configuration. Please check Nano Banana API documentation for correct endpoint.'
-        });
+        // Call Google Gemini API for image generation
+        const geminiEndpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
 
-        /* Original code - keeping for reference:
-        const response = await fetch(`https://gemininanoai.com/api/v1/generate`, {
+        const response = await fetch(geminiEndpoint, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${NANO_BANANA_API_KEY}`,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                prompt: engineeredPrompt,
-                image_url: imageUrl,
-                num_images: 1,
-                aspect_ratio: '1:1'
+                contents: [{
+                    parts: [
+                        {
+                            text: engineeredPrompt
+                        },
+                        {
+                            inline_data: {
+                                mime_type: 'image/jpeg',
+                                data: base64Image
+                            }
+                        }
+                    ]
+                }],
+                generationConfig: {
+                    temperature: 0.4,
+                    topK: 32,
+                    topP: 1,
+                    maxOutputTokens: 4096,
+                }
             })
         });
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Nano Banana API error:', errorText);
-            throw new Error(`Rendering service error: ${response.status}`);
+            console.error('Gemini API error:', errorText);
+            return res.status(500).json({
+                error: 'Rendering failed',
+                message: `Gemini API error: ${response.status}`,
+                details: errorText
+            });
         }
 
         const data = await response.json();
+        console.log('Gemini response:', JSON.stringify(data, null, 2));
+
+        // Gemini returns text-based responses, not direct images
+        // We need to extract the generated image URL or base64 from the response
+        // For now, return the original image as Gemini 2.0 Flash doesn't directly support image output
+        // We'll need to use a different approach or model
 
         return res.status(200).json({
             success: true,
-            renderUrl: data.images?.[0] || data.output_url || data.image_url,
-            engineeredPrompt: engineeredPrompt
+            renderUrl: imageUrl, // Placeholder - Gemini text model doesn't generate images
+            engineeredPrompt: engineeredPrompt,
+            geminiResponse: data,
+            note: 'Gemini 2.0 Flash is a text model. For image generation, we need Imagen or a different approach.'
         });
-        */
 
     } catch (error) {
         console.error('Render error:', error);
