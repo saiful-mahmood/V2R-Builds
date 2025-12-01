@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test - V2R Builds</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .test-section {
+            background: #f5f5f5;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        button {
+            background: #4F46E5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 5px;
+        }
+
+        button:hover {
+            background: #4338CA;
+        }
+
+        .result {
+            background: white;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+
+        input[type="file"] {
+            margin: 10px 0;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>V2R Builds API Test Page</h1>
+    <p>Use this page to test the Vercel API endpoints</p>
+
+    <!-- Test 1: Upload Image -->
+    <div class="test-section">
+        <h2>Test 1: Upload Image to Cloudinary</h2>
+        <input type="file" id="test-file" accept="image/*">
+        <button onclick="testUpload()">Test Upload</button>
+        <div class="result" id="upload-result"></div>
+    </div>
+
+    <!-- Test 2: Send Email -->
+    <div class="test-section">
+        <h2>Test 2: Send Email via EmailJS</h2>
+        <button onclick="testEmail()">Test Email</button>
+        <div class="result" id="email-result"></div>
+    </div>
+
+    <!-- Test 3: Generate Render -->
+    <div class="test-section">
+        <h2>Test 3: Generate Render (Nano Banana)</h2>
+        <p>First upload an image in Test 1, then enter a description:</p>
+        <textarea id="render-prompt" rows="3"
+            placeholder="e.g., modern white kitchen with marble countertops"></textarea>
+        <button onclick="testRender()">Test Render</button>
+        <div class="result" id="render-result"></div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'https://v2-r-builds.vercel.app/api';
+        let uploadedImageUrl = null;
+
+        function log(elementId, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const className = isError ? 'error' : 'success';
+            element.innerHTML = `<span class="${className}">${message}</span>`;
+        }
+
+        async function testUpload() {
+            const fileInput = document.getElementById('test-file');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                log('upload-result', 'Please select a file first', true);
+                return;
+            }
+
+            try {
+                log('upload-result', 'Uploading image...');
+
+                // Convert to base64
+                const reader = new FileReader();
+                const base64Promise = new Promise((resolve) => {
+                    reader.onload = (e) => resolve(e.target.result);
+                    reader.readAsDataURL(file);
+                });
+                const base64Data = await base64Promise;
+
+                const response = await fetch(`${API_BASE_URL}/upload-image`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        file: base64Data,
+                        folder: 'test-uploads',
+                        tags: 'test'
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    uploadedImageUrl = data.url;
+                    log('upload-result', `✅ Success!\n\nImage URL: ${data.url}\n\nFull Response:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    log('upload-result', `❌ Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                log('upload-result', `❌ Error: ${error.message}\n\n${error.stack}`, true);
+            }
+        }
+
+        async function testEmail() {
+            try {
+                log('email-result', 'Sending test email...');
+
+                const response = await fetch(`${API_BASE_URL}/send-email`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        templateParams: {
+                            from_name: 'API Test',
+                            from_email: 'test@example.com',
+                            from_phone: '555-1234',
+                            vision_prompt: 'This is a test email from the API test page',
+                            attachment_count: 0,
+                            image_url_1: 'No image',
+                            image_url_2: 'No image',
+                            image_url_3: 'No image',
+                            image_url_4: 'No image',
+                            image_url_5: 'No image'
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log('email-result', `✅ Success!\n\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    log('email-result', `❌ Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                log('email-result', `❌ Error: ${error.message}\n\n${error.stack}`, true);
+            }
+        }
+
+        async function testRender() {
+            const prompt = document.getElementById('render-prompt').value;
+
+            if (!uploadedImageUrl) {
+                log('render-result', 'Please upload an image first (Test 1)', true);
+                return;
+            }
+
+            if (!prompt) {
+                log('render-result', 'Please enter a description', true);
+                return;
+            }
+
+            try {
+                log('render-result', 'Generating render... (this may take 10-15 seconds)');
+
+                const response = await fetch(`${API_BASE_URL}/render`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        imageUrl: uploadedImageUrl,
+                        userPrompt: prompt
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    log('render-result', `✅ Success!\n\nRender URL: ${data.renderUrl}\n\nEngineered Prompt:\n${data.engineeredPrompt}\n\nFull Response:\n${JSON.stringify(data, null, 2)}`);
+                } else {
+                    log('render-result', `❌ Error: ${response.status}\n\n${JSON.stringify(data, null, 2)}`, true);
+                }
+            } catch (error) {
+                log('render-result', `❌ Error: ${error.message}\n\n${error.stack}`, true);
+            }
+        }
+    </script>
+</body>
+
+</html>
