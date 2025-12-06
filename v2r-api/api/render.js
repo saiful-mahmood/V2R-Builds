@@ -69,8 +69,8 @@ module.exports = async (req, res) => {
             try {
                 const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-                // Use gemini-1.5-flash-001 (Specific version to avoid 404)
-                const response15 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-001:generateContent?key=${GEMINI_API_KEY}`, {
+                // Use gemini-1.5-flash (Standard version, no suffix)
+                const response15 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -95,7 +95,7 @@ module.exports = async (req, res) => {
                     success: true,
                     renderUrl: imageUrl,
                     description: description,
-                    modelUsed: 'gemini-1.5-flash-001',
+                    modelUsed: 'gemini-1.5-flash',
                     fallbackReason: 'Image generation quota exceeded (Free Tier). Showing AI design concept instead.'
                 });
             } catch (error15) {
