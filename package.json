@@ -4,7 +4,8 @@
   "description": "Secure API backend for V2R Builds",
   "main": "index.js",
   "scripts": {
-    "dev": "vercel dev"
+    "dev": "vercel dev",
+    "build": "echo 'No build step'"
   },
   "dependencies": {
     "node-fetch": "^2.6.7",
