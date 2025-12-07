@@ -74,13 +74,14 @@ module.exports = async (req, res) => {
             gemini2Error = errorImagen.message;
         }
 
-        // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 2.0 Flash Exp) ---
-        // Fallback: If Image Gen fails, use Gemini 2.0 to describe the vision.
+        // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash - Stable) ---
+        // Fallback: If Image Gen fails, use Gemini 1.5 to describe the vision.
         try {
-            console.log('Attempting Text Description with Gemini 2.0...');
-            const textPrompt = `Generate a photorealistic image of this room remodeled as: ${userPrompt}. Maintain the exact layout and perspective.`;
+            console.log('Attempting Text Description with Gemini 1.5 Flash...');
+            const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-            const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+            // Use gemini-1.5-flash (Stable)
+            const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -102,17 +103,19 @@ module.exports = async (req, res) => {
                         success: true,
                         renderUrl: imageUrl,
                         description: generatedText,
-                        modelUsed: 'gemini-2.0-flash-exp (text-only)',
+                        modelUsed: 'gemini-1.5-flash',
                         fallbackReason: gemini2Error ? `Image generation failed (${gemini2Error}). Showing AI design concept.` : 'Showing AI design concept.'
                     });
                 }
+            } else {
+                const errText = await response2.text();
+                throw new Error(`Gemini 1.5 Error: ${response2.status} - ${errText}`);
             }
 
-            // If even Gemini 2.0 fails, throw error
-            throw new Error('Both Imagen 3 and Gemini 2.0 failed to return valid data.');
+            throw new Error('Gemini 1.5 returned no text data.');
 
         } catch (error2) {
-            console.error('Gemini 2.0 failed:', error2.message);
+            console.error('Gemini 1.5 failed:', error2.message);
             // Throw combined error to safety net
             throw new Error(`Primary (Imagen): ${gemini2Error} | Fallback (Gemini): ${error2.message}`);
         }
