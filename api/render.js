@@ -6,7 +6,7 @@ const fetch = require('node-fetch');
 // Trigger deploy: v1.1
 module.exports = async (req, res) => {
     // Enable CORS
-    const allowedOrigins = ['https://v2rbuilds.com', 'http://localhost:5500', 'http://127.0.0.1:5500'];
+    const allowedOrigins = ['https://v2rbuilds.com', 'https://www.v2rbuilds.com', 'http://localhost:5500', 'http://127.0.0.1:5500'];
     const origin = req.headers.origin;
     if (allowedOrigins.includes(origin)) res.setHeader('Access-Control-Allow-Origin', origin);
     res.setHeader('Access-Control-Allow-Credentials', true);
