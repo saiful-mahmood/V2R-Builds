@@ -44,12 +44,21 @@ module.exports = async (req, res) => {
                             { text: imagePrompt },
                             { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
                         ]
-                    }]
+                    }],
+                    generationConfig: {
+                        response_mime_type: "image/jpeg"
+                    }
                 })
             });
 
             if (response2.ok) {
                 const data2 = await response2.json();
+                // Log full response for debugging if empty
+                if (!data2.candidates || !data2.candidates[0]?.content) {
+                    console.log('Gemini 2.0 Empty Response:', JSON.stringify(data2));
+                    throw new Error(`Empty Response (Finish Reason: ${data2.candidates?.[0]?.finishReason || 'Unknown'})`);
+                }
+
                 const generatedImageBase64 = data2.candidates?.[0]?.content?.parts?.[0]?.inline_data?.data;
 
                 if (generatedImageBase64) {
@@ -73,8 +82,8 @@ module.exports = async (req, res) => {
             try {
                 const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-                // Use gemini-1.5-flash (Standard version)
-                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // Use gemini-1.5-flash with v1 endpoint (Stable)
+                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
