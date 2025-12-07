@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "vercel dev",
-    "build": "echo 'No build step'"
+    "build": "mkdir -p public && cp *.html *.css *.js public/ 2>/dev/null || : && cp -r images videos public/ 2>/dev/null || :"
   },
   "dependencies": {
     "node-fetch": "^2.6.7",
