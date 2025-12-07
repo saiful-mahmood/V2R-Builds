@@ -87,8 +87,8 @@ module.exports = async (req, res) => {
                 body: JSON.stringify({
                     contents: [{
                         parts: [
-                            { text: textPrompt },
-                            { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
+                            { text: textPrompt }
+                            // Removed image data as gemini-pro is text-only
                         ]
                     }]
                 })
