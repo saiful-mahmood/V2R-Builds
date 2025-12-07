@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
             console.log('Attempting Image Generation with Gemini 2.0...');
             const imagePrompt = `Generate a photorealistic image of this room remodeled as: ${userPrompt}. Maintain the exact layout and perspective.`;
 
+            // Remove generationConfig as it caused 400 error
             const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -44,23 +45,15 @@ module.exports = async (req, res) => {
                             { text: imagePrompt },
                             { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
                         ]
-                    }],
-                    generationConfig: {
-                        response_mime_type: "image/jpeg"
-                    }
+                    }]
                 })
             });
 
             if (response2.ok) {
                 const data2 = await response2.json();
-                // Log full response for debugging if empty
-                if (!data2.candidates || !data2.candidates[0]?.content) {
-                    console.log('Gemini 2.0 Empty Response:', JSON.stringify(data2));
-                    throw new Error(`Empty Response (Finish Reason: ${data2.candidates?.[0]?.finishReason || 'Unknown'})`);
-                }
 
+                // Check for Image
                 const generatedImageBase64 = data2.candidates?.[0]?.content?.parts?.[0]?.inline_data?.data;
-
                 if (generatedImageBase64) {
                     return res.status(200).json({
                         success: true,
@@ -68,7 +61,21 @@ module.exports = async (req, res) => {
                         modelUsed: 'gemini-2.0-flash-exp'
                     });
                 }
-                throw new Error('No image data in Gemini 2.0 response');
+
+                // Check for Text (Fallback from Gemini 2.0 itself)
+                const generatedText = data2.candidates?.[0]?.content?.parts?.[0]?.text;
+                if (generatedText) {
+                    console.log('Gemini 2.0 returned text instead of image.');
+                    return res.status(200).json({
+                        success: true,
+                        renderUrl: imageUrl,
+                        description: generatedText,
+                        modelUsed: 'gemini-2.0-flash-exp (text-only)',
+                        fallbackReason: 'Gemini 2.0 generated a text description instead of an image.'
+                    });
+                }
+
+                throw new Error('No image or text data in Gemini 2.0 response');
             } else {
                 const errText = await response2.text();
                 throw new Error(`Gemini 2.0 Error: ${response2.status} - ${errText}`);
@@ -78,12 +85,12 @@ module.exports = async (req, res) => {
             console.warn('Gemini 2.0 failed, falling back to 1.5:', error2.message);
             gemini2Error = error2.message;
 
-            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash) ---
+            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash 8b) ---
             try {
                 const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-                // Use gemini-1.5-flash with v1 endpoint (Stable)
-                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // Use gemini-1.5-flash-8b (Newer, lighter model) on v1beta
+                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -108,7 +115,7 @@ module.exports = async (req, res) => {
                     success: true,
                     renderUrl: imageUrl,
                     description: description,
-                    modelUsed: 'gemini-1.5-flash',
+                    modelUsed: 'gemini-1.5-flash-8b',
                     fallbackReason: `Image generation failed (${gemini2Error}). Showing AI design concept instead.`
                 });
             } catch (errorFallback) {
