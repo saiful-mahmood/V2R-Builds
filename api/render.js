@@ -1,5 +1,5 @@
 // Google Gemini Rendering API (Smart Fallback + Safety Net)
-// Attempts Image Generation (Gemini 2.0) -> Falls back to Text Description (Gemini 1.0 Pro) -> Safety Net
+// Attempts Image Generation (Gemini 2.0) -> Falls back to Text Description (Gemini 1.5) -> Safety Net
 
 const fetch = require('node-fetch');
 
@@ -26,6 +26,8 @@ module.exports = async (req, res) => {
         const imageResponse = await fetch(imageUrl);
         const imageBuffer = await imageResponse.buffer();
         const base64Image = imageBuffer.toString('base64');
+
+        let gemini2Error = '';
 
         // --- ATTEMPT 1: IMAGE GENERATION (Gemini 2.0 Flash Exp) ---
         try {
@@ -63,19 +65,15 @@ module.exports = async (req, res) => {
             }
 
         } catch (error2) {
-            console.warn('Gemini 2.0 failed, falling back to 1.0 Pro:', error2.message);
+            console.warn('Gemini 2.0 failed, falling back to 1.5:', error2.message);
+            gemini2Error = error2.message;
 
-            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.0 Pro) ---
-            // Gemini 1.0 Pro is text-only, so we can't send the image directly if it doesn't support vision.
-            // Wait, Gemini 1.0 Pro Vision is 'gemini-pro-vision'.
-            // Let's try 'gemini-1.5-flash-latest' first? No, let's try 'gemini-pro-vision'.
-            // Actually, let's try 'gemini-1.5-flash' but with 'v1' API version.
-
+            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash) ---
             try {
                 const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-                // Trying v1beta/models/gemini-1.5-flash-latest
-                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                // Use gemini-1.5-flash (Standard version)
+                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -100,12 +98,13 @@ module.exports = async (req, res) => {
                     success: true,
                     renderUrl: imageUrl,
                     description: description,
-                    modelUsed: 'gemini-1.5-flash-latest',
-                    fallbackReason: 'Image generation quota exceeded. Showing AI design concept instead.'
+                    modelUsed: 'gemini-1.5-flash',
+                    fallbackReason: `Image generation failed (${gemini2Error}). Showing AI design concept instead.`
                 });
             } catch (errorFallback) {
                 console.error('Fallback failed:', errorFallback.message);
-                throw errorFallback; // Throw to safety net
+                // Throw combined error to safety net
+                throw new Error(`Primary: ${gemini2Error} | Fallback: ${errorFallback.message}`);
             }
         }
 
@@ -113,13 +112,12 @@ module.exports = async (req, res) => {
         console.error('Render error:', error);
 
         // --- SAFETY NET: MOCK RESPONSE ---
-        // If everything fails, return a polite mock response so the UI doesn't break
         return res.status(200).json({
             success: true,
             renderUrl: req.body.imageUrl,
-            description: `We couldn't connect to the AI service at this moment (${error.message}). \n\nHowever, based on your request for "${req.body.userPrompt}", we envision a space that perfectly balances functionality with your desired aesthetic. Imagine updated finishes, optimized lighting, and a layout that maximizes flow.`,
+            description: `We couldn't connect to the AI service at this moment.\n\nDebug Info:\n${error.message}\n\nHowever, based on your request for "${req.body.userPrompt}", we envision a space that perfectly balances functionality with your desired aesthetic.`,
             modelUsed: 'safety-net',
-            fallbackReason: 'AI Service currently unavailable. Please check API configuration.'
+            fallbackReason: 'AI Service currently unavailable.'
         });
     }
 };
