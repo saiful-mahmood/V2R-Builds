@@ -30,59 +30,50 @@ module.exports = async (req, res) => {
 
         let gemini2Error = '';
 
-        // --- ATTEMPT 1: IMAGE GENERATION (Gemini 2.0 Flash Exp) ---
+        // --- ATTEMPT 1: IMAGE GENERATION (Imagen 3) ---
         try {
-            console.log('Attempting Image Generation with Gemini 2.0...');
-            const imagePrompt = `Generate a photorealistic image of this room remodeled as: ${userPrompt}. Maintain the exact layout and perspective.`;
+            console.log('Attempting Image Generation with Imagen 3...');
+            // Construct a detailed prompt since Imagen 3 (via this endpoint) is likely Text-to-Image
+            const imagePrompt = `Photorealistic interior design render. ${userPrompt}. High quality, 4k, architectural photography.`;
 
-            // Remove generationConfig as it caused 400 error
-            const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
+            const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [
-                            { text: imagePrompt },
-                            { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
-                        ]
-                    }]
+                    instances: [
+                        { prompt: imagePrompt }
+                    ],
+                    parameters: {
+                        sampleCount: 1,
+                        aspectRatio: "4:3"
+                    }
                 })
             });
 
             if (response2.ok) {
                 const data2 = await response2.json();
 
-                // Check for Image
-                const generatedImageBase64 = data2.candidates?.[0]?.content?.parts?.[0]?.inline_data?.data;
+                // Imagen 3 Response Format: { predictions: [ { bytesBase64Encoded: "..." } ] }
+                const generatedImageBase64 = data2.predictions?.[0]?.bytesBase64Encoded;
+
                 if (generatedImageBase64) {
                     return res.status(200).json({
                         success: true,
                         renderUrl: `data:image/jpeg;base64,${generatedImageBase64}`,
-                        modelUsed: 'gemini-2.0-flash-exp'
+                        modelUsed: 'imagen-3.0-generate-001'
                     });
                 }
 
-                // Check for Text (Fallback from Gemini 2.0 itself)
-                const generatedText = data2.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (generatedText) {
-                    console.log('Gemini 2.0 returned text instead of image.');
-                    return res.status(200).json({
-                        success: true,
-                        renderUrl: imageUrl,
-                        description: generatedText,
-                        modelUsed: 'gemini-2.0-flash-exp (text-only)',
-                        fallbackReason: 'Gemini 2.0 generated a text description instead of an image.'
-                    });
-                }
-
-                throw new Error('No image or text data in Gemini 2.0 response');
+                // If no image, check for error/text
+                throw new Error('No image data in Imagen 3 response');
             } else {
                 const errText = await response2.text();
-                throw new Error(`Gemini 2.0 Error: ${response2.status} - ${errText}`);
+                // If 404, it means model not found (user doesn't have access)
+                throw new Error(`Imagen 3 Error: ${response2.status} - ${errText}`);
             }
 
         } catch (error2) {
-            console.warn('Gemini 2.0 failed, falling back to 1.5:', error2.message);
+            console.warn('Imagen 3 failed, falling back to Gemini Text:', error2.message);
             gemini2Error = error2.message;
 
             // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash 8b) ---
