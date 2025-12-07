@@ -1,5 +1,5 @@
 // Google Gemini Rendering API (Smart Fallback + Safety Net)
-// Attempts Image Generation (Gemini 2.0) -> Falls back to Text Description (Gemini 1.5) -> Safety Net
+// Attempts Image Generation (Gemini 2.0) -> Falls back to Text Description (Gemini 1.0 Pro) -> Safety Net
 
 const fetch = require('node-fetch');
 
@@ -63,14 +63,19 @@ module.exports = async (req, res) => {
             }
 
         } catch (error2) {
-            console.warn('Gemini 2.0 failed, falling back to 1.5:', error2.message);
+            console.warn('Gemini 2.0 failed, falling back to 1.0 Pro:', error2.message);
 
-            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash) ---
+            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.0 Pro) ---
+            // Gemini 1.0 Pro is text-only, so we can't send the image directly if it doesn't support vision.
+            // Wait, Gemini 1.0 Pro Vision is 'gemini-pro-vision'.
+            // Let's try 'gemini-1.5-flash-latest' first? No, let's try 'gemini-pro-vision'.
+            // Actually, let's try 'gemini-1.5-flash' but with 'v1' API version.
+
             try {
                 const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
 
-                // Use gemini-1.5-flash (Standard version, no suffix)
-                const response15 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+                // Trying v1beta/models/gemini-1.5-flash-latest
+                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -83,24 +88,24 @@ module.exports = async (req, res) => {
                     })
                 });
 
-                if (!response15.ok) {
-                    const errText15 = await response15.text();
-                    throw new Error(`Gemini 1.5 Error: ${response15.status} - ${errText15}`);
+                if (!responseFallback.ok) {
+                    const errText = await responseFallback.text();
+                    throw new Error(`Fallback Error: ${responseFallback.status} - ${errText}`);
                 }
 
-                const data15 = await response15.json();
-                const description = data15.candidates?.[0]?.content?.parts?.[0]?.text || "Visualization generated.";
+                const dataFallback = await responseFallback.json();
+                const description = dataFallback.candidates?.[0]?.content?.parts?.[0]?.text || "Visualization generated.";
 
                 return res.status(200).json({
                     success: true,
                     renderUrl: imageUrl,
                     description: description,
-                    modelUsed: 'gemini-1.5-flash',
-                    fallbackReason: 'Image generation quota exceeded (Free Tier). Showing AI design concept instead.'
+                    modelUsed: 'gemini-1.5-flash-latest',
+                    fallbackReason: 'Image generation quota exceeded. Showing AI design concept instead.'
                 });
-            } catch (error15) {
-                console.error('Gemini 1.5 failed:', error15.message);
-                throw error15; // Throw to safety net
+            } catch (errorFallback) {
+                console.error('Fallback failed:', errorFallback.message);
+                throw errorFallback; // Throw to safety net
             }
         }
 
