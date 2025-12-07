@@ -30,19 +30,63 @@ module.exports = async (req, res) => {
 
         let gemini2Error = '';
 
-        // --- ATTEMPT 1: IMAGE GENERATION (Gemini 2.0 Flash Exp) ---
+        // --- ATTEMPT 1: IMAGE GENERATION (Imagen 3) ---
+        // This is the CORRECT model for generating images.
         try {
-            console.log('Attempting Image Generation with Gemini 2.0...');
-            const imagePrompt = `Generate a photorealistic image of this room remodeled as: ${userPrompt}. Maintain the exact layout and perspective.`;
+            console.log('Attempting Image Generation with Imagen 3...');
+            const imagePrompt = `Photorealistic interior design render. ${userPrompt}. High quality, 4k, architectural photography.`;
 
-            // Remove generationConfig as it caused 400 error
+            const responseImagen = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/imagen-3.0-generate-001:predict?key=${GEMINI_API_KEY}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    instances: [
+                        { prompt: imagePrompt }
+                    ],
+                    parameters: {
+                        sampleCount: 1,
+                        aspectRatio: "4:3"
+                    }
+                })
+            });
+
+            if (responseImagen.ok) {
+                const dataImagen = await responseImagen.json();
+
+                // Imagen 3 returns 'predictions' array with 'bytesBase64Encoded'
+                const generatedImageBase64 = dataImagen.predictions?.[0]?.bytesBase64Encoded;
+
+                if (generatedImageBase64) {
+                    return res.status(200).json({
+                        success: true,
+                        renderUrl: `data:image/jpeg;base64,${generatedImageBase64}`,
+                        modelUsed: 'imagen-3.0-generate-001'
+                    });
+                }
+            } else {
+                // Log error but don't crash - fall through to Gemini 2.0
+                const errText = await responseImagen.text();
+                console.warn(`Imagen 3 failed (${responseImagen.status}), falling back to Gemini 2.0 Text:`, errText);
+                gemini2Error = `Imagen 3 Error: ${responseImagen.status}`;
+            }
+        } catch (errorImagen) {
+            console.warn('Imagen 3 network error, falling back to Gemini 2.0:', errorImagen.message);
+            gemini2Error = errorImagen.message;
+        }
+
+        // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 2.0 Flash Exp) ---
+        // Fallback: If Image Gen fails, use Gemini 2.0 to describe the vision.
+        try {
+            console.log('Attempting Text Description with Gemini 2.0...');
+            const textPrompt = `Generate a photorealistic image of this room remodeled as: ${userPrompt}. Maintain the exact layout and perspective.`;
+
             const response2 = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     contents: [{
                         parts: [
-                            { text: imagePrompt },
+                            { text: textPrompt },
                             { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
                         ]
                     }]
@@ -51,78 +95,26 @@ module.exports = async (req, res) => {
 
             if (response2.ok) {
                 const data2 = await response2.json();
-
-                // Check for Image
-                const generatedImageBase64 = data2.candidates?.[0]?.content?.parts?.[0]?.inline_data?.data;
-                if (generatedImageBase64) {
-                    return res.status(200).json({
-                        success: true,
-                        renderUrl: `data:image/jpeg;base64,${generatedImageBase64}`,
-                        modelUsed: 'gemini-2.0-flash-exp'
-                    });
-                }
-
-                // Check for Text (Fallback from Gemini 2.0 itself)
                 const generatedText = data2.candidates?.[0]?.content?.parts?.[0]?.text;
+
                 if (generatedText) {
-                    console.log('Gemini 2.0 returned text instead of image.');
                     return res.status(200).json({
                         success: true,
                         renderUrl: imageUrl,
                         description: generatedText,
                         modelUsed: 'gemini-2.0-flash-exp (text-only)',
-                        fallbackReason: 'Gemini 2.0 generated a text description instead of an image.'
+                        fallbackReason: gemini2Error ? `Image generation failed (${gemini2Error}). Showing AI design concept.` : 'Showing AI design concept.'
                     });
                 }
-
-                throw new Error('No image or text data in Gemini 2.0 response');
-            } else {
-                const errText = await response2.text();
-                throw new Error(`Gemini 2.0 Error: ${response2.status} - ${errText}`);
             }
+
+            // If even Gemini 2.0 fails, throw error
+            throw new Error('Both Imagen 3 and Gemini 2.0 failed to return valid data.');
 
         } catch (error2) {
-            console.warn('Gemini 2.0 failed, falling back to 1.5:', error2.message);
-            gemini2Error = error2.message;
-
-            // --- ATTEMPT 2: TEXT DESCRIPTION (Gemini 1.5 Flash) ---
-            try {
-                const textPrompt = `You are a professional interior designer. Analyze this room image and describe exactly how it would look if remodeled based on this request: "${userPrompt}". Provide a vivid, detailed visual description.`;
-
-                // Use gemini-1.5-flash with v1 endpoint (Stable)
-                const responseFallback = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [
-                                { text: textPrompt },
-                                { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
-                            ]
-                        }]
-                    })
-                });
-
-                if (!responseFallback.ok) {
-                    const errText = await responseFallback.text();
-                    throw new Error(`Fallback Error: ${responseFallback.status} - ${errText}`);
-                }
-
-                const dataFallback = await responseFallback.json();
-                const description = dataFallback.candidates?.[0]?.content?.parts?.[0]?.text || "Visualization generated.";
-
-                return res.status(200).json({
-                    success: true,
-                    renderUrl: imageUrl,
-                    description: description,
-                    modelUsed: 'gemini-1.5-flash',
-                    fallbackReason: `Image generation failed (${gemini2Error}). Showing AI design concept instead.`
-                });
-            } catch (errorFallback) {
-                console.error('Fallback failed:', errorFallback.message);
-                // Throw combined error to safety net
-                throw new Error(`Primary: ${gemini2Error} | Fallback: ${errorFallback.message}`);
-            }
+            console.error('Gemini 2.0 failed:', error2.message);
+            // Throw combined error to safety net
+            throw new Error(`Primary (Imagen): ${gemini2Error} | Fallback (Gemini): ${error2.message}`);
         }
 
     } catch (error) {
