@@ -618,7 +618,7 @@
                     renderOutput.scrollIntoView({ behavior: 'smooth', block: 'center' });
 
                     // Step 2: Generate render via Nano Banana
-                    const renderResponse = await fetch(`${API_BASE_URL}/render-v2`, {
+                    const renderResponse = await fetch(`${API_BASE_URL}/render`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json'
