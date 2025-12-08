@@ -70,7 +70,7 @@ module.exports = async (req, res) => {
         console.log('Step 2: Generating image with DALL-E 3...');
 
         // Use userPrompt if provided, otherwise default
-        const instruction = userPrompt || "Modernize this space. Do not change the basic structure of the space. Remove any trash visible in the image. Photorealistic, 4k interior design render, architectural photography, bright and clean.";
+        const instruction = userPrompt || "Renovate the uploaded space while preserving the exact same camera angle, perspective, framing, proportions, and layout from the original image. Do NOT move walls, doors, windows, or change the geometry of the room. Do NOT shift the viewpoint or alter the lens angle. Keep the architectural structure identical. Modernize only the surfaces, materials, finishes, fixtures, lighting, and décor. Use a clean, contemporary, high-end design style with neutral tones, refined textures, and minimalist elements. Remove any objects, clutter, or visual obstructions that are not part of the permanent structure. The result should feel like the same photo taken at the same moment, but fully renovated and visually upgraded — without any change to composition or perspective.";
 
         // Combine instruction with structural description
         const finalPrompt = `${instruction}. The room structure is: ${structuralDescription}.`;
