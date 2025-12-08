@@ -710,10 +710,30 @@
                     document.getElementById('flyer-subtitle').textContent = `${roomType} Remodel Proposal`;
                     document.getElementById('flyer-address-line').textContent = `${address} | ${beds} Beds | ${baths} Baths | ${Number(sqft).toLocaleString()} sq ft`;
 
-                    // Images (Use Proxy if needed to avoid CORS in html2canvas, but try direct first)
-                    // Note: For html2canvas to work with external images, 'useCORS: true' is needed
-                    document.getElementById('flyer-before-img').src = imageUrl;
-                    document.getElementById('flyer-after-img').src = afterImageUrl;
+                    // Helper to convert URL to Base64 to fix html2canvas CORS issues
+                    const toDataURL = async (url) => {
+                        try {
+                            const response = await fetch(url);
+                            const blob = await response.blob();
+                            return new Promise((resolve, reject) => {
+                                const reader = new FileReader();
+                                reader.onloadend = () => resolve(reader.result);
+                                reader.onerror = reject;
+                                reader.readAsDataURL(blob);
+                            });
+                        } catch (e) {
+                            console.warn('Failed to convert image to base64, using direct URL:', e);
+                            return url; // Fallback
+                        }
+                    };
+
+                    // Convert images to Base64 for the flyer
+                    // This ensures they show up in the download
+                    const beforeImgBase64 = await toDataURL(imageUrl);
+                    const afterImgBase64 = await toDataURL(afterImageUrl);
+
+                    document.getElementById('flyer-before-img').src = beforeImgBase64;
+                    document.getElementById('flyer-after-img').src = afterImgBase64;
 
                     // Stats Logic
                     if (roomType === 'Kitchen') {
