@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
                         content: [
                             {
                                 type: "text",
-                                text: "Describe the architectural structure, perspective, window placement, ceiling height, and room layout of this image in extreme technical detail. Do not mention the current furniture style, colors, or clutter. Focus ONLY on the geometry and fixed elements."
+                                text: "Analyze this interior image for a renovation render. I need you to extract the EXACT camera parameters and structural geometry. \n\n1. Camera Angle: (e.g. Eye-level, Low-angle, High-angle)\n2. Perspective: (e.g. One-point, Two-point, Wide-angle lens)\n3. Key Structural Anchors: (e.g. Window on left wall, Doorframe on right, Ceiling beams)\n4. Composition: Describe the exact placement of walls, floor, and ceiling in the frame.\n\nOutput a concise, technical description of the GEOMETRY and CAMERA VIEW only. Do not describe furniture or colors."
                             },
                             {
                                 type: "image_url",
@@ -73,7 +73,8 @@ module.exports = async (req, res) => {
         const instruction = userPrompt || "Modernize this space. Do not change the basic structure of the space. Remove any trash visible in the image. Photorealistic, 4k interior design render, architectural photography, bright and clean.";
 
         // Combine instruction with structural description
-        const finalPrompt = `${instruction}. The room structure is: ${structuralDescription}.`;
+        // Putting Structure FIRST to prioritize perspective match
+        const finalPrompt = `STRICT CAMERA MATCH: ${structuralDescription}. \n\nRENOVATION INSTRUCTION: ${instruction}`;
 
         const generationResponse = await fetch('https://api.openai.com/v1/images/generations', {
             method: 'POST',
