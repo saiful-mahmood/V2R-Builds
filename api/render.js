@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
     if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
     try {
-        const { imageUrl } = req.body; // We ignore userPrompt as per instructions
+        const { imageUrl, userPrompt } = req.body;
         if (!imageUrl) return res.status(400).json({ error: 'Missing image URL' });
 
         const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
@@ -69,8 +69,11 @@ module.exports = async (req, res) => {
         // --- STEP 2: GENERATE MODERNIZED IMAGE (DALL-E 3) ---
         console.log('Step 2: Generating image with DALL-E 3...');
 
-        // Construct the strict prompt requested by user
-        const finalPrompt = `Modernize this space. ${structuralDescription}. Do not change the basic structure of the space. Remove any trash visible in the image. Photorealistic, 4k interior design render, architectural photography, bright and clean.`;
+        // Use userPrompt if provided, otherwise default
+        const instruction = userPrompt || "Modernize this space. Do not change the basic structure of the space. Remove any trash visible in the image. Photorealistic, 4k interior design render, architectural photography, bright and clean.";
+
+        // Combine instruction with structural description
+        const finalPrompt = `${instruction}. The room structure is: ${structuralDescription}.`;
 
         const generationResponse = await fetch('https://api.openai.com/v1/images/generations', {
             method: 'POST',
