@@ -87,16 +87,39 @@
             outline: none;
         }
 
+        /* Toggle Buttons for Radio */
         .radio-group {
             display: flex;
-            gap: 20px;
+            gap: 10px;
+            background: #f1f5f9;
+            padding: 5px;
+            border-radius: 10px;
+            width: fit-content;
         }
 
         .radio-option {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: relative;
             cursor: pointer;
+            user-select: none;
+        }
+
+        .radio-option input {
+            display: none;
+        }
+
+        .radio-option span {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s ease;
+        }
+
+        .radio-option input:checked+span {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .upload-area {
@@ -455,10 +478,12 @@
                             <label>Project Type</label>
                             <div class="radio-group">
                                 <label class="radio-option">
-                                    <input type="radio" name="roomType" value="Kitchen" checked> Kitchen
+                                    <input type="radio" name="roomType" value="Kitchen" checked>
+                                    <span>Kitchen</span>
                                 </label>
                                 <label class="radio-option">
-                                    <input type="radio" name="roomType" value="Bathroom"> Bathroom
+                                    <input type="radio" name="roomType" value="Bathroom">
+                                    <span>Bathroom</span>
                                 </label>
                             </div>
                         </div>
@@ -513,7 +538,7 @@
                     <!-- Header -->
                     <div class="flyer-header">
                         <h2 class="flyer-title">V2R - VISION TO REALITY</h2>
-                        <h3 class="flyer-subtitle" id="flyer-subtitle">Kitchen Remodel Proposal</h3>
+                        <h3 class="flyer-subtitle">Kitchen Remodel Proposal</h3>
                         <div class="flyer-details" id="flyer-address-line">
                             123 Main St, City, State 00000 | 4 Beds | 3 Baths | 2,500 sq ft
                         </div>
@@ -628,6 +653,7 @@
             const btnDownload = document.getElementById('btn-download');
 
             let selectedFile = null;
+            let localBase64Before = null; // Store local base64 for flyer
 
             // Upload Logic
             uploadArea.addEventListener('click', () => imageInput.click());
@@ -638,6 +664,7 @@
                     reader.onload = (e) => {
                         previewImg.src = e.target.result;
                         previewImg.style.display = 'block';
+                        localBase64Before = e.target.result; // Save for flyer
                     };
                     reader.readAsDataURL(selectedFile);
                 }
@@ -664,19 +691,13 @@
                     const baths = formData.get('baths');
                     const details = formData.get('details');
 
-                    // 1. Upload Image to Cloudinary
-                    const reader = new FileReader();
-                    const base64Promise = new Promise((resolve) => {
-                        reader.onload = (e) => resolve(e.target.result);
-                        reader.readAsDataURL(selectedFile);
-                    });
-                    const base64Data = await base64Promise;
-
+                    // 1. Upload Image to Cloudinary (for API processing)
+                    // We still need to upload it so the API can access it via URL
                     const uploadResponse = await fetch(`${API_BASE_URL}/upload-image`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            file: base64Data,
+                            file: localBase64Before,
                             folder: 'vision-estimator',
                             tags: 'estimator'
                         })
@@ -687,10 +708,8 @@
                     const imageUrl = uploadData.url;
 
                     // 2. Generate Render via OpenAI
-                    // Standard Prompt
                     const standardPrompt = "Transform the uploaded space into a modern, premium, high-end design while keeping the original architectural structure, layout, and proportions. Maintain the same walls, windows, doors, and overall footprint. Upgrade all finishes to a sleek, contemporary look: clean lines, minimalist aesthetic, warm neutral tones, and elevated materials such as natural wood, matte black or brushed steel fixtures, modern lighting, seamless cabinetry, and refined textures. Remove all visible clutter or objects that obstruct the view, including furniture, items on the floor, or anything not part of the permanent structure. Enhance lighting, improve spatial flow, and present the space as if professionally staged for luxury real estate photography. Output a polished, realistic, fully rendered final image.";
 
-                    // Combine with user details
                     const fullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
 
                     const renderResponse = await fetch(`${API_BASE_URL}/render`, {
@@ -704,36 +723,17 @@
 
                     if (!renderResponse.ok) throw new Error('Rendering failed');
                     const renderData = await renderResponse.json();
-                    const afterImageUrl = renderData.renderUrl;
+
+                    // API now returns Base64 directly!
+                    const afterImageBase64 = renderData.renderUrl;
 
                     // 3. Populate Flyer
                     document.getElementById('flyer-subtitle').textContent = `${roomType} Remodel Proposal`;
                     document.getElementById('flyer-address-line').textContent = `${address} | ${beds} Beds | ${baths} Baths | ${Number(sqft).toLocaleString()} sq ft`;
 
-                    // Helper to convert URL to Base64 to fix html2canvas CORS issues
-                    const toDataURL = async (url) => {
-                        try {
-                            const response = await fetch(url);
-                            const blob = await response.blob();
-                            return new Promise((resolve, reject) => {
-                                const reader = new FileReader();
-                                reader.onloadend = () => resolve(reader.result);
-                                reader.onerror = reject;
-                                reader.readAsDataURL(blob);
-                            });
-                        } catch (e) {
-                            console.warn('Failed to convert image to base64, using direct URL:', e);
-                            return url; // Fallback
-                        }
-                    };
-
-                    // Convert images to Base64 for the flyer
-                    // This ensures they show up in the download
-                    const beforeImgBase64 = await toDataURL(imageUrl);
-                    const afterImgBase64 = await toDataURL(afterImageUrl);
-
-                    document.getElementById('flyer-before-img').src = beforeImgBase64;
-                    document.getElementById('flyer-after-img').src = afterImgBase64;
+                    // Set Images (Both are now Base64!)
+                    document.getElementById('flyer-before-img').src = localBase64Before;
+                    document.getElementById('flyer-after-img').src = afterImageBase64;
 
                     // Stats Logic
                     if (roomType === 'Kitchen') {
@@ -751,7 +751,6 @@
                     flyerWrapper.style.display = 'block';
                     actionBar.style.display = 'block';
 
-                    // Scroll to top
                     window.scrollTo(0, 0);
 
                 } catch (error) {
