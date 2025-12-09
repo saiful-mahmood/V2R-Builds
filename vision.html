@@ -772,13 +772,19 @@
             btnDownload.addEventListener('click', () => {
                 const flyer = document.getElementById('flyer-content');
 
+                // Get address for filename
+                const addressInput = document.querySelector('input[name="address"]').value;
+                const safeFilename = addressInput
+                    ? addressInput.replace(/[^a-z0-9]/gi, '_').replace(/_+/g, '_') + '_Vision_Proposal.png'
+                    : 'V2R_Vision_Proposal.png';
+
                 // Use html2canvas
                 html2canvas(flyer, {
                     useCORS: true, // Crucial for external images
                     scale: 2 // High resolution
                 }).then(canvas => {
                     const link = document.createElement('a');
-                    link.download = 'V2R_Vision_Proposal.png';
+                    link.download = safeFilename;
                     link.href = canvas.toDataURL('image/png');
                     link.click();
                 }).catch(err => {
