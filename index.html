@@ -60,113 +60,50 @@
             Your browser does not support the video tag.
         </video>
         <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <h1 class="animate-up">Vision to Reality</h1>
-            <p class="animate-up delay-1"><span class="hero-lead">Fast, Affordable, Expert Design & Project
-                    Management.</span><br>
-                Get concept sketches, full technical plans, or complete turnkey delivery—tailored to your project and
-                delivered on time.</p>
-            <div class="hero-btns animate-up delay-2">
-                <button class="btn-primary trigger-modal">Get Started</button>
+        <div class="hero-content">
+            <h1 class="animate-fade-in">V2R Builds</h1>
+            <h2 class="animate-slide-up" style="animation-delay: 0.2s;">Vision to Reality</h2>
+            <p class="hero-subtitle animate-slide-up" style="animation-delay: 0.4s;">We build your vision, from the
+                ground up.</p>
+            <div class="hero-buttons animate-slide-up" style="animation-delay: 0.6s;">
+                <a href="vision.html" class="btn-primary">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Vision Estimator
+                </a>
+                <a href="#contact" class="btn-secondary">Free Consultation</a>
             </div>
-            <!-- Stats removed for cleaner look -->
         </div>
     </header>
 
-    <!-- Process Section (moved right after hero) -->
-    <section id="process" class="section process">
-        <div class="container">
-            <div class="section-header">
-                <h2>Simple 3-Step Process</h2>
-                <p>From vision to reality in three easy steps.</p>
+    </div>
+
+    <div class="render-output-section" id="render-output" style="display: none;">
+        <h3>Your Remodeled Space</h3>
+        <div class="render-comparison">
+            <div class="render-before">
+                <span class="render-label">Before</span>
+                <img id="render-before-img" alt="Before">
             </div>
-            <div class="process-steps">
-                <div class="step fade-in">
-                    <div class="step-number">01</div>
-                    <h3>Upload</h3>
-                    <p>Upload a photo and describe your vision for your space.</p>
+            <div class="render-after">
+                <span class="render-label">After</span>
+                <div class="render-loading" id="render-loading">
+                    <div class="spinner"></div>
+                    <p>Creating your visualization...</p>
+                    <small>This may take 10-15 seconds</small>
                 </div>
-                <div class="step-connector"></div>
-                <div class="step fade-in delay-1">
-                    <div class="step-number">02</div>
-                    <h3>Get Render</h3>
-                    <p>Get professional 3D renderings within 24 hours.</p>
-                </div>
-                <div class="step-connector"></div>
-                <div class="step fade-in delay-2">
-                    <div class="step-number">03</div>
-                    <h3>Get Estimates</h3>
-                    <p>Receive concepts, cost ranges, and vetted contractor connections.</p>
-                </div>
+                <img id="render-after-img" alt="After" style="display: none;">
             </div>
         </div>
-    </section>
-
-    <!-- Instant Rendering Section -->
-    <section id="instant-render" class="section instant-render">
-        <div class="container">
-            <div class="section-header">
-                <h2>Visualize Your Vision Instantly</h2>
-                <p>See your remodeling ideas come to life in seconds</p>
-            </div>
-
-            <div class="render-container">
-                <div class="render-input-section">
-                    <h3>Upload Your Space</h3>
-                    <div class="upload-area" id="render-upload-area">
-                        <input type="file" id="render-image-input" accept="image/*" capture="environment" hidden>
-                        <div class="upload-placeholder" id="render-upload-placeholder">
-                            <i class="fa-solid fa-camera"></i>
-                            <p>Take a photo or upload an image</p>
-                            <button type="button" class="btn-secondary" id="render-upload-btn">Choose Image</button>
-                        </div>
-                        <div class="upload-preview" id="render-preview" style="display: none;">
-                            <img id="render-preview-img" alt="Your space">
-                            <button type="button" class="btn-remove" id="render-remove-btn">
-                                <i class="fa-solid fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="render-description">
-                        <h3>Describe Your Vision</h3>
-                        <textarea id="render-description"
-                            placeholder="Example: Modern white kitchen with marble countertops and stainless steel appliances..."
-                            rows="4"></textarea>
-                        <button type="button" class="btn-primary" id="generate-render-btn" disabled>
-                            <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Visualization
-                        </button>
-                    </div>
-                </div>
-
-                <div class="render-output-section" id="render-output" style="display: none;">
-                    <h3>Your Remodeled Space</h3>
-                    <div class="render-comparison">
-                        <div class="render-before">
-                            <span class="render-label">Before</span>
-                            <img id="render-before-img" alt="Before">
-                        </div>
-                        <div class="render-after">
-                            <span class="render-label">After</span>
-                            <div class="render-loading" id="render-loading">
-                                <div class="spinner"></div>
-                                <p>Creating your visualization...</p>
-                                <small>This may take 10-15 seconds</small>
-                            </div>
-                            <img id="render-after-img" alt="After" style="display: none;">
-                        </div>
-                    </div>
-                    <div class="render-actions">
-                        <button type="button" class="btn-secondary" id="try-again-btn">
-                            <i class="fa-solid fa-rotate-right"></i> Try Another Vision
-                        </button>
-                        <a href="vision.html" class="btn-primary">
-                            <i class="fa-solid fa-paper-plane"></i> Get Professional Quote
-                        </a>
-                    </div>
-                </div>
-            </div>
+        <div class="render-actions">
+            <button type="button" class="btn-secondary" id="try-again-btn">
+                <i class="fa-solid fa-rotate-right"></i> Try Another Vision
+            </button>
+            <a href="vision.html" class="btn-primary">
+                <i class="fa-solid fa-paper-plane"></i> Get Professional Quote
+            </a>
         </div>
+    </div>
+    </div>
+    </div>
     </section>
 
     <!-- Services Section (Specializing In) -->
