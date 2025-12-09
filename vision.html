@@ -708,8 +708,14 @@
                     const imageUrl = uploadData.url;
 
                     // 2. Generate Render via OpenAI
-                    // Standard Prompt
-                    const standardPrompt = "Redesign this room based on the uploaded photo. Keep all core architectural elements in the same position (walls, windows, doors, layout). Maintain the same perspective and camera angle. Transform the space into a modern, clean, contemporary design with updated finishes. Use: modern lighting, neutral color palette, sleek cabinetry and fixtures, minimalist decor, improved brightness and clarity. Keep the furniture and major items in the same locations but update them to modern equivalents. Make the final image look realistic, high-end, and professionally staged.";
+                    let standardPrompt = "";
+
+                    if (roomType === 'Kitchen') {
+                        standardPrompt = "Modernize the uploaded kitchen while keeping the exact same architectural structure, camera angle, layout, and proportions. Do NOT move walls, windows, doors, appliances locations, or change the geometry. Upgrade all surfaces and finishes to a clean, high-end, contemporary style: sleek cabinetry, modern hardware, premium countertops (quartz or marble), elegant backsplash, integrated lighting, and refined neutral tones. Replace outdated fixtures with modern ones. Remove all clutter, small appliances, and objects on countertops or floors. Keep the overall structure identical while fully updating the aesthetic. Render a realistic, polished, professionally staged luxury kitchen.";
+                    } else {
+                        // Bathroom Prompt
+                        standardPrompt = "Renovate the uploaded bathroom into a high-end, modern design while preserving the identical layout, camera angle, proportions, and architectural structure. Do NOT change walls, doors, windows, or plumbing locations. Upgrade all finishes to a sleek, contemporary look: premium tiles, frameless glass shower, modern vanity, quartz or marble surfaces, updated lighting, matte or brushed metal fixtures, and clean neutral tones. Remove all clutter, personal items, towels, or objects that obstruct the view. Maintain the room’s geometry while elevating materials and style. Produce a crisp, realistic, luxury bathroom render.";
+                    }
 
                     const fullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
 
