@@ -55,48 +55,114 @@
 
     <!-- Hero Section -->
     <header class="hero">
-        <video autoplay muted loop playsinline class="hero-video" poster="images/hero.png">
-            <source src="videos/hero.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
-        <div class="hero-overlay"></div>
-        <div class="container hero-content">
-            <h1 class="animate-up">Vision to Reality</h1>
-            <p class="animate-up delay-1"><span class="hero-lead">Fast, Affordable, Expert Design & Project
-                    Management.</span><br>
-                Get concept sketches, full technical plans, or complete turnkey delivery—tailored to your project and
-                delivered on time.</p>
-            <div class="hero-btns animate-up delay-2">
-                <button class="btn-primary trigger-modal">Get Started</button>
+        <div class="hero-content">
+            <h1 class="animate-fade-in">V2R Builds</h1>
+            <h2 class="animate-slide-up" style="animation-delay: 0.2s;">Vision to Reality</h2>
+            <p class="hero-subtitle animate-slide-up" style="animation-delay: 0.4s;">We build your vision, from the
+                ground up.</p>
+            <div class="hero-buttons animate-slide-up" style="animation-delay: 0.6s;">
+                <a href="vision.html" class="btn-primary">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> Try AI Vision Estimator
+                </a>
+                <a href="#contact" class="btn-secondary">Free Consultation</a>
             </div>
-            <!-- Stats removed for cleaner look -->
         </div>
     </header>
 
-    <!-- Process Section (moved right after hero) -->
-    <section id="process" class="section process">
+    <!-- Why V2R? Section (New) -->
+    <section class="features" id="why-us">
         <div class="container">
-            <div class="section-header">
-                <h2>Simple 3-Step Process</h2>
-                <p>From vision to reality in three easy steps.</p>
+            <h2 class="section-title">Why Choose V2R?</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fa-solid fa-eye"></i>
+                    <h3>AI-Powered Visioning</h3>
+                    <p>See your project before we build. Our advanced AI tools visualize your renovation instantly.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-file-invoice-dollar"></i>
+                    <h3>Transparent Pricing</h3>
+                    <p>Clear, detailed quotes with no hidden fees. You know exactly where your investment goes.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-hammer"></i>
+                    <h3>Quality Craftsmanship</h3>
+                    <p>We pride ourselves on superior build quality and attention to every detail.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <h3>On-Time Completion</h3>
+                    <p>We respect your timeline and manage projects efficiently to meet deadlines.</p>
+                </div>
             </div>
-            <div class="process-steps">
-                <div class="step fade-in">
-                    <div class="step-number">01</div>
-                    <h3>Upload</h3>
-                    <p>Upload a photo and describe your vision for your space.</p>
+        </div>
+    </section>
+
+    <!-- Services Section (Updated) -->
+    <section class="services" id="services">
+        <div class="container">
+            <h2 class="section-title">Our Expertise</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-house-chimney"></i></div>
+                    <h3>New Construction</h3>
+                    <p>Custom homes built from the ground up to your exact specifications and lifestyle needs.</p>
                 </div>
-                <div class="step-connector"></div>
-                <div class="step fade-in delay-1">
-                    <div class="step-number">02</div>
-                    <h3>Get Render</h3>
-                    <p>Get professional 3D renderings within 24 hours.</p>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-trowel-bricks"></i></div>
+                    <h3>Remodeling</h3>
+                    <p>Transforming kitchens, bathrooms, and interiors into modern, functional spaces.</p>
                 </div>
-                <div class="step-connector"></div>
-                <div class="step fade-in delay-2">
-                    <div class="step-number">03</div>
-                    <h3>Get Estimates</h3>
-                    <p>Receive concepts, cost ranges, and vetted contractor connections.</p>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-warehouse"></i></div>
+                    <h3>ADUs</h3>
+                    <p>Accessory Dwelling Units to expand your living space, add value, or generate rental income.</p>
+                </div>
+                <div class="service-card">
+                    <div class="service-icon"><i class="fa-solid fa-pen-ruler"></i></div>
+                    <h3>Design + Build</h3>
+                    <p>A seamless, integrated process handling both architectural design and construction management.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Process Section (New) -->
+    <section class="process" id="process" style="padding: 5rem 2rem; background: var(--bg-secondary);">
+        <div class="container">
+            <h2 class="section-title">Our Process</h2>
+            <div class="process-steps"
+                style="display: flex; flex-wrap: wrap; justify-content: center; gap: 2rem; text-align: center;">
+                <div class="step" style="flex: 1 1 200px; max-width: 250px;">
+                    <div class="step-number"
+                        style="font-size: 3rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem;">1</div>
+                    <h3>Consultation & Vision</h3>
+                    <p>We meet to understand your goals and cast the vision for your project.</p>
+                </div>
+                <div class="step" style="flex: 1 1 200px; max-width: 250px;">
+                    <div class="step-number"
+                        style="font-size: 3rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem;">2</div>
+                    <h3>Design & Planning</h3>
+                    <p>Detailed architectural plans and design selections tailored to you.</p>
+                </div>
+                <div class="step" style="flex: 1 1 200px; max-width: 250px;">
+                    <div class="step-number"
+                        style="font-size: 3rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem;">3</div>
+                    <h3>Transparent Quoting</h3>
+                    <p>A comprehensive, honest estimate before any work begins.</p>
+                </div>
+                <div class="step" style="flex: 1 1 200px; max-width: 250px;">
+                    <div class="step-number"
+                        style="font-size: 3rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem;">4</div>
+                    <h3>Construction</h3>
+                    <p>Expert management and execution of the build phase.</p>
+                </div>
+                <div class="step" style="flex: 1 1 200px; max-width: 250px;">
+                    <div class="step-number"
+                        style="font-size: 3rem; color: var(--primary); font-weight: bold; margin-bottom: 1rem;">5</div>
+                    <h3>Handover</h3>
+                    <p>Final walkthrough ensuring everything is perfect for you.</p>
                 </div>
             </div>
         </div>

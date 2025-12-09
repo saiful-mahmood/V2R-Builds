@@ -649,6 +649,52 @@ img {
     /* Left align */
     overflow: hidden;
     padding: var(--spacing-xl) 0;
+    background: linear-gradient(rgba(15, 23, 42, 0.7), rgba(15, 23, 42, 0.7)), url('images/hero.png');
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+/* Features Grid (Why V2R) */
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-lg);
+}
+
+.feature-card {
+    background: white;
+    padding: var(--spacing-lg);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid var(--border-light);
+    text-align: center;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary);
+}
+
+.feature-card i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    margin-bottom: var(--spacing-md);
+    display: inline-block;
+}
+
+.feature-card h3 {
+    font-size: 1.25rem;
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-main);
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+    line-height: 1.6;
 }
 
 .hero-video {
@@ -686,18 +732,20 @@ img {
     /* Larger font */
     margin-bottom: var(--spacing-md);
     letter-spacing: -1px;
-    color: var(--text-main);
+    color: white;
     font-weight: 800;
     line-height: 1.1;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .hero p {
     font-size: clamp(1.1rem, 4vw, 1.35rem);
-    color: var(--text-secondary);
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: var(--spacing-lg);
     max-width: 550px;
     font-weight: 500;
     line-height: 1.6;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .hero-lead {
@@ -1871,6 +1919,7 @@ footer {
     color: var(--text-muted);
     margin-top: 8px;
 }
+
 /* ===== Instant Rendering Section ===== */
 .instant-render {
     background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
