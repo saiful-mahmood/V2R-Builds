@@ -750,10 +750,10 @@
                     // 2. Prepare Prompt
                     let standardPrompt = "";
                     if (roomType === 'Kitchen') {
-                        standardPrompt = "Modernize this kitchen.";
+                        standardPrompt = "Modernize this kitchen, and keep basic structure intact.";
                     } else {
                         // Bathroom Prompt
-                        standardPrompt = "Modernize this bathroom.";
+                        standardPrompt = "Modernize this bathroom, and keep basic structure intact.";
                     }
                     currentFullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
 
