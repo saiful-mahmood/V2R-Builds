@@ -122,14 +122,12 @@ module.exports = async (req, res) => {
         }
 
         const generationData = await generationResponse.json();
-        const generatedImageUrl = generationData.data[0].url;
 
-        console.log('Image Generated! Fetching and converting to Base64...');
+        // Since we requested b64_json, we get the base64 string directly
+        const rawBase64 = generationData.data[0].b64_json;
+        const base64Image = `data:image/png;base64,${rawBase64}`;
 
-        // Fetch the image on the server to avoid CORS on client
-        const imageFetch = await fetch(generatedImageUrl);
-        const imageBuffer = await imageFetch.buffer();
-        const base64Image = `data:image/png;base64,${imageBuffer.toString('base64')}`;
+        console.log('Image Generated and received as Base64.');
 
         return res.status(200).json({
             success: true,
