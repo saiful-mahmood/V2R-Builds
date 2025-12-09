@@ -623,6 +623,10 @@
                     <button class="btn-secondary" id="btn-download">
                         <i class="fa-solid fa-download"></i> Download Flyer
                     </button>
+                    <button class="btn-secondary" id="btn-regenerate"
+                        style="border-color: var(--primary); color: var(--primary);">
+                        <i class="fa-solid fa-rotate-right"></i> Regenerate Vision
+                    </button>
                     <button class="btn-primary" onclick="location.reload()">
                         <i class="fa-solid fa-plus"></i> Create New
                     </button>
@@ -651,9 +655,12 @@
             const flyerWrapper = document.getElementById('flyer-wrapper');
             const actionBar = document.getElementById('action-bar');
             const btnDownload = document.getElementById('btn-download');
+            const btnRegenerate = document.getElementById('btn-regenerate');
 
             let selectedFile = null;
             let localBase64Before = null; // Store local base64 for flyer
+            let currentImageUrl = null; // Store uploaded Cloudinary URL for regeneration
+            let currentFullPrompt = null; // Store prompt for regeneration
 
             // Upload Logic
             uploadArea.addEventListener('click', () => imageInput.click());
@@ -670,6 +677,38 @@
                 }
             });
 
+            // Reusable Generation Function
+            const generateVision = async (imageUrl, prompt) => {
+                loadingOverlay.style.display = 'flex';
+                try {
+                    const renderResponse = await fetch(`${API_BASE_URL}/render`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            imageUrl: imageUrl,
+                            userPrompt: prompt
+                        })
+                    });
+
+                    if (!renderResponse.ok) throw new Error('Rendering failed');
+                    const renderData = await renderResponse.json();
+
+                    // API returns Base64 directly
+                    const afterImageBase64 = renderData.renderUrl;
+
+                    // Update After Image
+                    document.getElementById('flyer-after-img').src = afterImageBase64;
+
+                    return true;
+                } catch (error) {
+                    console.error(error);
+                    alert('Error: ' + error.message);
+                    return false;
+                } finally {
+                    loadingOverlay.style.display = 'none';
+                }
+            };
+
             // Form Submit
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
@@ -678,7 +717,7 @@
                     return;
                 }
 
-                // Show Loading
+                // Show Loading (will be hidden by generateVision or catch block)
                 loadingOverlay.style.display = 'flex';
 
                 try {
@@ -691,56 +730,43 @@
                     const baths = formData.get('baths');
                     const details = formData.get('details');
 
-                    // 1. Upload Image to Cloudinary (for API processing)
-                    // We still need to upload it so the API can access it via URL
-                    const uploadResponse = await fetch(`${API_BASE_URL}/upload-image`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            file: localBase64Before,
-                            folder: 'vision-estimator',
-                            tags: 'estimator'
-                        })
-                    });
+                    // 1. Upload Image to Cloudinary (if not already done)
+                    if (!currentImageUrl) {
+                        const uploadResponse = await fetch(`${API_BASE_URL}/upload-image`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                file: localBase64Before,
+                                folder: 'vision-estimator',
+                                tags: 'estimator'
+                            })
+                        });
 
-                    if (!uploadResponse.ok) throw new Error('Image upload failed');
-                    const uploadData = await uploadResponse.json();
-                    const imageUrl = uploadData.url;
+                        if (!uploadResponse.ok) throw new Error('Image upload failed');
+                        const uploadData = await uploadResponse.json();
+                        currentImageUrl = uploadData.url;
+                    }
 
-                    // 2. Generate Render via OpenAI
+                    // 2. Prepare Prompt
                     let standardPrompt = "";
-
                     if (roomType === 'Kitchen') {
                         standardPrompt = "Modernize this kitchen.";
                     } else {
                         // Bathroom Prompt
                         standardPrompt = "Modernize this bathroom.";
                     }
+                    currentFullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
 
-                    const fullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
+                    // 3. Generate Render
+                    const success = await generateVision(currentImageUrl, currentFullPrompt);
+                    if (!success) return;
 
-                    const renderResponse = await fetch(`${API_BASE_URL}/render`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            imageUrl: imageUrl,
-                            userPrompt: fullPrompt
-                        })
-                    });
-
-                    if (!renderResponse.ok) throw new Error('Rendering failed');
-                    const renderData = await renderResponse.json();
-
-                    // API now returns Base64 directly!
-                    const afterImageBase64 = renderData.renderUrl;
-
-                    // 3. Populate Flyer
+                    // 4. Populate Flyer Details (Only needed once)
                     document.getElementById('flyer-subtitle').textContent = `${roomType} Remodel Proposal`;
                     document.getElementById('flyer-address-line').textContent = `${address} | ${beds} Beds | ${baths} Baths | ${Number(sqft).toLocaleString()} sq ft`;
 
-                    // Set Images (Both are now Base64!)
+                    // Set Before Image
                     document.getElementById('flyer-before-img').src = localBase64Before;
-                    document.getElementById('flyer-after-img').src = afterImageBase64;
 
                     // Stats Logic
                     if (roomType === 'Kitchen') {
@@ -763,8 +789,16 @@
                 } catch (error) {
                     console.error(error);
                     alert('Error: ' + error.message);
-                } finally {
-                    loadingOverlay.style.display = 'none';
+                    loadingOverlay.style.display = 'none'; // Ensure loading is hidden on form submit error
+                }
+            });
+
+            // Regenerate Logic
+            btnRegenerate.addEventListener('click', async () => {
+                if (currentImageUrl && currentFullPrompt) {
+                    await generateVision(currentImageUrl, currentFullPrompt);
+                } else {
+                    alert('Please submit the form first to generate an initial vision.');
                 }
             });
 
