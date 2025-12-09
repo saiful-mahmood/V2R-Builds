@@ -24,24 +24,54 @@ module.exports = async (req, res) => {
 
         console.log('Starting OpenAI Render Pipeline...');
 
-        // --- STEP 1: ANALYZE IMAGE STRUCTURE (GPT-4o) ---
-        console.log('Step 1: Analyzing image structure with GPT-4o...');
+        // --- STEP 1: ANALYZE IMAGE & GENERATE PROMPT (GPT-4o) ---
+        console.log('Step 1: Analyzing image and generating prompt with GPT-4o...');
+
+        // The user's style request (from frontend)
+        const userStyleRequest = userPrompt || "modern, clean, contemporary design";
+
+        const systemTemplate = `
+        SYSTEM RULES:
+        "Preserve the exact camera angle, geometry, proportions, depth, spatial layout, and perspective of the uploaded image.
+        Do not redraw or reinterpret the scene.
+        Only apply visual modifications requested by the user.
+        Keep all architectural elements, room shape, walls, windows, doors, lighting sources, and structural boundaries exactly the same.
+        Remove clutter or objects if requested without altering the background.
+        Render the output as a photorealistic, high-resolution real photograph — not a drawing, sketch, or illustration.
+        Maintain true-to-life materials, lighting, shadows, and textures.
+        Avoid AI artifacts, distortions, hallucinated elements, or geometry changes."
+
+        USER REQUEST:
+        "Using the uploaded image as the base, remodel this room while preserving the exact same camera angle, perspective, layout, and structural geometry.
+        Do not move walls, windows, cabinets, plumbing, or major architectural elements.
+        
+        Apply the following style changes only:
+        ${userStyleRequest}
+        
+        Ensure the final output looks like a real photograph with correct lighting and material realism.
+        Remove any clutter or unwanted objects without changing the background.
+        Produce a refined, photorealistic renovated version matching the structure of the original image."
+        `;
 
         const analysisResponse = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
                 model: "gpt-4o",
                 messages: [
                     {
+                        role: "system",
+                        content: "You are an expert architectural visualization prompt engineer. Your goal is to write a DALL-E 3 prompt that will perfectly recreate the geometry of the input image while applying a new style. Describe the room's structure (perspective, windows, layout) in extreme detail within the prompt so DALL-E knows exactly what to draw."
+                    },
+                    {
                         role: "user",
                         content: [
                             {
                                 type: "text",
-                                text: "Describe the architectural structure, perspective, window placement, ceiling height, and room layout of this image in extreme technical detail. Do not mention the current furniture style, colors, or clutter. Focus ONLY on the geometry and fixed elements."
+                                text: `Analyze this image and write a DALL-E 3 prompt based on these rules:\n${systemTemplate}\n\nOutput ONLY the final DALL-E 3 prompt text. Do not include any conversational text.`
                             },
                             {
                                 type: "image_url",
@@ -53,7 +83,7 @@ module.exports = async (req, res) => {
                         ]
                     }
                 ],
-                max_tokens: 300
+                max_tokens: 500
             })
         });
 
@@ -63,29 +93,24 @@ module.exports = async (req, res) => {
         }
 
         const analysisData = await analysisResponse.json();
-        const structuralDescription = analysisData.choices[0].message.content;
-        console.log('Structure Analyzed:', structuralDescription.substring(0, 50) + '...');
+        const generatedDallePrompt = analysisData.choices[0].message.content;
+        console.log('Generated DALL-E Prompt:', generatedDallePrompt.substring(0, 100) + '...');
 
         // --- STEP 2: GENERATE MODERNIZED IMAGE (DALL-E 3) ---
         console.log('Step 2: Generating image with DALL-E 3...');
-
-        // Use userPrompt if provided, otherwise default
-        const instruction = userPrompt || "Redesign this room based on the uploaded photo. Keep all core architectural elements in the same position (walls, windows, doors, layout). Maintain the same perspective and camera angle. Transform the space into a modern, clean, contemporary design with updated finishes. Use: modern lighting, neutral color palette, sleek cabinetry and fixtures, minimalist decor, improved brightness and clarity. Keep the furniture and major items in the same locations but update them to modern equivalents. Make the final image look realistic, high-end, and professionally staged.";
-
-        // Combine instruction with structural description
-        const finalPrompt = `${instruction}. The room structure is: ${structuralDescription}.`;
 
         const generationResponse = await fetch('https://api.openai.com/v1/images/generations', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`
             },
             body: JSON.stringify({
                 model: "dall-e-3",
-                prompt: finalPrompt,
+                prompt: generatedDallePrompt,
                 n: 1,
                 size: "1024x1024",
+                response_format: "b64_json",
                 quality: "hd",
                 style: "natural"
             })

@@ -750,12 +750,13 @@
                     // 2. Prepare Prompt
                     let standardPrompt = "";
                     if (roomType === 'Kitchen') {
-                        standardPrompt = "contemporary kitchen remodel";
+                        standardPrompt = "modern, premium, luxury kitchen with sleek cabinetry, marble countertops, and high-end finishes";
                     } else {
                         // Bathroom Prompt
-                        standardPrompt = "Modernize this bathroom, and keep basic structure intact.";
+                        standardPrompt = "high-end modern bathroom with frameless glass shower, floating vanity, and premium tiles";
                     }
-                    currentFullPrompt = details ? `${standardPrompt} Additional details: ${details}` : standardPrompt;
+                    // If user added details, append them. Otherwise just use standard style.
+                    currentFullPrompt = details ? `${standardPrompt}, ${details}` : standardPrompt;
 
                     // 3. Generate Render
                     const success = await generateVision(currentImageUrl, currentFullPrompt);
