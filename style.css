@@ -118,7 +118,7 @@ img {
 }
 
 .desktop-only {
-    display: none;
+    display: none !important;
 }
 
 @media (min-width: 992px) {
@@ -683,7 +683,8 @@ img {
     max-width: 700px;
     /* Slightly wider */
     z-index: 1;
-    padding: var(--spacing-2xl) 0 var(--spacing-md);
+    z-index: 1;
+    padding: var(--spacing-2xl) var(--spacing-md) var(--spacing-md);
     /* Remove horizontal padding to align with logo */
     margin-left: 0;
     /* Ensure left alignment */
