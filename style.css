@@ -694,7 +694,7 @@ img {
     /* Larger font */
     margin-bottom: var(--spacing-md);
     letter-spacing: -1px;
-    color: var(--primary);
+    color: black;
     font-weight: 800;
     line-height: 1.1;
 }
