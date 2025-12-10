@@ -694,14 +694,14 @@ img {
     /* Larger font */
     margin-bottom: var(--spacing-md);
     letter-spacing: -1px;
-    color: var(--text-main);
+    color: var(--primary);
     font-weight: 800;
     line-height: 1.1;
 }
 
 .hero h2 {
     font-size: clamp(1.5rem, 5vw, 2.5rem);
-    color: var(--text-main);
+    color: var(--primary);
     margin-bottom: var(--spacing-sm);
     font-weight: 700;
 }
