@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2R Builds - Hammer Product Requirements</title>
+    <title>V2R Builds - Hammer App Specs</title>
     <meta name="description"
-        content="Product Requirements Document for V2R Builds Hammer - On-Site AI Estimate & Negotiation Assistant.">
+        content="Technical Specifications for V2R Builds Hammer - On-Site AI Estimate & Negotiation Assistant.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -28,21 +28,24 @@
             font-size: 2.5rem;
             margin-bottom: 1.5rem;
             color: var(--primary);
+            line-height: 1.2;
         }
 
         .prd-container h2 {
             font-size: 1.75rem;
-            margin-top: 2.5rem;
-            margin-bottom: 1rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
             border-bottom: 2px solid var(--border-light);
             padding-bottom: 0.5rem;
+            color: var(--text-main);
         }
 
         .prd-container h3 {
-            font-size: 1.25rem;
-            margin-top: 1.5rem;
-            margin-bottom: 0.75rem;
-            color: var(--text-secondary);
+            font-size: 1.35rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            font-weight: 600;
         }
 
         .prd-container p {
@@ -50,27 +53,44 @@
             line-height: 1.7;
         }
 
-        .prd-container ul {
-            list-style-type: disc;
+        .prd-container ul,
+        .prd-container ol {
             padding-left: 1.5rem;
             margin-bottom: 1.5rem;
         }
 
         .prd-container li {
             margin-bottom: 0.5rem;
+            line-height: 1.6;
         }
 
-        .prd-meta {
-            background: var(--bg-light);
+        .prd-container pre {
+            background: #f1f5f9;
             padding: 1.5rem;
             border-radius: 8px;
-            margin-bottom: 2rem;
+            overflow-x: auto;
+            margin-bottom: 1.5rem;
             border: 1px solid var(--border-light);
         }
 
-        .prd-meta p {
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+        .prd-container code {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            color: #334155;
+        }
+
+        .agent-card {
+            background: #fff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .agent-card h3 {
+            margin-top: 0;
+            font-size: 1.25rem;
         }
     </style>
 </head>
@@ -110,271 +130,358 @@
     </div>
 
     <div class="prd-container">
-        <h1>Product Requirements Document (PRD)</h1>
-        <h2>V2RBuilds – On-Site AI Estimate & Negotiation Assistant</h2>
+        <h1>App Name: V2RBuilds – On-Site AI Estimate & Negotiation Assistant</h1>
 
-        <div class="prd-meta">
-            <p><strong>Document Version:</strong> 1.0</p>
-            <p><strong>Owner:</strong> Product (V2RBuilds)</p>
-            <p><strong>Last Updated:</strong> 2025-12-10</p>
-        </div>
+        <h2>1. Purpose & High-Level Summary</h2>
+        <p>The app enables general contractors to record a walkthrough conversation, extract scope-of-work details,
+            generate an itemized renovation estimate in <60 seconds, and present a polished quote to homeowners for
+                negotiation.</p>
+                <p>The app must support multilingual contractors (Portuguese, Spanish, English) and produce a
+                    professional output instantly on-site.</p>
 
-        <h2>1. Product Overview</h2>
-        <p>V2RBuilds aims to give general contractors—especially Brazilian, Spanish-speaking, and other non-native
-            English speakers—a <em>competitive on-site closing tool</em> that produces accurate, itemized renovation
-            estimates <em>in real time</em>.</p>
-        <p>The tool reduces friction in negotiation, enhances contractor credibility, and bridges communication gaps
-            with homeowners.</p>
-        <p>This PRD defines the workflow, functionality, UI/UX expectations, and liability considerations for the
-            <em>AI-powered Estimate & Negotiation Assistant</em>.</p>
+                <h2>2. Core User Flow (Sequential)</h2>
+                <ol>
+                    <li>Contractor opens the app.</li>
+                    <li>Presses <strong>Start Walkthrough Recording</strong>.</li>
+                    <li>Contractor speaks normally; app records audio.</li>
+                    <li>Audio is transcribed, translated, and analyzed for:
+                        <ul>
+                            <li>scope</li>
+                            <li>materials</li>
+                            <li>labor</li>
+                            <li>dimensions</li>
+                            <li>timeline</li>
+                            <li>complexity</li>
+                        </ul>
+                    </li>
+                    <li>AI generates:
+                        <ul>
+                            <li>itemized estimate</li>
+                            <li>materials list</li>
+                            <li>labor/timeline</li>
+                            <li>profit margin</li>
+                            <li>recommended quote</li>
+                        </ul>
+                    </li>
+                    <li>Contractor reviews output.</li>
+                    <li>Contractor edits line items, materials, margins.</li>
+                    <li>Contractor taps <strong>Approve & Share</strong>.</li>
+                    <li>App generates polished PDF-style estimate.</li>
+                    <li>Contractor screenshares or sends estimate to homeowner.</li>
+                </ol>
 
-        <h2>2. Problem Statement</h2>
-        <p>General contractors (GCs) routinely lose deals because:</p>
-        <ul>
-            <li>They cannot generate polished estimates <em>immediately on-site</em>.</li>
-            <li>Language barriers limit negotiation effectiveness.</li>
-            <li>Homeowners frequently undervalue the actual cost of work.</li>
-            <li>Leaving the job site to “calculate and return later” reduces close rate and undermines trust.</li>
-        </ul>
-        <p>Contractors need a <em>fast, professional, guided tool</em> that:</p>
-        <ol style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
-            <li>Records job details on-site,</li>
-            <li>Converts them into an itemized estimate instantly,</li>
-            <li>Helps navigate budget misalignment and negotiation,</li>
-            <li>Presents a credible, polished output to the homeowner.</li>
-        </ol>
+                <h2>3. Agents (Antigravity Will Build These)</h2>
 
-        <h2>3. Goals & Success Criteria</h2>
-        <h3>3.1 Product Goals</h3>
-        <ul>
-            <li>Enable contractors to produce an accurate, professional, itemized estimate <em>within minutes</em> of
-                finishing the initial walkthrough.</li>
-            <li>Improve contractor win rates during first visit (“one-call close”).</li>
-            <li>Reduce negotiation disadvantage driven by language barriers.</li>
-            <li>Gather structured job data for future automations and pipeline insights.</li>
-        </ul>
+                <div class="agent-card">
+                    <h3>3.1 Audio Agent (Recording & Upload Agent)</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Start/stop audio recording</li>
+                        <li>Support Portuguese/Spanish/English</li>
+                        <li>Handle local caching if offline</li>
+                        <li>Upload audio file to processing agent</li>
+                    </ul>
+                    <p><strong>Inputs:</strong> Start recording command<br>
+                        <strong>Outputs:</strong> Audio file URL or blob
+                    </p>
+                </div>
 
-        <h3>3.2 Success Metrics</h3>
-        <ul>
-            <li><em>Time to estimate</em>
-                < 5 minutes from end of recording.</li>
-            <li><em>Contractor approval rate</em> > 90% (usefulness signal).</li>
-            <li><em>Homeowner acceptance/close rate</em> increases by 20–40%.</li>
-            <li><em>Daily active usage</em> among contractors generating ≥2 estimates/day.</li>
-        </ul>
+                <div class="agent-card">
+                    <h3>3.2 Transcription Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Convert audio → text</li>
+                        <li>Detect language</li>
+                        <li>Translate to English if needed</li>
+                        <li>Segment by room/task (based on contractor speech)</li>
+                    </ul>
+                    <p><strong>Inputs:</strong> Audio file<br>
+                        <strong>Outputs:</strong> JSON with:
+                    </p>
+                    <pre><code>{
+  "full_transcript": "...",
+  "segments": [...],
+  "language": "pt" | "es" | "en"
+}</code></pre>
+                </div>
 
-        <h2>4. User Personas</h2>
-        <h3>Primary User: General Contractor (GC)</h3>
-        <ul>
-            <li>Often bilingual but not fluent in English.</li>
-            <li>Needs fast turnaround, negotiation support, and credibility boosts.</li>
-            <li>Familiar with rough cost structures already.</li>
-        </ul>
+                <div class="agent-card">
+                    <h3>3.3 Scope Extraction Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Extract structured scope-of-work</li>
+                        <li>Extract materials, quality, measurements, tasks, complexity, timeline hints</li>
+                        <li>Infer missing values reasonably</li>
+                        <li>Compute recommended profit margin default (40–60%)</li>
+                    </ul>
+                    <p><strong>Input:</strong> Transcript JSON<br>
+                        <strong>Output:</strong> Structured scope:
+                    </p>
+                    <pre><code>{
+  "rooms": [...],
+  "materials": [...],
+  "labor_requirements": [...],
+  "timeline_notes": "...",
+  "complexity": "low|medium|high"
+}</code></pre>
+                </div>
 
-        <h3>Secondary User: Homeowner</h3>
-        <ul>
-            <li>Age 40–65 (low tech adoption).</li>
-            <li>High sensitivity to estimate presentation and perceived contractor professionalism.</li>
-            <li>Typically unaware of real pricing for renovations.</li>
-        </ul>
+                <div class="agent-card">
+                    <h3>3.4 Estimate Generation Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Convert structured scope → itemized estimate</li>
+                        <li>Calculate:
+                            <ul>
+                                <li>materials cost</li>
+                                <li>labor cost</li>
+                                <li>timeline</li>
+                                <li>GC margin</li>
+                                <li>total estimate</li>
+                                <li>recommended quote range</li>
+                            </ul>
+                        </li>
+                        <li>Use configurable regional rates</li>
+                        <li>Return <60s< /li>
+                    </ul>
+                    <p><strong>Input:</strong> Structured scope JSON<br>
+                        <strong>Output:</strong>
+                    </p>
+                    <pre><code>{
+  "items": [...],
+  "material_cost": ...,
+  "labor_cost": ...,
+  "total_cost": ...,
+  "margin": 0.4-0.6,
+  "recommended_quote": ...,
+  "options_good_better_best": {...}
+}</code></pre>
+                </div>
 
-        <h2>5. Product Scope</h2>
-        <h3>5.1 Workflow Requirements</h3>
-        <p><strong>Final Chosen Approach:</strong> Pedro’s “Hammer Approach” — real-time on-site estimate generation.
-        </p>
-        <p>The estimate is generated <em>after</em> the homeowner conversation but <em>before</em> leaving the house,
-            enabling immediate negotiation.</p>
+                <div class="agent-card">
+                    <h3>3.5 Sales Coach Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Provide pre-estimate prompt questions</li>
+                        <li>Provide negotiation scripts for non-native speakers</li>
+                        <li>Provide objections-handling suggestions</li>
+                    </ul>
+                    <p><strong>Input:</strong> None or job-type context<br>
+                        <strong>Output:</strong> List of prompts or scripts
+                    </p>
+                </div>
 
-        <h3>Workflow Steps</h3>
-        <ol style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
-            <li><em>Contractor interviews homeowner</em> (normal conversation).</li>
-            <li><em>Openly record a structured voice memo</em> in contractor’s preferred language.</li>
-            <li><em>AI analyzes recording in real time</em>, extracting:
+                <div class="agent-card">
+                    <h3>3.6 Estimate Editing Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Allow contractor to edit items, materials, margins</li>
+                        <li>Recalculate totals on demand</li>
+                        <li>Provide “recompute estimate” option</li>
+                    </ul>
+                    <p><strong>Input:</strong> Edited estimate JSON<br>
+                        <strong>Output:</strong> Updated estimate JSON
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3>3.7 Presentation Agent (PDF / UI Renderer)</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Generate polished PDF-style representation</li>
+                        <li>Branding: V2RBuilds</li>
+                        <li>Layout:
+                            <ul>
+                                <li>Logo</li>
+                                <li>Room-by-room</li>
+                                <li>Totals</li>
+                                <li>Options A/B/C</li>
+                            </ul>
+                        </li>
+                        <li>Produce shareable link or downloadable file</li>
+                    </ul>
+                    <p><strong>Input:</strong> Final estimate JSON<br>
+                        <strong>Output:</strong> Rendered PDF-like file or object
+                    </p>
+                </div>
+
+                <div class="agent-card">
+                    <h3>3.8 Compliance Agent</h3>
+                    <p><strong>Responsibilities:</strong></p>
+                    <ul>
+                        <li>Show dual-consent recording notice</li>
+                        <li>Show liability disclaimer</li>
+                        <li>Require contractor acknowledgement</li>
+                    </ul>
+                    <p><strong>Input:</strong> None<br>
+                        <strong>Output:</strong> Boolean on user agreement
+                    </p>
+                </div>
+
+                <h2>4. Screens (UI)</h2>
+                <h3>4.1 Home Screen</h3>
                 <ul>
-                    <li>Full scope of work</li>
-                    <li>Materials & quality level</li>
-                    <li>Square footage / linear footage</li>
-                    <li>Labor needs</li>
-                    <li>Timeline expectations</li>
+                    <li>Buttons:
+                        <ul>
+                            <li>“Start Walkthrough Recording”</li>
+                            <li>“Past Estimates”</li>
+                            <li>“Sales Coach”</li>
+                        </ul>
+                    </li>
+                    <li>Large bilingual buttons</li>
                 </ul>
-            </li>
-            <li><em>AI generates itemized estimate</em>, including:
+
+                <h3>4.2 Recording Screen</h3>
                 <ul>
-                    <li>Materials</li>
-                    <li>Labor</li>
-                    <li>Hours/timeline</li>
-                    <li>GC margin (40–60% editable)</li>
-                    <li>Total cost range & recommended price</li>
+                    <li>Record / Stop button</li>
+                    <li>Visual waveform</li>
+                    <li>Language indicator</li>
+                    <li>Legal consent banner (state-dependent)</li>
                 </ul>
-            </li>
-            <li><em>Contractor must review + approve</em> before sharing.</li>
-            <li><em>Contractor sends or screenshares polished estimate</em> to homeowner for negotiation.</li>
-        </ol>
 
-        <h2>6. Core Functional Requirements</h2>
-        <h3>6.1 Voice Recording</h3>
-        <ul>
-            <li>Recordings must support:
+                <h3>4.3 Processing Screen</h3>
                 <ul>
-                    <li>Portuguese (Brazilian)</li>
-                    <li>Spanish</li>
-                    <li>English</li>
+                    <li>Spinner with: “Analyzing project details…”</li>
+                    <li>Status indicators:
+                        <ul>
+                            <li>Transcribing</li>
+                            <li>Extracting scope</li>
+                            <li>Generating estimate</li>
+                        </ul>
+                    </li>
                 </ul>
-            </li>
-            <li>Transcription and translation required.</li>
-            <li>Ability to tag different rooms or tasks verbally.</li>
-        </ul>
-        <p><strong>Requirements:</strong></p>
-        <ul>
-            <li>≤ 60 minutes of recording.</li>
-            <li>Immediate upload and processing.</li>
-            <li>Offline fallback mode queued for upload later.</li>
-        </ul>
 
-        <h3>6.2 Real-Time Estimate Generation</h3>
-        <p><strong>Outputs Required</strong></p>
-        <ul>
-            <li>Itemized line-by-line breakdown</li>
-            <li>Material grade sliders (good / better / best)</li>
-            <li>Labor hours + timeline prediction</li>
-            <li>Profit margin visibility (40–60% default, editable)</li>
-            <li>Total cost + recommended quote</li>
-            <li>Optional: range-based pricing to protect negotiation flexibility</li>
-        </ul>
-        <p><strong>Technical Spec</strong></p>
-        <ul>
-            <li>Must generate estimate in < 60 seconds for a typical job.</li>
-            <li>Rates database configurable per region.</li>
-            <li>Contractor-specific historical pricing learning model (future version).</li>
-        </ul>
-
-        <h3>6.3 Contractor Validation Gate</h3>
-        <p>Before sending the estimate to homeowner, UI must include:</p>
-        <ul>
-            <li><em>“Approve & Share” button</em></li>
-            <li><em>“Edit Line Items” modal</em></li>
-            <li><em>“Recalculate with Adjusted Scope” option</em></li>
-        </ul>
-        <p>Contractor acknowledgement:</p>
-        <blockquote
-            style="border-left: 4px solid var(--primary); padding-left: 1rem; margin: 1rem 0; font-style: italic;">
-            “I accept responsibility for this estimate. V2RBuilds is not liable for pricing inaccuracies.”
-        </blockquote>
-        <p>They must tap <em>Agree</em> to proceed.</p>
-
-        <h2>7. Negotiation Facilitation Features</h2>
-        <h3>7.1 Strategic Question Prompts (“Sales Coach Mode”)</h3>
-        <p>Before estimate generation, the app prompts GC to ask:</p>
-        <ul>
-            <li>“What budget range are you hoping to stay within?”</li>
-            <li>“Have you gotten any other quotes yet?”</li>
-            <li>“When were you hoping to start?”</li>
-            <li>“What materials or brands do you prefer?”</li>
-        </ul>
-        <p>Purpose: Extract homeowner constraints <em>before</em> showing pricing.</p>
-
-        <h3>7.2 Professional Presentation Layer</h3>
-        <p>Estimate delivered in a <em>clean, modern, PDF-like format</em>:</p>
-        <ul>
-            <li>Logo & branding</li>
-            <li>Room-by-room structure</li>
-            <li>Clear totals</li>
-            <li>Options A/B/C for scope/quality</li>
-        </ul>
-        <p>Goal: elevate contractor credibility instantly.</p>
-
-        <h3>7.3 Scope Adjustment Sliders</h3>
-        <p>UI allows contractor to vary:</p>
-        <ul>
-            <li>Tile quality</li>
-            <li>Flooring type</li>
-            <li>Demo or no demo</li>
-            <li>Baseboard removal</li>
-            <li>Paint grade</li>
-            <li>Plumbing/electrical complexity</li>
-        </ul>
-        <p>Sliders recompute estimate in real time.</p>
-
-        <h3>7.4 Sales Scripts for Non-Native Speakers</h3>
-        <p>Built-in scripts for:</p>
-        <ul>
-            <li>Explaining cost differences</li>
-            <li>Anchoring homeowner expectations</li>
-            <li>Handling objections</li>
-            <li>Closing techniques for on-site deals</li>
-        </ul>
-        <p>Must be simple, one-tap prompts.</p>
-
-        <h2>8. Market Dynamics Considerations</h2>
-        <h3>8.1 Negotiation Patterns</h3>
-        <p>Insights the app must accommodate:</p>
-        <ul>
-            <li>Certain homeowner ethnic groups (e.g., Chinese) negotiate heavily.</li>
-            <li>Some homeowners negotiate despite lacking actual budget.</li>
-            <li>Contractors must rapidly identify whether the job is winnable.</li>
-        </ul>
-        <p><strong>Feature Implications</strong></p>
-        <ul>
-            <li>Add “Budget Alignment Score” (low/medium/high) based on conversation cues.</li>
-            <li>Color-coded warning if expectations appear unrealistic.</li>
-        </ul>
-
-        <h3>8.2 Reality Gap Management</h3>
-        <p>Homeowners often underestimate costs by 40–80%.</p>
-        <p>App must:</p>
-        <ul>
-            <li>Flag unrealistic expectations.</li>
-            <li>Help GC explain variance through:
+                <h3>4.4 Estimate Review Screen</h3>
                 <ul>
-                    <li>Visual breakdown</li>
-                    <li>Labor/material education modules</li>
+                    <li>Itemized list</li>
+                    <li>Expandable sections</li>
+                    <li>“Edit Line Items” button</li>
+                    <li>Sliders for:
+                        <ul>
+                            <li>material quality</li>
+                            <li>labor complexity</li>
+                            <li>timeline adjustments</li>
+                        </ul>
+                    </li>
+                    <li>Margin edit (40–60%)</li>
+                    <li>Buttons:
+                        <ul>
+                            <li>“Recalculate Estimate”</li>
+                            <li>“Approve & Share”</li>
+                        </ul>
+                    </li>
                 </ul>
-            </li>
-        </ul>
 
-        <h2>9. Legal & Liability Requirements</h2>
-        <h3>9.1 Contractor Responsibility Disclaimer</h3>
-        <p>Every estimate requires the contractor to acknowledge:</p>
-        <ul>
-            <li>They reviewed the output.</li>
-            <li>They adjusted pricing where necessary.</li>
-            <li>V2RBuilds is not liable for errors, omissions, or underbids.</li>
-        </ul>
+                <h3>4.5 Negotiation Tools Screen</h3>
+                <ul>
+                    <li>Budget alignment score</li>
+                    <li>Scripts:
+                        <ul>
+                            <li>Cost justification</li>
+                            <li>Anchoring</li>
+                            <li>Handling objections</li>
+                            <li>Closing phrases</li>
+                        </ul>
+                    </li>
+                </ul>
 
-        <h3>9.2 Data Handling</h3>
-        <ul>
-            <li>All recordings stored securely and encrypted.</li>
-            <li>Contractor must opt-in to recording.</li>
-            <li>For states requiring dual consent, app must surface legal notice.</li>
-        </ul>
+                <h3>4.6 Share Screen</h3>
+                <ul>
+                    <li>Rendered PDF preview</li>
+                    <li>Buttons:
+                        <ul>
+                            <li>“Share Link”</li>
+                            <li>“Download PDF”</li>
+                            <li>“Screenshare Mode”</li>
+                        </ul>
+                    </li>
+                </ul>
 
-        <h2>10. Non-Functional Requirements</h2>
-        <ul>
-            <li><em>Speed:</em> Estimate generation < 60 seconds.</li>
-            <li><em>Reliability:</em> 99% uptime for recording + transcription service.</li>
-            <li><em>Accuracy:</em> Must hit ±15% accuracy from experienced GC’s assessed quote.</li>
-            <li><em>Usability:</em> Designed for contractors with limited tech familiarity.</li>
-            <li><em>Accessibility:</em> Large buttons, bilingual UI, simple flow.</li>
-        </ul>
+                <h2>5. Workflows (End-to-End)</h2>
+                <h3>Workflow A — Generate Estimate</h3>
+                <ol>
+                    <li>User taps Start Recording → Audio Agent</li>
+                    <li>Stop Recording → Transcription Agent</li>
+                    <li>Transcript → Scope Extraction Agent</li>
+                    <li>Scope → Estimate Generation Agent</li>
+                    <li>Show Estimate Review Screen</li>
+                    <li>User edits → Estimate Editing Agent</li>
+                    <li>User approves → Compliance Agent → Presentation Agent</li>
+                    <li>Show PDF & share options</li>
+                </ol>
 
-        <h2>11. Out of Scope (for V1)</h2>
-        <ul>
-            <li>Multi-trade collaboration estimates.</li>
-            <li>Homeowner self-service mode.</li>
-            <li>Permitting workflows.</li>
-            <li>Materials ordering/inventory integration.</li>
-            <li>Payment collection or contract signing.</li>
-        </ul>
+                <h3>Workflow B — Negotiation Help</h3>
+                <ol>
+                    <li>User taps Sales Coach</li>
+                    <li>Sales Coach Agent returns prompts/scripts</li>
+                    <li>Display to user in simple UI</li>
+                </ol>
 
-        <h2>12. Future Enhancements</h2>
-        <ul>
-            <li>“Find Me Leads” — homeowner/contractor matching (“dating app”)</li>
-            <li>Historical cost training per GC</li>
-            <li>Integrated CRM and job pipeline</li>
-            <li>AI-driven photo recognition for scope validation</li>
-            <li>Multi-version quotes (Good/Better/Best) auto-generation</li>
-            <li>Dynamic negotiation assistant responsive to homeowner reactions</li>
-        </ul>
+                <h3>Workflow C — Recalculate Estimate</h3>
+                <ol>
+                    <li>User adjusts sliders or edits items</li>
+                    <li>Send updated input → Estimate Editing Agent</li>
+                    <li>Return updated totals</li>
+                    <li>Update UI in real time</li>
+                </ol>
+
+                <h2>6. Data Models</h2>
+                <h3>Recording Object</h3>
+                <pre><code>{
+  "id": string,
+  "audio_url": string,
+  "duration_seconds": number,
+  "language": string
+}</code></pre>
+
+                <h3>Estimate Object</h3>
+                <pre><code>{
+  "items": [...],
+  "materials": [...],
+  "labor": number,
+  "timeline": string,
+  "margin": number,
+  "total": number,
+  "recommended_quote": number
+}</code></pre>
+
+                <h3>Room Scope Object</h3>
+                <pre><code>{
+  "room_name": string,
+  "tasks": [...],
+  "materials": [...],
+  "sqft": number
+}</code></pre>
+
+                <h2>7. Constraints & Requirements</h2>
+                <ul>
+                    <li>Estimate generation <60 seconds</li>
+                    <li>Recording up to 60 minutes</li>
+                    <li>Works offline with queued upload</li>
+                    <li>Accuracy target: ±15%</li>
+                    <li>Bilingual UX (EN/PT/ES)</li>
+                    <li>Secure storage + encryption</li>
+                    <li>Contractor must approve estimate before sharing</li>
+                    <li>V2RBuilds not liable for inaccuracies</li>
+                </ul>
+
+                <h2>8. Out of Scope (V1)</h2>
+                <ul>
+                    <li>Multi-trade collaboration</li>
+                    <li>Homeowner self-service</li>
+                    <li>Permits</li>
+                    <li>Payments</li>
+                    <li>Inventory/material ordering</li>
+                </ul>
+
+                <h2>9. Future Enhancements</h2>
+                <ul>
+                    <li>AI photo-based scope</li>
+                    <li>CRM pipeline</li>
+                    <li>Historical cost learning</li>
+                    <li>Multi-version quotes auto-generation</li>
+                    <li>Dynamic objection handling</li>
+                </ul>
     </div>
 
     <footer>
