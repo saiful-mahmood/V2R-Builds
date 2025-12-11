@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2R Builds - Hammer Product Requirements</title>
+    <meta name="description"
+        content="Product Requirements Document for V2R Builds Hammer - On-Site AI Estimate & Negotiation Assistant.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" type="image/png" href="images/favicon.png">
+    <style>
+        .prd-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 120px 24px 60px;
+            font-family: var(--font-body);
+            color: var(--text-main);
+        }
+
+        .prd-container h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .prd-container h2 {
+            font-size: 1.75rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 0.5rem;
+        }
+
+        .prd-container h3 {
+            font-size: 1.25rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .prd-container p {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+        }
+
+        .prd-container ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .prd-container li {
+            margin-bottom: 0.5rem;
+        }
+
+        .prd-meta {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-light);
+        }
+
+        .prd-meta p {
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <div class="nav-left">
+                <a href="index.html" class="logo">
+                    <img src="images/logo-transparent.png" alt="V2R Logo" class="logo-icon">
+                    V2R <span class="highlight">Builds</span>
+                </a>
+                <ul class="nav-links desktop-only">
+                    <li><a href="index.html#approach">Why V2R?</a></li>
+                    <li><a href="index.html#what-you-get">What You Get</a></li>
+                    <li><a href="index.html#packages">Pricing</a></li>
+                </ul>
+            </div>
+            <div class="nav-right">
+                <a href="vision.html" class="btn-primary nav-btn desktop-only">Try Estimator</a>
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu">
+        <a href="index.html#approach" class="mobile-link">Why V2R?</a>
+        <a href="index.html#what-you-get" class="mobile-link">What You Get</a>
+        <a href="index.html#packages" class="mobile-link">Pricing</a>
+        <a href="vision.html" class="btn-primary mobile-btn">Try Estimator</a>
+    </div>
+
+    <div class="prd-container">
+        <h1>Product Requirements Document (PRD)</h1>
+        <h2>V2RBuilds – On-Site AI Estimate & Negotiation Assistant</h2>
+
+        <div class="prd-meta">
+            <p><strong>Document Version:</strong> 1.0</p>
+            <p><strong>Owner:</strong> Product (V2RBuilds)</p>
+            <p><strong>Last Updated:</strong> 2025-12-10</p>
+        </div>
+
+        <h2>1. Product Overview</h2>
+        <p>V2RBuilds aims to give general contractors—especially Brazilian, Spanish-speaking, and other non-native
+            English speakers—a <em>competitive on-site closing tool</em> that produces accurate, itemized renovation
+            estimates <em>in real time</em>.</p>
+        <p>The tool reduces friction in negotiation, enhances contractor credibility, and bridges communication gaps
+            with homeowners.</p>
+        <p>This PRD defines the workflow, functionality, UI/UX expectations, and liability considerations for the
+            <em>AI-powered Estimate & Negotiation Assistant</em>.</p>
+
+        <h2>2. Problem Statement</h2>
+        <p>General contractors (GCs) routinely lose deals because:</p>
+        <ul>
+            <li>They cannot generate polished estimates <em>immediately on-site</em>.</li>
+            <li>Language barriers limit negotiation effectiveness.</li>
+            <li>Homeowners frequently undervalue the actual cost of work.</li>
+            <li>Leaving the job site to “calculate and return later” reduces close rate and undermines trust.</li>
+        </ul>
+        <p>Contractors need a <em>fast, professional, guided tool</em> that:</p>
+        <ol style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+            <li>Records job details on-site,</li>
+            <li>Converts them into an itemized estimate instantly,</li>
+            <li>Helps navigate budget misalignment and negotiation,</li>
+            <li>Presents a credible, polished output to the homeowner.</li>
+        </ol>
+
+        <h2>3. Goals & Success Criteria</h2>
+        <h3>3.1 Product Goals</h3>
+        <ul>
+            <li>Enable contractors to produce an accurate, professional, itemized estimate <em>within minutes</em> of
+                finishing the initial walkthrough.</li>
+            <li>Improve contractor win rates during first visit (“one-call close”).</li>
+            <li>Reduce negotiation disadvantage driven by language barriers.</li>
+            <li>Gather structured job data for future automations and pipeline insights.</li>
+        </ul>
+
+        <h3>3.2 Success Metrics</h3>
+        <ul>
+            <li><em>Time to estimate</em>
+                < 5 minutes from end of recording.</li>
+            <li><em>Contractor approval rate</em> > 90% (usefulness signal).</li>
+            <li><em>Homeowner acceptance/close rate</em> increases by 20–40%.</li>
+            <li><em>Daily active usage</em> among contractors generating ≥2 estimates/day.</li>
+        </ul>
+
+        <h2>4. User Personas</h2>
+        <h3>Primary User: General Contractor (GC)</h3>
+        <ul>
+            <li>Often bilingual but not fluent in English.</li>
+            <li>Needs fast turnaround, negotiation support, and credibility boosts.</li>
+            <li>Familiar with rough cost structures already.</li>
+        </ul>
+
+        <h3>Secondary User: Homeowner</h3>
+        <ul>
+            <li>Age 40–65 (low tech adoption).</li>
+            <li>High sensitivity to estimate presentation and perceived contractor professionalism.</li>
+            <li>Typically unaware of real pricing for renovations.</li>
+        </ul>
+
+        <h2>5. Product Scope</h2>
+        <h3>5.1 Workflow Requirements</h3>
+        <p><strong>Final Chosen Approach:</strong> Pedro’s “Hammer Approach” — real-time on-site estimate generation.
+        </p>
+        <p>The estimate is generated <em>after</em> the homeowner conversation but <em>before</em> leaving the house,
+            enabling immediate negotiation.</p>
+
+        <h3>Workflow Steps</h3>
+        <ol style="padding-left: 1.5rem; margin-bottom: 1.5rem;">
+            <li><em>Contractor interviews homeowner</em> (normal conversation).</li>
+            <li><em>Openly record a structured voice memo</em> in contractor’s preferred language.</li>
+            <li><em>AI analyzes recording in real time</em>, extracting:
+                <ul>
+                    <li>Full scope of work</li>
+                    <li>Materials & quality level</li>
+                    <li>Square footage / linear footage</li>
+                    <li>Labor needs</li>
+                    <li>Timeline expectations</li>
+                </ul>
+            </li>
+            <li><em>AI generates itemized estimate</em>, including:
+                <ul>
+                    <li>Materials</li>
+                    <li>Labor</li>
+                    <li>Hours/timeline</li>
+                    <li>GC margin (40–60% editable)</li>
+                    <li>Total cost range & recommended price</li>
+                </ul>
+            </li>
+            <li><em>Contractor must review + approve</em> before sharing.</li>
+            <li><em>Contractor sends or screenshares polished estimate</em> to homeowner for negotiation.</li>
+        </ol>
+
+        <h2>6. Core Functional Requirements</h2>
+        <h3>6.1 Voice Recording</h3>
+        <ul>
+            <li>Recordings must support:
+                <ul>
+                    <li>Portuguese (Brazilian)</li>
+                    <li>Spanish</li>
+                    <li>English</li>
+                </ul>
+            </li>
+            <li>Transcription and translation required.</li>
+            <li>Ability to tag different rooms or tasks verbally.</li>
+        </ul>
+        <p><strong>Requirements:</strong></p>
+        <ul>
+            <li>≤ 60 minutes of recording.</li>
+            <li>Immediate upload and processing.</li>
+            <li>Offline fallback mode queued for upload later.</li>
+        </ul>
+
+        <h3>6.2 Real-Time Estimate Generation</h3>
+        <p><strong>Outputs Required</strong></p>
+        <ul>
+            <li>Itemized line-by-line breakdown</li>
+            <li>Material grade sliders (good / better / best)</li>
+            <li>Labor hours + timeline prediction</li>
+            <li>Profit margin visibility (40–60% default, editable)</li>
+            <li>Total cost + recommended quote</li>
+            <li>Optional: range-based pricing to protect negotiation flexibility</li>
+        </ul>
+        <p><strong>Technical Spec</strong></p>
+        <ul>
+            <li>Must generate estimate in < 60 seconds for a typical job.</li>
+            <li>Rates database configurable per region.</li>
+            <li>Contractor-specific historical pricing learning model (future version).</li>
+        </ul>
+
+        <h3>6.3 Contractor Validation Gate</h3>
+        <p>Before sending the estimate to homeowner, UI must include:</p>
+        <ul>
+            <li><em>“Approve & Share” button</em></li>
+            <li><em>“Edit Line Items” modal</em></li>
+            <li><em>“Recalculate with Adjusted Scope” option</em></li>
+        </ul>
+        <p>Contractor acknowledgement:</p>
+        <blockquote
+            style="border-left: 4px solid var(--primary); padding-left: 1rem; margin: 1rem 0; font-style: italic;">
+            “I accept responsibility for this estimate. V2RBuilds is not liable for pricing inaccuracies.”
+        </blockquote>
+        <p>They must tap <em>Agree</em> to proceed.</p>
+
+        <h2>7. Negotiation Facilitation Features</h2>
+        <h3>7.1 Strategic Question Prompts (“Sales Coach Mode”)</h3>
+        <p>Before estimate generation, the app prompts GC to ask:</p>
+        <ul>
+            <li>“What budget range are you hoping to stay within?”</li>
+            <li>“Have you gotten any other quotes yet?”</li>
+            <li>“When were you hoping to start?”</li>
+            <li>“What materials or brands do you prefer?”</li>
+        </ul>
+        <p>Purpose: Extract homeowner constraints <em>before</em> showing pricing.</p>
+
+        <h3>7.2 Professional Presentation Layer</h3>
+        <p>Estimate delivered in a <em>clean, modern, PDF-like format</em>:</p>
+        <ul>
+            <li>Logo & branding</li>
+            <li>Room-by-room structure</li>
+            <li>Clear totals</li>
+            <li>Options A/B/C for scope/quality</li>
+        </ul>
+        <p>Goal: elevate contractor credibility instantly.</p>
+
+        <h3>7.3 Scope Adjustment Sliders</h3>
+        <p>UI allows contractor to vary:</p>
+        <ul>
+            <li>Tile quality</li>
+            <li>Flooring type</li>
+            <li>Demo or no demo</li>
+            <li>Baseboard removal</li>
+            <li>Paint grade</li>
+            <li>Plumbing/electrical complexity</li>
+        </ul>
+        <p>Sliders recompute estimate in real time.</p>
+
+        <h3>7.4 Sales Scripts for Non-Native Speakers</h3>
+        <p>Built-in scripts for:</p>
+        <ul>
+            <li>Explaining cost differences</li>
+            <li>Anchoring homeowner expectations</li>
+            <li>Handling objections</li>
+            <li>Closing techniques for on-site deals</li>
+        </ul>
+        <p>Must be simple, one-tap prompts.</p>
+
+        <h2>8. Market Dynamics Considerations</h2>
+        <h3>8.1 Negotiation Patterns</h3>
+        <p>Insights the app must accommodate:</p>
+        <ul>
+            <li>Certain homeowner ethnic groups (e.g., Chinese) negotiate heavily.</li>
+            <li>Some homeowners negotiate despite lacking actual budget.</li>
+            <li>Contractors must rapidly identify whether the job is winnable.</li>
+        </ul>
+        <p><strong>Feature Implications</strong></p>
+        <ul>
+            <li>Add “Budget Alignment Score” (low/medium/high) based on conversation cues.</li>
+            <li>Color-coded warning if expectations appear unrealistic.</li>
+        </ul>
+
+        <h3>8.2 Reality Gap Management</h3>
+        <p>Homeowners often underestimate costs by 40–80%.</p>
+        <p>App must:</p>
+        <ul>
+            <li>Flag unrealistic expectations.</li>
+            <li>Help GC explain variance through:
+                <ul>
+                    <li>Visual breakdown</li>
+                    <li>Labor/material education modules</li>
+                </ul>
+            </li>
+        </ul>
+
+        <h2>9. Legal & Liability Requirements</h2>
+        <h3>9.1 Contractor Responsibility Disclaimer</h3>
+        <p>Every estimate requires the contractor to acknowledge:</p>
+        <ul>
+            <li>They reviewed the output.</li>
+            <li>They adjusted pricing where necessary.</li>
+            <li>V2RBuilds is not liable for errors, omissions, or underbids.</li>
+        </ul>
+
+        <h3>9.2 Data Handling</h3>
+        <ul>
+            <li>All recordings stored securely and encrypted.</li>
+            <li>Contractor must opt-in to recording.</li>
+            <li>For states requiring dual consent, app must surface legal notice.</li>
+        </ul>
+
+        <h2>10. Non-Functional Requirements</h2>
+        <ul>
+            <li><em>Speed:</em> Estimate generation < 60 seconds.</li>
+            <li><em>Reliability:</em> 99% uptime for recording + transcription service.</li>
+            <li><em>Accuracy:</em> Must hit ±15% accuracy from experienced GC’s assessed quote.</li>
+            <li><em>Usability:</em> Designed for contractors with limited tech familiarity.</li>
+            <li><em>Accessibility:</em> Large buttons, bilingual UI, simple flow.</li>
+        </ul>
+
+        <h2>11. Out of Scope (for V1)</h2>
+        <ul>
+            <li>Multi-trade collaboration estimates.</li>
+            <li>Homeowner self-service mode.</li>
+            <li>Permitting workflows.</li>
+            <li>Materials ordering/inventory integration.</li>
+            <li>Payment collection or contract signing.</li>
+        </ul>
+
+        <h2>12. Future Enhancements</h2>
+        <ul>
+            <li>“Find Me Leads” — homeowner/contractor matching (“dating app”)</li>
+            <li>Historical cost training per GC</li>
+            <li>Integrated CRM and job pipeline</li>
+            <li>AI-driven photo recognition for scope validation</li>
+            <li>Multi-version quotes (Good/Better/Best) auto-generation</li>
+            <li>Dynamic negotiation assistant responsive to homeowner reactions</li>
+        </ul>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">V2R Builds</div>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+            <p>&copy; 2025 V2R Builds. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
