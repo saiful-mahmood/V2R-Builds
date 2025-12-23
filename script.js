@@ -439,4 +439,59 @@ document.addEventListener('DOMContentLoaded', () => {
             paintResult.style.display = 'block';
         });
     }
+    // ========================================
+    // MAIN CONTACT FORM HANDLING
+    // ========================================
+    const contactForm = document.getElementById('contact-form');
+    const formStatus = document.getElementById('form-status');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+
+            const formData = new FormData(contactForm);
+
+            try {
+                const response = await fetch(contactForm.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    // Success
+                    formStatus.style.display = 'block';
+                    formStatus.style.backgroundColor = '#dcfce7';
+                    formStatus.style.color = '#166534';
+                    formStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Thanks! You have joined the waitlist.';
+
+                    // Clear form
+                    contactForm.reset();
+
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        formStatus.style.display = 'none';
+                    }, 5000);
+                } else {
+                    // Error
+                    throw new Error('Submission failed');
+                }
+            } catch (error) {
+                formStatus.style.display = 'block';
+                formStatus.style.backgroundColor = '#fee2e2';
+                formStatus.style.color = '#991b1b';
+                formStatus.textContent = 'Oops! There was a problem. Please try again.';
+            } finally {
+                submitBtn.textContent = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+    }
 });
