@@ -2257,3 +2257,49 @@ footer {
         margin: -10px 0;
     }
 }
+
+/* ========================================
+   V2R ESTIMATE TOOL SECTION
+   ======================================== */
+.estimate-tool-section {
+    padding: var(--spacing-xl) 0;
+    background: var(--bg-light);
+    text-align: center;
+}
+
+.estimate-tool-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: var(--spacing-md);
+    margin-top: var(--spacing-lg);
+}
+
+.estimate-tool-item {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease;
+}
+
+.estimate-tool-item:hover {
+    transform: translateY(-5px);
+}
+
+.estimate-tool-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .estimate-tool-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .estimate-tool-grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
