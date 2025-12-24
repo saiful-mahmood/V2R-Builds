@@ -701,7 +701,7 @@ img {
 }
 
 .hero h2 {
-    font-size: clamp(1.5rem, 5vw, 2.5rem);
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
     color: var(--primary);
     margin-bottom: var(--spacing-sm);
     font-weight: 700;
