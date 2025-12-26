@@ -2566,6 +2566,8 @@ footer {
         transform: none;
         width: 100%;
         height: auto;
+        max-height: none;
+        /* Let it grow as needed */
         justify-content: center;
         align-items: center;
         /* Center horizontally */
