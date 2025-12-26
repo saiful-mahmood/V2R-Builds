@@ -2452,6 +2452,7 @@ footer {
         font-size: 1.75rem;
     }
 }
+
 /* ========================================
    HERO VISUALS (Phone Mockups) - SIDE BY SIDE
    ======================================== */
@@ -2460,54 +2461,54 @@ footer {
     right: 0;
     top: 50%;
     transform: translateY(-50%);
-    width: 50%; /* Occupy right half */
-    height: 85%; /* Constrain to slightly less than hero height */
+    width: 50%;
+    /* Occupy right half */
+    height: 85%;
+    /* Constrain to slightly less than hero height */
     pointer-events: none;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 30px; /* Space between phones */
+    gap: 30px;
+    /* Space between phones */
 }
 
 .phone-mockup {
-    height: 100%; /* Fill the container height */
-    width: auto; /* Allow width to scale naturally */
-    aspect-ratio: 9/19.5; /* Approximate phone aspect ratio to reserve space */
-    border-radius: 40px; /* Match standard phone corners */
+    height: 100%;
+    /* Fill the container height */
+    width: auto;
+    /* Allow width to scale naturally */
+    aspect-ratio: 9/19.5;
+    /* Approximate phone aspect ratio to reserve space */
+    border-radius: 40px;
+    /* Match standard phone corners */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     position: relative;
-    overflow: hidden; /* Ensure image stays within border radius */
-    background: white; /* Fallback background */
+    overflow: hidden;
+    /* Ensure image stays within border radius */
+    background: white;
+    /* Fallback background */
 }
 
 /* Make images fit perfectly inside mockup containers */
 .phone-mockup img {
     height: 100%;
     width: 100%;
-    object-fit: cover; /* Cover the mockup area */
+    object-fit: cover;
+    /* Cover the mockup area */
     display: block;
 }
 
-/* Animations */
-@keyframes hover-1 {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-15px); }
-}
-
-@keyframes hover-2 {
-    0%, 100% { transform: translateY(-20px); }
-    50% { transform: translateY(-5px); }
-}
-
 .recording-screen {
-    animation: hover-1 6s ease-in-out infinite;
+    /* Static position */
     transform: translateY(0px);
 }
 
 .quote-screen {
-    animation: hover-2 7s ease-in-out infinite 0.5s; /* Offset animation */
-    /* Visual layering: make one appear slightly behind or distinct if needed */
+    /* Static position */
+    transform: translateY(-10px);
+    /* Slight offset for visual interest without movement */
 }
 
 /* Update Hero Layout to Accommodate Visuals */
@@ -2516,10 +2517,11 @@ footer {
         justify-content: space-between;
         /* Ensure content doesn't overlap visuals */
     }
-    
+
     .hero-content {
         margin-left: 5%;
-        max-width: 45%; /* Restrict text width to left side */
+        max-width: 45%;
+        /* Restrict text width to left side */
         position: relative;
         z-index: 10;
     }
@@ -2528,20 +2530,21 @@ footer {
 /* Mobile/Tablet: Hide visuals or stack */
 @media (max-width: 1024px) {
     .hero-visuals {
-        display: none; /* Hide on smaller screens to prioritize content */
+        display: none;
+        /* Hide on smaller screens to prioritize content */
     }
-    
+
     .hero {
         justify-content: center;
         text-align: center;
     }
-    
+
     .hero-content {
         align-items: center;
         margin: 0 auto;
         max-width: 90%;
     }
-    
+
     .hero-buttons {
         justify-content: center;
     }
