@@ -2561,6 +2561,8 @@ footer {
 
     .hero-visuals {
         display: flex;
+        flex-direction: column;
+        /* Stack vertically */
         position: relative;
         right: auto;
         top: auto;
@@ -2568,15 +2570,17 @@ footer {
         width: 100%;
         height: auto;
         justify-content: center;
-        align-items: flex-start;
-        gap: 15px;
+        align-items: center;
+        /* Center horizontally */
+        gap: 24px;
+        /* Space between the two phones */
         margin-top: 0;
     }
 
     .phone-mockup {
-        width: 42%;
-        /* Show side by side */
-        max-width: 220px;
+        width: 70%;
+        /* Make them larger for readability */
+        max-width: 300px;
         height: auto;
         aspect-ratio: 9/19.5;
         border-radius: 24px;
@@ -2584,7 +2588,7 @@ footer {
     }
 
     .quote-screen {
-        transform: translateY(30px);
-        /* Stagger effect */
+        transform: none;
+        /* Remove stagger, rely on flex gap */
     }
 }
