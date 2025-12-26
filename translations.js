@@ -1,7 +1,7 @@
 const translations = {
     en: {
         hero_title: "Instant Estimates <span class=\"highlight\">With AI</span>",
-        hero_subtitle: "Record your walkthrough, speak naturally (even in Portugese 🇧🇷), and let AI turn it into a clear, itemized, homeowner-ready estimate — before the conversation ends.",
+        hero_subtitle: "Record your walkthrough, speak naturally (even in Portuguese 🇧🇷, or Spanish 🇪🇸), and let AI turn it into a clear, itemized, homeowner-ready estimate — before the conversation ends.",
         cta_join: "<i class=\"fa-solid fa-wand-magic-sparkles\"></i> Join Early Access List",
         stats_label: "See immediate results",
         stat_1_text: "Less time spent chasing missing details",
@@ -61,7 +61,7 @@ const translations = {
     },
     pt: {
         hero_title: "Orçamentos Instantâneos <span class=\"highlight\">Com IA</span>",
-        hero_subtitle: "Grave o seu walkthrough, fale naturalmente (mesmo em Português 🇧🇷) e deixe a IA transformar tudo num orçamento claro, detalhado e pronto para o cliente — antes de a conversa terminar.",
+        hero_subtitle: "Grave o seu walkthrough, fale naturalmente (mesmo em Português 🇧🇷 ou Espanhol 🇪🇸) e deixe a IA transformar tudo num orçamento claro, detalhado e pronto para o cliente — antes de a conversa terminar.",
         cta_join: "<i class=\"fa-solid fa-wand-magic-sparkles\"></i> Entrar na Lista de Espera",
         stats_label: "Veja resultados imediatos",
         stat_1_text: "Menos tempo correndo atrás de detalhes",
@@ -121,7 +121,7 @@ const translations = {
     },
     es: {
         hero_title: "Presupuestos Instantáneos <span class=\"highlight\">Con IA</span>",
-        hero_subtitle: "Graba tu recorrido, habla con naturalidad (incluso en portugués 🇧🇷) y deja que la IA lo convierta en un presupuesto claro, detallado y listo para el cliente — antes de que termine la conversación.",
+        hero_subtitle: "Graba tu recorrido, habla con naturalidad (incluso en portugués 🇧🇷 o español 🇪🇸) y deja que la IA lo convierta en un presupuesto claro, detallado y listo para el cliente — antes de que termine la conversación.",
         cta_join: "<i class=\"fa-solid fa-wand-magic-sparkles\"></i> Unirse a la Lista de Acceso",
         stats_label: "Ver resultados inmediatos",
         stat_1_text: "Menos tiempo persiguiendo detalles",
