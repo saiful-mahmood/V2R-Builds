@@ -2768,4 +2768,9 @@ footer {
         right: -10px;
         /* Slight offset compensation */
     }
+
+    .lang-btn {
+        color: black;
+        border-color: rgba(0, 0, 0, 0.2);
+    }
 }
