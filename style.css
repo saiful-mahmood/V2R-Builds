@@ -2475,16 +2475,22 @@ footer {
 }
 
 .phone-mockup {
-    /* Use fixed VH height for consistency across screens */
-    height: 65vh;
-    max-height: 700px;
-    width: auto;
-    aspect-ratio: 9/19.5;
-    border-radius: 40px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    /* Base styles */
     position: relative;
     overflow: hidden;
     background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+}
+
+/* Desktop-specific sizing */
+@media (min-width: 1025px) {
+    .phone-mockup {
+        height: 65vh;
+        max-height: 700px;
+        width: auto;
+        aspect-ratio: 9/19.5;
+        border-radius: 40px;
+    }
 }
 
 /* Make images fit perfectly inside mockup containers */
@@ -2563,15 +2569,16 @@ footer {
         justify-content: center;
         align-items: center;
         /* Center horizontally */
-        gap: 24px;
-        /* Space between the two phones */
+        gap: 32px;
+        /* Increased space between the two phones */
         margin-top: 0;
     }
 
     .phone-mockup {
-        width: 70%;
-        /* Make them larger for readability */
-        max-width: 300px;
+        width: 85%;
+        /* Larger width for mobile */
+        max-width: 400px;
+        /* Increased max-width */
         height: auto;
         aspect-ratio: 9/19.5;
         border-radius: 24px;
@@ -2580,6 +2587,5 @@ footer {
 
     .quote-screen {
         transform: none;
-        /* Remove stagger, rely on flex gap */
     }
 }
