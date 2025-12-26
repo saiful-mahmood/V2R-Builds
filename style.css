@@ -2465,7 +2465,7 @@ footer {
 /* ======================================== */
 
 .mobile-swipe-indicator {
-    display: none;
+    display: none !important;
 }
 
 /* ========================================
@@ -2638,7 +2638,7 @@ footer {
 
     /* Swipe Indicator */
     .mobile-swipe-indicator {
-        display: flex;
+        display: flex !important;
         align-items: center;
         justify-content: center;
         gap: 8px;
@@ -2775,7 +2775,7 @@ footer {
     }
 
     .lang-btn {
-        color: black;
+        color: black !important;
         border-color: rgba(0, 0, 0, 0.2);
     }
 }
