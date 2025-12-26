@@ -2445,13 +2445,18 @@ footer {
         width: 100%;
     }
 
-    .stat-value {
-        min-width: 70px;
-        /* Smaller on mobile */
-        text-align: left;
-        font-size: 1.75rem;
+    .mobile-swipe-indicator {
+        display: none;
     }
 }
+
+.stat-value {
+    min-width: 70px;
+    /* Smaller on mobile */
+    text-align: left;
+    font-size: 1.75rem;
+}
+
 
 /* ========================================
 /* ========================================
@@ -2558,8 +2563,8 @@ footer {
 
     .hero-visuals {
         display: flex;
-        flex-direction: column;
-        /* Stack vertically */
+        flex-direction: row;
+        /* Horizontal layout */
         position: relative;
         right: auto;
         top: auto;
@@ -2567,35 +2572,84 @@ footer {
         width: 100%;
         height: auto;
         max-height: none;
-        /* Let it grow as needed */
-        justify-content: center;
         align-items: center;
-        /* Center horizontally */
-        gap: 32px;
-        /* Increased space between the two phones */
-        margin-top: 0;
+        /* Scroll snapping properties */
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        /* Smooth scrolling on iOS */
+        gap: 20px;
+        padding: 20px 5% 40px 5%;
+        /* Padding for scroll area and shadow, side padding to peek */
+        box-sizing: border-box;
+        justify-content: flex-start;
+        /* Align items to start for scrolling */
+    }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .hero-visuals::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .hero-visuals {
+        -ms-overflow-style: none;
+        /* IE and Edge */
+        scrollbar-width: none;
+        /* Firefox */
     }
 
     .phone-mockup {
-        width: 85%;
-        /* Larger width for mobile */
+        width: 85vw;
+        /* Almost full width relative to viewport */
+        min-width: 85vw;
+        /* Force width */
         max-width: 400px;
-        /* Increased max-width */
+        flex-shrink: 0;
+        /* Prevent shrinking */
         height: auto;
         aspect-ratio: auto;
-        /* Let content dictate height */
         border-radius: 24px;
         box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        scroll-snap-align: center;
+        /* Snap to center */
+        margin: 0;
     }
 
     .phone-mockup img {
         height: auto;
-        /* Allow natural height */
         object-fit: contain;
-        /* Ensure full image is visible */
     }
 
     .quote-screen {
         transform: none;
+    }
+
+    /* Swipe Indicator */
+    .mobile-swipe-indicator {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-top: -20px;
+        /* Pull closer to carousel */
+        padding-bottom: 20px;
+        animation: pulse-horizontal 2s infinite;
+    }
+
+    @keyframes pulse-horizontal {
+        0% {
+            transform: translateX(0);
+        }
+
+        50% {
+            transform: translateX(5px);
+        }
+
+        100% {
+            transform: translateX(0);
+        }
     }
 }
