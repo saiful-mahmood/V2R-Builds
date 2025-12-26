@@ -2573,6 +2573,8 @@ footer {
         height: auto;
         max-height: none;
         align-items: center;
+        pointer-events: auto;
+        /* Enable swiping */
         /* Scroll snapping properties */
         overflow-x: auto;
         scroll-snap-type: x mandatory;
@@ -2632,24 +2634,28 @@ footer {
         justify-content: center;
         gap: 8px;
         color: var(--text-secondary);
-        font-size: 0.9rem;
+        font-size: 1.5rem;
+        /* Larger icon */
         margin-top: -20px;
         /* Pull closer to carousel */
         padding-bottom: 20px;
-        animation: pulse-horizontal 2s infinite;
+        animation: swipe-gesture 2s infinite ease-in-out;
     }
 
-    @keyframes pulse-horizontal {
+    @keyframes swipe-gesture {
         0% {
-            transform: translateX(0);
+            transform: translateX(-10px);
+            opacity: 0.5;
         }
 
         50% {
-            transform: translateX(5px);
+            transform: translateX(10px);
+            opacity: 1;
         }
 
         100% {
-            transform: translateX(0);
+            transform: translateX(-10px);
+            opacity: 0.5;
         }
     }
 }
