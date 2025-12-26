@@ -2507,8 +2507,7 @@ footer {
 
 .quote-screen {
     /* Static position */
-    transform: translateY(-10px);
-    /* Slight offset for visual interest without movement */
+    transform: translateY(0px);
 }
 
 /* Update Hero Layout to Accommodate Visuals */
