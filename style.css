@@ -2454,6 +2454,7 @@ footer {
 }
 
 /* ========================================
+/* ========================================
    HERO VISUALS (Phone Mockups) - SIDE BY SIDE
    ======================================== */
 .hero-visuals {
@@ -2462,33 +2463,28 @@ footer {
     top: 50%;
     transform: translateY(-50%);
     width: 50%;
-    /* Occupy right half */
-    height: 85%;
-    /* Constrain to slightly less than hero height */
+    height: auto;
+    max-height: 90vh;
+    /* Allow it to take space but not overflow */
     pointer-events: none;
     z-index: 2;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px;
-    /* Space between phones */
 }
 
 .phone-mockup {
-    height: 100%;
-    /* Fill the container height */
+    /* Use fixed VH height for consistency across screens */
+    height: 65vh;
+    max-height: 700px;
     width: auto;
-    /* Allow width to scale naturally */
     aspect-ratio: 9/19.5;
-    /* Approximate phone aspect ratio to reserve space */
     border-radius: 40px;
-    /* Match standard phone corners */
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
-    /* Ensure image stays within border radius */
     background: white;
-    /* Fallback background */
 }
 
 /* Make images fit perfectly inside mockup containers */
@@ -2496,18 +2492,14 @@ footer {
     height: 100%;
     width: 100%;
     object-fit: cover;
-    /* Cover the mockup area */
     display: block;
 }
 
-.recording-screen {
-    /* Static position */
-    transform: translateY(0px);
-}
-
+.recording-screen,
 .quote-screen {
-    /* Static position */
-    transform: translateY(0px);
+    /* Ensure no transforms affect alignment */
+    transform: none;
+    margin: 0;
 }
 
 /* Update Hero Layout to Accommodate Visuals */
