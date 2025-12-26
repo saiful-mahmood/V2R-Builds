@@ -266,6 +266,8 @@ img {
     padding: var(--spacing-md) 0;
     background: transparent;
     transition: all 0.3s ease;
+    overflow: visible;
+    /* Ensure dropdowns are visible */
 }
 
 .navbar.scrolled {
@@ -532,6 +534,8 @@ img {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    overflow: visible;
+    /* Ensure dropdowns are visible */
 }
 
 .logo {
