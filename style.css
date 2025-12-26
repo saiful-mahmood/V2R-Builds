@@ -2659,3 +2659,109 @@ footer {
         }
     }
 }
+
+/* ========================================
+   LANGUAGE SELECTOR
+   ======================================== */
+.language-selector {
+    position: relative;
+    z-index: 1000;
+}
+
+.lang-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Subtle border for contrast if on dark */
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: white;
+    /* Assumption: Nav is dark or transparent on dark hero */
+    transition: all 0.2s ease;
+}
+
+/* If navbar becomes white on scroll, we need to handle text color */
+.navbar.scrolled .lang-btn {
+    color: var(--text-main);
+    border-color: var(--border-light);
+}
+
+.lang-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar.scrolled .lang-btn:hover {
+    background: var(--bg-light);
+}
+
+.lang-flag {
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+.lang-code {
+    text-transform: uppercase;
+}
+
+.lang-menu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 160px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    padding: 8px 0;
+    margin-top: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    list-style: none;
+    border: 1px solid var(--border-light);
+}
+
+.language-selector.active .lang-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.lang-menu li {
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    transition: background 0.1s ease;
+}
+
+.lang-menu li:hover {
+    background: var(--bg-light);
+}
+
+.lang-menu li.selected {
+    background: #eff6ff;
+    color: var(--primary);
+    font-weight: 600;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 900px) {
+    .language-selector {
+        margin-left: auto;
+        /* Push to right */
+    }
+
+    .lang-menu {
+        right: -10px;
+        /* Slight offset compensation */
+    }
+}

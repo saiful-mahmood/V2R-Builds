@@ -31,8 +31,22 @@
                 </ul>
             </div>
             <div class="nav-right">
-                <!-- CTA removed as requested -->
-                <!-- Hamburger removed as requested -->
+                <!-- Language Selector -->
+                <div class="language-selector">
+                    <button class="lang-btn">
+                        <span class="lang-flag">🇺🇸</span>
+                        <span class="lang-code">EN</span>
+                        <i class="fa-solid fa-caret-down"></i>
+                    </button>
+                    <ul class="lang-menu">
+                        <li data-lang="en" data-flag="🇺🇸" data-code="EN"><span class="lang-flag">🇺🇸</span> English
+                        </li>
+                        <li data-lang="pt" data-flag="🇧🇷" data-code="PT"><span class="lang-flag">🇧🇷</span> Português
+                        </li>
+                        <li data-lang="es" data-flag="🇪🇸" data-code="ES"><span class="lang-flag">🇪🇸</span> Español
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </nav>
@@ -45,13 +59,15 @@
         </video>
         <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1 class="animate-fade-in">Instant Estimates <span class="highlight">With AI</span></h1>
-            <p class="animate-slide-up" style="animation-delay: 0.2s;">Record your walkthrough, speak naturally (even in
+            <h1 class="animate-fade-in" data-i18n="hero_title">Instant Estimates <span class="highlight">With AI</span>
+            </h1>
+            <p class="animate-slide-up" style="animation-delay: 0.2s;" data-i18n="hero_subtitle">Record your
+                walkthrough, speak naturally (even in
                 Portugese 🇧🇷), and let AI turn it into a clear, itemized, homeowner-ready estimate — before the
                 conversation ends.</p>
 
             <div class="hero-buttons animate-slide-up" style="animation-delay: 0.6s;">
-                <a href="#contact" class="btn-primary">
+                <a href="#contact" class="btn-primary" data-i18n="cta_join">
                     <i class="fa-solid fa-wand-magic-sparkles"></i> Join Early Access List
                 </a>
 
@@ -74,45 +90,38 @@
     <!-- Stats Section -->
     <section class="stats-section">
         <div class="stats-container">
-            <div class="stats-label">See immediate results</div>
+            <div class="stats-label" data-i18n="stats_label">See immediate results</div>
             <div class="stats-grid">
                 <div class="stat-item">
-                    <span class="stat-value highlight">30–40%</span>
+                    <span class="stat-value highlight" data-i18n="stat_1_value">30–40%</span>
                     <div class="stat-details">
-                        <span class="stat-text">Less time spent chasing missing details</span>
-                        <span class="stat-sub">From walkthrough to proposal — same visit</span>
+                        <span class="stat-text" data-i18n="stat_1_text">Less time spent chasing missing details</span>
+                        <span class="stat-sub" data-i18n="stat_1_sub">From walkthrough to proposal — same visit</span>
                     </div>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value highlight">47%</span>
+                    <span class="stat-value highlight" data-i18n="stat_2_value">47%</span>
                     <div class="stat-details">
-                        <span class="stat-text">More deals closed</span>
-                        <span class="stat-sub">By presenting estimates on-site</span>
+                        <span class="stat-text" data-i18n="stat_2_text">More deals closed</span>
+                        <span class="stat-sub" data-i18n="stat_2_sub">By presenting estimates on-site</span>
                     </div>
                 </div>
                 <div class="stat-item">
-                    <span class="stat-value highlight">2–4 hrs</span>
+                    <span class="stat-value highlight" data-i18n="stat_3_value">2–4 hrs</span>
                     <div class="stat-details">
-                        <span class="stat-text">Saved per estimate</span>
-                        <span class="stat-sub">No back-and-forth, no quoting at night</span>
+                        <span class="stat-text" data-i18n="stat_3_text">Saved per estimate</span>
+                        <span class="stat-sub" data-i18n="stat_3_sub">No back-and-forth, no quoting at night</span>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-
-
-
-
-
-
-
     <!-- How It Works Section -->
     <section class="section how-it-works" style="background-color: var(--bg-light);">
         <div class="container">
             <div class="section-header">
-                <h2>How It Works</h2>
+                <h2 data-i18n="how_it_works_title">How It Works</h2>
             </div>
             <div class="how-it-works-grid"
                 style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 2rem;">
@@ -123,10 +132,12 @@
                     <div
                         style="background: var(--primary); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">
                         1</div>
-                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Record Your
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);"
+                        data-i18n="step_1_title">Record Your
                         Walk-Through
                     </h3>
-                    <p style="color: var(--text-secondary); margin: 0;">Choose the type of project and scope.</p>
+                    <p style="color: var(--text-secondary); margin: 0;" data-i18n="step_1_desc">Choose the type of
+                        project and scope.</p>
                 </div>
 
                 <!-- Step 2 -->
@@ -135,9 +146,11 @@
                     <div
                         style="background: var(--primary); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">
                         2</div>
-                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Adjust Labor &
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);"
+                        data-i18n="step_2_title">Adjust Labor &
                         Materials</h3>
-                    <p style="color: var(--text-secondary); margin: 0;">Modify hours, crew size, and materials in real
+                    <p style="color: var(--text-secondary); margin: 0;" data-i18n="step_2_desc">Modify hours, crew size,
+                        and materials in real
                         time.</p>
                 </div>
 
@@ -147,9 +160,11 @@
                     <div
                         style="background: var(--primary); color: white; width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">
                         3</div>
-                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);">Send a Professional
+                    <h3 style="font-size: 1.25rem; margin-bottom: 0.75rem; color: var(--text-main);"
+                        data-i18n="step_3_title">Send a Professional
                         Estimate</h3>
-                    <p style="color: var(--text-secondary); margin: 0;">Instantly share a branded PDF with the client.
+                    <p style="color: var(--text-secondary); margin: 0;" data-i18n="step_3_desc">Instantly share a
+                        branded PDF with the client.
                     </p>
                 </div>
 
@@ -157,47 +172,44 @@
         </div>
     </section>
 
-
-
-
-
     <!-- What Makes V2R Different Section -->
     <section class="section different-section" style="padding: 5rem 0; background: white;">
         <div class="container">
             <!-- Centered Text Content -->
             <div class="different-content" style="max-width: 800px; margin: 0 auto; text-align: center;">
-                <h2 class="section-title" style="margin-bottom: 3rem; font-size: 2.5rem;">What Makes V2R Different</h2>
+                <h2 class="section-title" style="margin-bottom: 3rem; font-size: 2.5rem;" data-i18n="diff_title">What
+                    Makes V2R Different</h2>
                 <ul class="different-list"
                     style="display: flex; flex-direction: column; gap: 1.5rem; text-align: left; max-width: 600px; margin: 0 auto;">
                     <li
                         style="display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-circle-check"
                             style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                        Built by contractors, not software companies
+                        <span data-i18n="diff_1">Built by contractors, not software companies</span>
                     </li>
                     <li
                         style="display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-circle-check"
                             style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                        Real labor logic — hours, crews, productivity
+                        <span data-i18n="diff_2">Real labor logic — hours, crews, productivity</span>
                     </li>
                     <li
                         style="display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-circle-check"
                             style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                        Transparent pricing logic (no black-box AI)
+                        <span data-i18n="diff_3">Transparent pricing logic (no black-box AI)</span>
                     </li>
                     <li
                         style="display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-circle-check"
                             style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                        Designed for residential GCs & remodelers
+                        <span data-i18n="diff_4">Designed for residential GCs & remodelers</span>
                     </li>
                     <li
                         style="display: flex; align-items: center; gap: 1rem; font-size: 1.1rem; color: var(--text-secondary);">
                         <i class="fa-solid fa-circle-check"
                             style="color: var(--primary); font-size: 1.25rem; flex-shrink: 0;"></i>
-                        Sales-focused, not just estimating software
+                        <span data-i18n="diff_5">Sales-focused, not just estimating software</span>
                     </li>
                 </ul>
             </div>
@@ -205,7 +217,8 @@
             <!-- Who This Is For Section -->
             <div class="who-this-is-for"
                 style="margin-top: 6rem; max-width: 900px; margin-left: auto; margin-right: auto;">
-                <h2 class="section-title" style="margin-bottom: 3rem; font-size: 2.5rem; text-align: center;">Who This
+                <h2 class="section-title" style="margin-bottom: 3rem; font-size: 2.5rem; text-align: center;"
+                    data-i18n="who_title">Who This
                     Is For</h2>
                 <div class="who-grid"
                     style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem;">
@@ -213,24 +226,27 @@
                     <!-- Perfect For -->
                     <div class="who-card"
                         style="background: #f0fdf4; padding: 2.5rem; border-radius: 20px; border: 1px solid #bbf7d0;">
-                        <h3
-                            style="color: #166534; font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <h3 style="color: #166534; font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;"
+                            data-i18n="perfect_for">
                             <i class="fa-solid fa-check-circle"></i> Perfect For
                         </h3>
                         <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
                             <li
                                 style="display: flex; align-items: center; gap: 0.75rem; color: #14532d; font-weight: 500;">
-                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> Residential
-                                General Contractors
+                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> <span
+                                    data-i18n="perfect_1">Residential
+                                    General Contractors</span>
                             </li>
                             <li
                                 style="display: flex; align-items: center; gap: 0.75rem; color: #14532d; font-weight: 500;">
-                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> Remodelers
+                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> <span
+                                    data-i18n="perfect_2">Remodelers</span>
                             </li>
                             <li
                                 style="display: flex; align-items: center; gap: 0.75rem; color: #14532d; font-weight: 500;">
-                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> Small to
-                                mid-size crews (1–10 people)
+                                <i class="fa-solid fa-check" style="color: #22c55e; font-size: 0.9rem;"></i> <span
+                                    data-i18n="perfect_3">Small to
+                                    mid-size crews (1–10 people)</span>
                             </li>
                         </ul>
                     </div>
@@ -238,22 +254,25 @@
                     <!-- Not For -->
                     <div class="who-card"
                         style="background: #fef2f2; padding: 2.5rem; border-radius: 20px; border: 1px solid #fecaca;">
-                        <h3
-                            style="color: #991b1b; font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                        <h3 style="color: #991b1b; font-size: 1.5rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;"
+                            data-i18n="not_for">
                             <i class="fa-solid fa-xmark-circle"></i> Not For
                         </h3>
                         <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 1rem;">
                             <li style="display: flex; align-items: center; gap: 0.75rem; color: #7f1d1d; opacity: 0.8;">
-                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> Large
-                                commercial projects
+                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> <span
+                                    data-i18n="not_1">Large
+                                    commercial projects</span>
                             </li>
                             <li style="display: flex; align-items: center; gap: 0.75rem; color: #7f1d1d; opacity: 0.8;">
-                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> Engineering
-                                firms
+                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> <span
+                                    data-i18n="not_2">Engineering
+                                    firms</span>
                             </li>
                             <li style="display: flex; align-items: center; gap: 0.75rem; color: #7f1d1d; opacity: 0.8;">
-                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> Enterprise
-                                estimating departments
+                                <i class="fa-solid fa-xmark" style="color: #ef4444; font-size: 0.9rem;"></i> <span
+                                    data-i18n="not_3">Enterprise
+                                    estimating departments</span>
                             </li>
                         </ul>
                     </div>
@@ -268,24 +287,28 @@
         <div class="container contact-container">
 
             <div class="contact-form-wrapper glass-card" style="margin: 0 auto;">
-                <h3>See how fast your estimates can be!</h3>
+                <h3 data-i18n="contact_title">See how fast your estimates can be!</h3>
                 <form class="contact-form" id="contact-form" action="https://formspree.io/f/xyzaplql" method="POST">
                     <div class="form-group">
-                        <label for="name">Name</label>
-                        <input type="text" id="name" name="name" placeholder="Your Name" required>
+                        <label for="name" data-i18n="label_name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name"
+                            data-i18n-placeholder="placeholder_name" required>
                     </div>
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" name="email" placeholder="Your Email" required>
+                        <label for="email" data-i18n="label_email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your Email"
+                            data-i18n-placeholder="placeholder_email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Phone</label>
-                        <input type="tel" id="phone" name="phone" placeholder="Your Phone Number" required>
+                        <label for="phone" data-i18n="label_phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" placeholder="Your Phone Number"
+                            data-i18n-placeholder="placeholder_phone" required>
                     </div>
                     <!-- Hidden field for multiple recipients -->
                     <!-- Hidden field for subject -->
                     <input type="hidden" name="_subject" value="New V2R Builds Contact Form Submission">
-                    <button type="submit" class="btn-primary full-width">Join Early Access List</button>
+                    <button type="submit" class="btn-primary full-width" data-i18n="btn_submit">Join Early Access
+                        List</button>
                 </form>
                 <div id="form-status"
                     style="display: none; margin-top: 15px; padding: 15px; border-radius: 10px; text-align: center;">
@@ -298,10 +321,10 @@
         <div class="container footer-content">
             <div class="footer-logo">V2R Builds</div>
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="#" data-i18n="footer_privacy">Privacy Policy</a>
+                <a href="#" data-i18n="footer_terms">Terms of Service</a>
             </div>
-            <p>&copy; 2025 V2R Builds. All rights reserved.</p>
+            <p data-i18n="footer_rights">&copy; 2025 V2R Builds. All rights reserved.</p>
         </div>
     </footer>
 
@@ -309,7 +332,7 @@
     <div class="modal-overlay" id="modal-overlay">
         <div class="modal-container">
             <div class="modal-header">
-                <span class="modal-title">Start Your Project</span>
+                <span class="modal-title" data-i18n="modal_title">Start Your Project</span>
                 <button class="modal-close" id="modal-close"><i class="fa-solid fa-times"></i></button>
             </div>
 
@@ -323,67 +346,70 @@
                 <form id="wizard-form" action="https://formspree.io/f/xyzaplql" method="POST">
                     <!-- Step 1: Project Type -->
                     <div class="form-step active" data-step="1">
-                        <h3 class="step-question">What type of project are you planning?</h3>
+                        <h3 class="step-question" data-i18n="modal_step1_q">What type of project are you planning?</h3>
                         <div class="option-grid">
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="Kitchen Remodel" hidden required>
                                 <div class="option-icon"><i class="fa-solid fa-kitchen-set"></i></div>
-                                <span class="option-text">Kitchen Remodel</span>
+                                <span class="option-text" data-i18n="opt_kitchen">Kitchen Remodel</span>
                             </label>
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="Bathroom Renovation" hidden>
                                 <div class="option-icon"><i class="fa-solid fa-bath"></i></div>
-                                <span class="option-text">Bathroom Renovation</span>
+                                <span class="option-text" data-i18n="opt_bathroom">Bathroom Renovation</span>
                             </label>
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="Basement Finishing" hidden>
                                 <div class="option-icon"><i class="fa-solid fa-dungeon"></i></div>
-                                <span class="option-text">Basement Finishing</span>
+                                <span class="option-text" data-i18n="opt_basement">Basement Finishing</span>
                             </label>
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="Home Addition" hidden>
                                 <div class="option-icon"><i class="fa-solid fa-house-chimney-medical"></i></div>
-                                <span class="option-text">Home Addition</span>
+                                <span class="option-text" data-i18n="opt_addition">Home Addition</span>
                             </label>
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="ADU" hidden>
                                 <div class="option-icon"><i class="fa-solid fa-house-user"></i></div>
-                                <span class="option-text">ADU</span>
+                                <span class="option-text" data-i18n="opt_adu">ADU</span>
                             </label>
                             <label class="option-card">
                                 <input type="radio" name="project_type" value="Complete Transformation" hidden>
                                 <div class="option-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                                <span class="option-text">Complete Transformation</span>
+                                <span class="option-text" data-i18n="opt_transform">Complete Transformation</span>
                             </label>
                         </div>
                     </div>
 
                     <!-- Step 2: Details -->
                     <div class="form-step" data-step="2">
-                        <h3 class="step-question">Tell us a bit more about your vision.</h3>
+                        <h3 class="step-question" data-i18n="modal_step2_q">Tell us a bit more about your vision.</h3>
                         <textarea class="form-input" name="message" rows="6"
-                            placeholder="What are your goals? Do you have a timeline in mind?" required></textarea>
+                            placeholder="What are your goals? Do you have a timeline in mind?"
+                            data-i18n-placeholder="modal_step2_placeholder" required></textarea>
                     </div>
 
                     <!-- Step 3: Contact Info -->
                     <div class="form-step" data-step="3">
-                        <h3 class="step-question">How can we reach you?</h3>
-                        <input type="text" class="form-input" name="name" placeholder="Your Name" required>
-                        <input type="email" class="form-input" name="email" placeholder="Your Email" required>
-                        <input type="tel" class="form-input" name="phone" placeholder="Phone Number (Optional)">
+                        <h3 class="step-question" data-i18n="modal_step3_q">How can we reach you?</h3>
+                        <input type="text" class="form-input" name="name" placeholder="Your Name"
+                            data-i18n-placeholder="placeholder_name" required>
+                        <input type="email" class="form-input" name="email" placeholder="Your Email"
+                            data-i18n-placeholder="placeholder_email" required>
+                        <input type="tel" class="form-input" name="phone" placeholder="Phone Number (Optional)"
+                            data-i18n-placeholder="placeholder_phone">
                     </div>
                 </form>
             </div>
 
             <div class="modal-footer">
-                <button class="btn-back" id="btn-back" style="visibility: hidden;">Back</button>
-                <button class="btn-next" id="btn-next">Next</button>
+                <button class="btn-back" id="btn-back" style="visibility: hidden;" data-i18n="btn_back">Back</button>
+                <button class="btn-next" id="btn-next" data-i18n="btn_next">Next</button>
             </div>
         </div>
     </div>
 
-
-
+    <script src="translations.js"></script>
     <script src="script.js"></script>
 </body>
 
