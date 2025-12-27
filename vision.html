@@ -677,11 +677,14 @@
                 }
             });
 
-            // Reusable Generation Function
+            // Reusable Generation Function (With Polling)
             const generateVision = async (imageUrl, prompt) => {
                 loadingOverlay.style.display = 'flex';
+                let pollInterval = null;
+
                 try {
-                    const renderResponse = await fetch(`${API_BASE_URL}/render`, {
+                    // 1. Start Prediction via POST
+                    const startResponse = await fetch(`${API_BASE_URL}/render`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
@@ -690,22 +693,60 @@
                         })
                     });
 
-                    if (!renderResponse.ok) throw new Error('Rendering failed');
-                    const renderData = await renderResponse.json();
+                    if (!startResponse.ok) {
+                        const err = await startResponse.json();
+                        throw new Error('Start failed: ' + (err.error || 'Unknown error'));
+                    }
 
-                    // API returns Base64 directly
-                    const afterImageBase64 = renderData.renderUrl;
+                    const startData = await startResponse.json();
+                    const predictionId = startData.predictionId;
 
-                    // Update After Image
-                    document.getElementById('flyer-after-img').src = afterImageBase64;
+                    if (!predictionId) throw new Error('No prediction ID returned');
 
-                    return true;
+                    console.log('Prediction Started:', predictionId);
+
+                    // 2. Poll for Status via GET
+                    return new Promise((resolve, reject) => {
+                        pollInterval = setInterval(async () => {
+                            try {
+                                const checkResponse = await fetch(`${API_BASE_URL}/render?id=${predictionId}`);
+                                if (!checkResponse.ok) {
+                                    throw new Error('Status check failed');
+                                }
+
+                                const checkData = await checkResponse.json();
+                                console.log('Poll Status:', checkData.status);
+
+                                if (checkData.status === 'succeeded') {
+                                    clearInterval(pollInterval);
+
+                                    // Update Image
+                                    document.getElementById('flyer-after-img').src = checkData.renderUrl;
+                                    loadingOverlay.style.display = 'none';
+                                    resolve(true);
+
+                                } else if (checkData.status === 'failed' || checkData.status === 'canceled') {
+                                    clearInterval(pollInterval);
+                                    reject(new Error('Generation failed: ' + (checkData.error || 'Unknown error')));
+                                }
+                                // Else: still processing, continue loop
+
+                            } catch (e) {
+                                clearInterval(pollInterval);
+                                reject(e);
+                            }
+                        }, 2000); // Poll every 2 seconds
+                    });
+
                 } catch (error) {
+                    if (pollInterval) clearInterval(pollInterval);
                     console.error(error);
                     alert('Error: ' + error.message);
+                    loadingOverlay.style.display = 'none';
                     return false;
                 } finally {
-                    loadingOverlay.style.display = 'none';
+                    // Note: We don't hide overlay here continuously, only inside Promise resolution/rejection
+                    // But logic handled above inside Promise
                 }
             };
 
