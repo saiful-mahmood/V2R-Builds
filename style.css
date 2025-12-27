@@ -131,6 +131,30 @@ img {
     padding: var(--spacing-xl) 0;
 }
 
+/* Section Backgrounds (Alternating) */
+.stats-section {
+    background-color: var(--bg-main);
+}
+
+.how-it-works {
+    background-color: #eff6ff;
+    /* Light blue tint from logo */
+}
+
+.different-section {
+    background-color: var(--bg-main);
+}
+
+.who-section {
+    background-color: #eff6ff;
+    /* Light blue tint from logo */
+}
+
+.contact {
+    background-color: #dbeafe;
+    /* Slightly darker light blue */
+}
+
 .highlight {
     color: var(--primary);
 }
