@@ -723,6 +723,18 @@
                                 const debugLog = document.getElementById('debug-log');
                                 if (debugLog) debugLog.innerHTML = `Status: ${checkData.status}...`;
 
+                                // UI Feedback for Cold Boot
+                                const statusTitle = document.querySelector('.loading-overlay h2');
+                                const statusDesc = document.querySelector('.loading-overlay p');
+
+                                if (checkData.status === 'starting') {
+                                    statusTitle.innerText = "Waking up AI Model (Cold Boot)...";
+                                    statusDesc.innerText = "Private models take 3-5 mins to start up. Please wait...";
+                                } else if (checkData.status === 'processing') {
+                                    statusTitle.innerText = "Processing Image...";
+                                    statusDesc.innerText = "Model is active! Generating your vision now.";
+                                }
+
                                 if (checkData.status === 'succeeded') {
                                     clearInterval(pollInterval);
 
