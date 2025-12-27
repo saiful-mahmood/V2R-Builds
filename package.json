@@ -8,7 +8,8 @@
     "build": "mkdir -p public && cp *.html *.css *.js public/ 2>/dev/null || : && cp -r images videos public/ 2>/dev/null || :"
   },
   "dependencies": {
+    "form-data": "^4.0.0",
     "node-fetch": "^2.6.7",
-    "form-data": "^4.0.0"
+    "replicate": "^1.4.0"
   }
 }
