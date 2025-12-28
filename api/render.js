@@ -74,8 +74,8 @@ module.exports = async (req, res) => {
                         image: imageUrl,
                         prompt: `modern interior design, high quality, photorealistic, ${userPrompt}`,
                         negative_prompt: "low quality, bad quality, sketches, text, logos, watermark, ugly, blurry, artifacts, low resolution, cartoon, painting, illustration, messy, clutter",
-                        num_inference_steps: 50,
-                        condition_scale: 0.5,
+                        num_inference_steps: 150,
+                        condition_scale: 1,
                         // seed: 0, // Random
                     }
                 }
