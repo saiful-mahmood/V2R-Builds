@@ -151,8 +151,8 @@ img {
 }
 
 .contact {
-    background-color: #dbeafe;
-    /* Slightly darker light blue */
+    background-color: #ffffff;
+    /* White (Lightest shade) */
 }
 
 .highlight {
@@ -1247,10 +1247,11 @@ img {
    FOOTER - Mobile Optimized
    ======================================== */
 footer {
-    background: var(--bg-light);
+    background: #93c5fd;
+    /* Darker blue (Blue-300) to conclude site */
     padding: var(--spacing-xl) 0 var(--spacing-md);
-    border-top: 1px solid var(--border-light);
-    margin-top: var(--spacing-2xl);
+    border-top: none;
+    margin-top: 0;
 }
 
 .footer-content {
