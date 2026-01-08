@@ -32,13 +32,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Close menu when clicking outside (touch-friendly)
-    mobileMenu.addEventListener('click', (e) => {
-        if (e.target === mobileMenu) {
-            mobileMenu.classList.remove('active');
-            hamburger.classList.remove('active');
-            body.style.overflow = '';
-        }
-    });
+    if (mobileMenu) {
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                mobileMenu.classList.remove('active');
+                hamburger.classList.remove('active');
+                body.style.overflow = '';
+            }
+        });
+    }
 
     // ========================================
     // NAVBAR SCROLL EFFECT
@@ -440,58 +442,110 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     // ========================================
-    // MAIN CONTACT FORM HANDLING
+    // TWO-STEP CONTACT FORM WITH QUALIFYING MODAL
     // ========================================
     const contactForm = document.getElementById('contact-form');
     const formStatus = document.getElementById('form-status');
+    const qualifyingModal = document.getElementById('qualifying-modal');
+    const qualifyingForm = document.getElementById('qualifying-form');
 
-    if (contactForm) {
-        contactForm.addEventListener('submit', async (e) => {
+
+    // Store contact info temporarily
+    let storedContactData = {};
+
+    // Step 1: Contact form shows the qualifying modal
+    if (contactForm && qualifyingModal) {
+        contactForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalBtnText = submitBtn.textContent;
 
-            submitBtn.textContent = 'Sending...';
-            submitBtn.disabled = true;
+            // Store the contact info
+            storedContactData = {
+                name: contactForm.querySelector('#name').value,
+                email: contactForm.querySelector('#email').value,
+                phone: contactForm.querySelector('#phone').value
+            };
 
-            const formData = new FormData(contactForm);
-
-            try {
-                const response = await fetch(contactForm.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json'
-                    }
-                });
-
-                if (response.ok) {
-                    // Success
-                    formStatus.style.display = 'block';
-                    formStatus.style.backgroundColor = '#dcfce7';
-                    formStatus.style.color = '#166534';
-                    formStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Thanks! You have joined the waitlist.';
-
-                    // Clear form
-                    contactForm.reset();
-
-                    // Hide message after 5 seconds
-                    setTimeout(() => {
-                        formStatus.style.display = 'none';
-                    }, 5000);
-                } else {
-                    // Error
-                    throw new Error('Submission failed');
-                }
-            } catch (error) {
-                formStatus.style.display = 'block';
-                formStatus.style.backgroundColor = '#fee2e2';
-                formStatus.style.color = '#991b1b';
-                formStatus.textContent = 'Oops! There was a problem. Please try again.';
-            } finally {
-                submitBtn.textContent = originalBtnText;
-                submitBtn.disabled = false;
-            }
+            // Show the qualifying questions modal
+            qualifyingModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
         });
     }
+
+    // Close modal function
+    function closeQualifyingModal() {
+        if (qualifyingModal) {
+            qualifyingModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+    }
+
+
+
+    // Submit function (used by both Submit and Skip buttons)
+    async function submitAllFormData(includeQuestions) {
+        const formData = new FormData();
+
+        // Add contact info
+        formData.append('name', storedContactData.name);
+        formData.append('email', storedContactData.email);
+        formData.append('phone', storedContactData.phone);
+        formData.append('_subject', 'New V2R Builds Contact Form Submission');
+
+        // Add qualifying questions if included
+        if (includeQuestions && qualifyingForm) {
+            formData.append('revenue_experience', qualifyingForm.querySelector('#revenue_experience').value);
+            formData.append('estimates_winrate', qualifyingForm.querySelector('#estimates_winrate').value);
+            formData.append('biggest_challenge', qualifyingForm.querySelector('#biggest_challenge').value);
+            formData.append('time_cost', qualifyingForm.querySelector('#time_cost').value);
+            formData.append('fair_price', qualifyingForm.querySelector('#fair_price').value);
+        }
+
+        try {
+            const response = await fetch('https://formspree.io/f/xyzaplql', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            closeQualifyingModal();
+
+            if (response.ok) {
+                // Success
+                formStatus.style.display = 'block';
+                formStatus.style.backgroundColor = '#dcfce7';
+                formStatus.style.color = '#166534';
+                formStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Thanks! You have joined the waitlist.';
+
+                // Clear forms
+                contactForm.reset();
+                if (qualifyingForm) qualifyingForm.reset();
+                storedContactData = {};
+
+                // Hide message after 5 seconds
+                setTimeout(() => {
+                    formStatus.style.display = 'none';
+                }, 5000);
+            } else {
+                throw new Error('Submission failed');
+            }
+        } catch (error) {
+            closeQualifyingModal();
+            formStatus.style.display = 'block';
+            formStatus.style.backgroundColor = '#fee2e2';
+            formStatus.style.color = '#991b1b';
+            formStatus.textContent = 'Oops! There was a problem. Please try again.';
+        }
+    }
+
+    // Qualifying form submit (with questions)
+    if (qualifyingForm) {
+        qualifyingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await submitAllFormData(true);
+        });
+    }
+
+
 });
