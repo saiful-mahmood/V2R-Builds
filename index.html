@@ -324,42 +324,46 @@
     <div class="qualifying-modal-overlay" id="qualifying-modal">
         <div class="qualifying-modal">
             <div class="qualifying-modal-header">
-                <h3>One Last Step!</h3>
-                <p>Help us understand your needs so we can serve you better.</p>
+                <h3 data-i18n="qual_modal_title">One Last Step!</h3>
+                <p data-i18n="qual_modal_subtitle">Help us understand your needs so we can serve you better.</p>
             </div>
             <form class="qualifying-form" id="qualifying-form">
                 <div class="form-group">
-                    <label for="revenue_experience">What's your annual revenue and how long have you been in
-                        business?</label>
+                    <label for="revenue_experience" data-i18n="qual_q1">What's your annual revenue and how long have you
+                        been in business?</label>
                     <textarea id="revenue_experience" name="revenue_experience" rows="2"
-                        placeholder="e.g., $500K/year, 5 years in business" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="estimates_winrate">How many estimates do you create per month, and what's your win
-                        rate?</label>
-                    <textarea id="estimates_winrate" name="estimates_winrate" rows="2"
-                        placeholder="e.g., 20 estimates/month, 30% win rate" required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="biggest_challenge">What's your biggest challenge or frustration with creating
-                        estimates?</label>
-                    <textarea id="biggest_challenge" name="biggest_challenge" rows="2"
-                        placeholder="Tell us what slows you down..." required></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="time_cost">How much time do you spend on each estimate, and what does that cost
-                        you?</label>
-                    <textarea id="time_cost" name="time_cost" rows="2" placeholder="e.g., 2-3 hours, costs $150 in time"
+                        placeholder="e.g., $500K/year, 5 years in business" data-i18n-placeholder="qual_q1_placeholder"
                         required></textarea>
                 </div>
                 <div class="form-group">
-                    <label for="fair_price">What's a fair monthly price for turning estimates from hours to
-                        minutes?</label>
+                    <label for="estimates_winrate" data-i18n="qual_q2">How many estimates do you create per month, and
+                        what's your win rate?</label>
+                    <textarea id="estimates_winrate" name="estimates_winrate" rows="2"
+                        placeholder="e.g., 20 estimates/month, 30% win rate" data-i18n-placeholder="qual_q2_placeholder"
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="biggest_challenge" data-i18n="qual_q3">What's your biggest challenge or frustration with
+                        creating estimates?</label>
+                    <textarea id="biggest_challenge" name="biggest_challenge" rows="2"
+                        placeholder="Tell us what slows you down..." data-i18n-placeholder="qual_q3_placeholder"
+                        required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="time_cost" data-i18n="qual_q4">How much time do you spend on each estimate, and what
+                        does that cost you?</label>
+                    <textarea id="time_cost" name="time_cost" rows="2" placeholder="e.g., 2-3 hours, costs $150 in time"
+                        data-i18n-placeholder="qual_q4_placeholder" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="fair_price" data-i18n="qual_q5">What's a fair monthly price for turning estimates from
+                        hours to minutes?</label>
                     <textarea id="fair_price" name="fair_price" rows="2"
-                        placeholder="e.g., $50/month, $200/month, $500/month?" required></textarea>
+                        placeholder="e.g., $50/month, $200/month, $500/month?"
+                        data-i18n-placeholder="qual_q5_placeholder" required></textarea>
                 </div>
                 <div class="qualifying-modal-buttons">
-                    <button type="submit" class="btn-primary full-width">Submit</button>
+                    <button type="submit" class="btn-primary full-width" data-i18n="qual_btn_submit">Submit</button>
                 </div>
             </form>
         </div>

@@ -2,7 +2,7 @@ const translations = {
     en: {
         hero_title: "Instant Estimates <span class=\"highlight\">With AI</span>",
         hero_subtitle: "Record your walkthrough, speak naturally (even in Portuguese 🇧🇷, or Spanish 🇪🇸), and let AI turn it into a clear, itemized, homeowner-ready estimate — before the conversation ends.",
-        cta_join: "<i class=\"fa-solid fa-wand-magic-sparkles\"></i> Join Early Access List",
+        cta_join: "<i class=\"fa-solid fa-wand-magic-sparkles\"></i> Join Waitlist",
         stats_label: "See immediate results",
         stat_1_text: "Less time spent chasing missing details",
         stat_1_sub: "From walkthrough to proposal — same visit",
@@ -41,7 +41,7 @@ const translations = {
         placeholder_email: "Your Email",
         label_phone: "Phone",
         placeholder_phone: "Your Phone Number",
-        btn_submit: "Join Early Access List",
+        btn_submit: "Join Waitlist",
         footer_privacy: "Privacy Policy",
         footer_terms: "Terms of Service",
         footer_rights: "© 2025 V2R Builds. All rights reserved.",
@@ -57,7 +57,20 @@ const translations = {
         opt_basement: "Basement Finishing",
         opt_addition: "Home Addition",
         opt_adu: "ADU",
-        opt_transform: "Complete Transformation"
+        opt_transform: "Complete Transformation",
+        qual_modal_title: "One Last Step!",
+        qual_modal_subtitle: "Help us understand your needs so we can serve you better.",
+        qual_q1: "What's your annual revenue and how long have you been in business?",
+        qual_q1_placeholder: "e.g., $500K/year, 5 years in business",
+        qual_q2: "How many estimates do you create per month, and what's your win rate?",
+        qual_q2_placeholder: "e.g., 20 estimates/month, 30% win rate",
+        qual_q3: "What's your biggest challenge or frustration with creating estimates?",
+        qual_q3_placeholder: "Tell us what slows you down...",
+        qual_q4: "How much time do you spend on each estimate, and what does that cost you?",
+        qual_q4_placeholder: "e.g., 2-3 hours, costs $150 in time",
+        qual_q5: "What's a fair monthly price for turning estimates from hours to minutes?",
+        qual_q5_placeholder: "e.g., $50/month, $200/month, $500/month?",
+        qual_btn_submit: "Submit"
     },
     pt: {
         hero_title: "Orçamentos Instantâneos <span class=\"highlight\">Com IA</span>",
@@ -117,7 +130,20 @@ const translations = {
         opt_basement: "Acabamento de Porão",
         opt_addition: "Ampliação Residencial",
         opt_adu: "ADU (Unidade Habitacional Acessória)",
-        opt_transform: "Transformação Completa"
+        opt_transform: "Transformação Completa",
+        qual_modal_title: "Último Passo!",
+        qual_modal_subtitle: "Ajude-nos a entender suas necessidades para podermos atendê-lo melhor.",
+        qual_q1: "Qual é o seu faturamento anual e há quanto tempo você está no negócio?",
+        qual_q1_placeholder: "ex., $500K/ano, 5 anos no negócio",
+        qual_q2: "Quantos orçamentos você cria por mês e qual é a sua taxa de conversão?",
+        qual_q2_placeholder: "ex., 20 orçamentos/mês, 30% de conversão",
+        qual_q3: "Qual é o seu maior desafio ou frustração ao criar orçamentos?",
+        qual_q3_placeholder: "Conte-nos o que te atrasa...",
+        qual_q4: "Quanto tempo você gasta em cada orçamento e quanto isso te custa?",
+        qual_q4_placeholder: "ex., 2-3 horas, custa $150 em tempo",
+        qual_q5: "Qual seria um preço mensal justo para transformar orçamentos de horas para minutos?",
+        qual_q5_placeholder: "ex., $50/mês, $200/mês, $500/mês?",
+        qual_btn_submit: "Enviar"
     },
     es: {
         hero_title: "Presupuestos Instantáneos <span class=\"highlight\">Con IA</span>",
@@ -177,7 +203,20 @@ const translations = {
         opt_basement: "Acabado de Sótano",
         opt_addition: "Adición de Vivienda",
         opt_adu: "ADU (Unidad de Vivienda Accesoria)",
-        opt_transform: "Transformación Completa"
+        opt_transform: "Transformación Completa",
+        qual_modal_title: "¡Un Último Paso!",
+        qual_modal_subtitle: "Ayúdanos a entender tus necesidades para poder servirte mejor.",
+        qual_q1: "¿Cuáles son tus ingresos anuales y cuánto tiempo llevas en el negocio?",
+        qual_q1_placeholder: "ej., $500K/año, 5 años en el negocio",
+        qual_q2: "¿Cuántos presupuestos creas al mes y cuál es tu tasa de éxito?",
+        qual_q2_placeholder: "ej., 20 presupuestos/mes, 30% de éxito",
+        qual_q3: "¿Cuál es tu mayor desafío o frustración al crear presupuestos?",
+        qual_q3_placeholder: "Cuéntanos qué te retrasa...",
+        qual_q4: "¿Cuánto tiempo dedicas a cada presupuesto y cuánto te cuesta?",
+        qual_q4_placeholder: "ej., 2-3 horas, cuesta $150 en tiempo",
+        qual_q5: "¿Cuál sería un precio mensual justo para convertir presupuestos de horas a minutos?",
+        qual_q5_placeholder: "ej., $50/mes, $200/mes, $500/mes?",
+        qual_btn_submit: "Enviar"
     }
 };
 
