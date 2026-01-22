@@ -574,7 +574,7 @@ img {
 }
 
 .logo-icon {
-    height: 32px;
+    height: 70px;
     width: auto;
     border-radius: 6px;
 }
@@ -1267,6 +1267,11 @@ footer {
     font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-main);
+}
+
+.footer-logo-img {
+    height: 65px;
+    width: auto;
 }
 
 .footer-links {
