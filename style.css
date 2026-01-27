@@ -744,7 +744,7 @@ img {
     line-height: 1.6;
 }
 
-/* Features Grid (Why V2R) */
+/* Features Grid (Why V2E) */
 .features-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -2292,7 +2292,7 @@ footer {
 }
 
 /* ========================================
-   V2R ESTIMATE TOOL SECTION
+   V2E ESTIMATE TOOL SECTION
    ======================================== */
 .estimate-tool-section {
     padding: var(--spacing-xl) 0;
@@ -2577,7 +2577,7 @@ footer {
 
     .hero {
         background: radial-gradient(circle at 50% 30%, #f0f9ff 0%, #e0f2fe 100%);
-        /* V2R Theme Background */
+        /* V2E Theme Background */
         justify-content: flex-start;
         flex-direction: column;
         text-align: center;

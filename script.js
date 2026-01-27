@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 </div>
                                 <h3 style="font-size: 1.75rem; color: var(--text-main); margin-bottom: 12px;">Request Received!</h3>
                                 <p style="color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6;">
-                                    Thanks for starting your journey with V2R Builds. We'll review your project details and get back to you shortly.
+                                    Thanks for starting your journey with V2E Builds. We'll review your project details and get back to you shortly.
                                 </p>
                                 <button class="btn-primary" style="margin-top: 32px;" onclick="document.getElementById('modal-overlay').classList.remove('active'); document.body.style.overflow = '';">Close</button>
                             </div>
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', () => {
         formData.append('name', storedContactData.name);
         formData.append('email', storedContactData.email);
         formData.append('phone', storedContactData.phone);
-        formData.append('_subject', 'New V2R Builds Contact Form Submission');
+        formData.append('_subject', 'New V2E Builds Contact Form Submission');
 
         // Add qualifying questions if included
         if (includeQuestions && qualifyingForm) {
